@@ -1,0 +1,153 @@
+-- ============================================================================
+-- Copyright (C) 2011 by DPtech Technologies. All rights reserved.
+--
+--Description: DPtech Dev MIB
+--
+-- Reference: DPtech Enterprise MIB
+-- Version: V1.00
+-- History:
+-- V1.00 2011-01-13 created by zhanghailong
+-- ============================================================================
+DPTECH-DEV-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS   				
+          	dpDevice
+                	FROM DPTECH-OID-MIB	 
+		OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+	                FROM SNMPv2-CONF
+	        Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks
+	                FROM SNMPv2-SMI
+	        RowPointer, DateAndTime, DisplayString, RowStatus
+	                FROM SNMPv2-TC
+	        SnmpTagList, SnmpTagValue
+	                FROM SNMP-TARGET-MIB;
+
+dpSlotTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpSlotEntry	
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION	"A list of slot entries. 
+	 The number of entries is given by the value of slotNumber. 
+	  This table contains additional objects for the slot table."
+	::= { dpDevice 1 }
+	
+dpSlotEntry OBJECT-TYPE
+	SYNTAX DpSlotEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"An entry containing additional management information
+              	 applicable to a particular slot."
+	INDEX   { dpSlotIndex }
+	::= {dpSlotTable 1}
+
+DpSlotEntry ::=
+	SEQUENCE {
+		dpSlotIndex	INTEGER ,
+		dpSlotType   INTEGER,
+		dpSlotDesc   DisplayString,
+		dpSlotPortNum   INTEGER,
+		dpSlotStatus   INTEGER,					
+		dpSlotIsMain   INTEGER,
+		dpSlotRunTimes  DisplayString
+		}
+
+dpSlotIndex OBJECT-TYPE
+	SYNTAX INTEGER {slotindexAbsent(0)}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+		A value which indicates the index of the slot.
+			"
+	::= { dpSlotEntry 1 }
+			
+dpSlotType OBJECT-TYPE
+	SYNTAX INTEGER {boardUnkown(0),boardMain(1),boardSpare(2),boardNf(3),
+	boardPoise(4),boardFw(5),boardUtm(6),
+	boardIps(7),boardUag(8),boardIniface(9),
+	boardBlock(10),boardPopm(11),boardAopm(12),
+	boardAbsent(13),swBoardMain(31),swBoard8fep(32),
+	swBoard8fet(33),swBoard8fel(34),swBoard6fel(35),
+	swBoard6fes(36),swBoard4gep(37),swBoard2t8p(38),
+	swBoard8t2p(39),swBoard8p2sc(40),swBoard2gep(41)}  
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+			A value which indicates the type of the slot.
+		"
+	::= { dpSlotEntry 2 }
+			
+dpSlotDesc OBJECT-TYPE
+	SYNTAX DisplayString   
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+			A character string which indicates the boardtype of the slot.
+		"
+	::= { dpSlotEntry 3 }
+			
+dpSlotPortNum OBJECT-TYPE
+	SYNTAX INTEGER {slotPortNumAbsent(0)}  
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+		A value which indicates the portnum of the slot.
+		"
+	::= { dpSlotEntry 4 }
+			
+dpSlotStatus OBJECT-TYPE
+	SYNTAX INTEGER  { normal(0),abnormal(1),offline(2)} 
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+			A value which indicates the num of the slot.
+		"
+	::= { dpSlotEntry 5 }
+			
+dpSlotIsMain OBJECT-TYPE
+	SYNTAX INTEGER  { master(0),slave(1)} 
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+			A value which indicates the slot is main.
+		"
+	::= { dpSlotEntry 6 }
+			
+dpSlotRunTimes OBJECT-TYPE
+	SYNTAX DisplayString   
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"
+			A character string which indicates the run time of the slot.
+		"
+	::= { dpSlotEntry 7 }
+			
+--dpSlotTraps
+
+dpSlotTraps       OBJECT IDENTIFIER ::= { dpDevice 2 }
+
+        
+dpBoardInserted NOTIFICATION-TYPE
+        OBJECTS {dpSlotIndex ,dpSlotType}
+        STATUS	current
+        DESCRIPTION
+        	"
+        	dpBoardInsert is inserted.
+        	"   
+        ::= { dpSlotTraps 1 }
+        
+dpBoardRemoved NOTIFICATION-TYPE
+        OBJECTS {dpSlotIndex}
+        STATUS	current
+        DESCRIPTION "dpBoardRemove is removed."   
+        ::= { dpSlotTraps 2 }
+        	
+END
+   	

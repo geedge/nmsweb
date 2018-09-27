@@ -1,0 +1,17 @@
+1.导出：exp.exe选择oracle客户端安装路径的bin里（oracle/product/10/2/0/client_1/bin）
+	（1）通过plsql的tools-export tables-oracle export：选中rows（导出数据），其它都不选，在where clause输入条件:  data_check_time>to_date('2015-9-9 12:00:00','yyyy-MM-dd HH24:mi:ss')，不包括where（一开始总是查询不出来内容，不知道为什么，拿到sql窗口试试:sql可以，但是导出dmp的时候，有时候用>=不行，用>才可以）
+	（2）通过命令导出：
+				exp  nms/nms@10.0.6.100 file=d:/all.dmp tables=(detection_info) query=\"where  data_check_time>to_date('2013-7-16 01:20:00','yyyy-MM-dd HH24:mi:ss')  and data_check_time<to_date('2013-7-17 20:20:00','yyyy-MM-dd HH24:mi:ss')\"
+
+				imp  nms/nms@10.0.6.100 file=d:/all.dmp tables=(detection_info) ignore=y
+				
+				exp可以在客户端执行，也可以在服务器端执行
+				win：
+					客户端：需要装oracle客户端，配置好tns，在cmd命令下执行
+				linux：
+					以oracle用户登录，在控制台下执行，建议在服务器端执行，备份速度快
+					
+2.导入：通过plsql-tools-import tables-oracle import：选择rows（导入数据）及ignore（不选会报错对象已存在），选择from user及to user
+
+说明：
+	导出的时候，可以多个表导出到一个dmp文件，如果分别导出了多个文件，导入的时候，可以一起执行多个imp（换行分割即可）

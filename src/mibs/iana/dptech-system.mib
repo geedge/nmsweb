@@ -1,0 +1,666 @@
+DPTECH-SYSTEM-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS
+            dpSystem
+                FROM DPTECH-OID-MIB
+            dpSlotEntry
+                FROM DPTECH-DEV-MIB
+            OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+                FROM SNMPv2-CONF
+            Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks, Gauge32
+                FROM SNMPv2-SMI
+            RowPointer, DateAndTime, DisplayString, RowStatus, PhysAddress
+                FROM SNMPv2-TC
+            SnmpTagList, SnmpTagValue
+                FROM SNMP-TARGET-MIB
+            ipAdEntAddr, ipAdEntIfIndex, ipAdEntNetMask
+            	FROM IP-MIB
+            IpAddress
+                FROM RFC1155-SMI
+            entPhysicalIndex
+            	FROM ENTITY-MIB;
+
+        dpMacAddr OBJECT-TYPE
+            SYNTAX     PhysAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The mac address of manager.
+                "
+            ::= { dpSystem 1 }
+
+        dpHardwareVersion OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The hardware version of PCB.
+                "
+            ::= { dpSystem 2 }
+
+        dpSoftwareVersion OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The software version.
+                "
+            ::= { dpSystem 3 }
+
+        dpSoftwareManufacture OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The software manufacturer.
+                "
+            ::= { dpSystem 4 }
+
+        dpCpuRatioThreshold OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The threshold of the usage of CPU. When dpCpuRatio is over than
+                dpCpuThreshold, syslog will be reported.
+                "
+            ::= { dpSystem 5 }
+
+        dpCpuTemperatureThresholdLow OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The low threshold of CPU temprature. When dpCpuTemperature is
+                less than dpCpuTemperatureThresholdLow, syslog will be reported.
+                "
+            ::= { dpSystem 6 }
+
+        dpCpuTemperatureThresholdHigh OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The high threshold of CPU temprature. When dpCpuTemperature is
+                greater than dpCpuTemperatureThresholdHigh, syslog will be
+                reported.
+                "
+            ::= { dpSystem 7 }
+
+        dpMainBoardTemperatureThresholdLow OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The low threshold of MainBoard temprature. When dpMainboardTemperature is
+                less than dpMainBoardTemperatureThresholdLow, syslog will be reported.
+                "
+            ::= { dpSystem 8 }
+
+        dpMainBoardTemperatureThresholdHigh OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The high threshold of MainBoard temprature. When dpMainboardTemperature is
+                greater than dpMainBoardTemperatureThresholdHigh, syslog will be
+                reported.
+                "
+            ::= { dpSystem 9 }
+
+        dpMemSize OBJECT-TYPE
+            SYNTAX     Integer32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The size of memory in mega bytes.
+                "
+            ::= { dpSystem 10 }
+
+        dpMemRatioThreshold OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-write
+            STATUS     current
+            DESCRIPTION
+                "
+                The threshold of the usage of memory. When dpMemRatio is over than
+                dpMemRatioThreshold, syslog will be reported.
+                "
+            ::= { dpSystem 11 }
+
+        dpDiskSize OBJECT-TYPE
+            SYNTAX     Integer32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The size of disk in giga bytes.
+                "
+            ::= { dpSystem 12 }
+
+        dpStorageSize OBJECT-TYPE
+            SYNTAX     Integer32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The size of storage device in giga bytes.
+                "
+            ::= { dpSystem 13 }
+
+
+        dpDevSerial OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The serial number of device.
+                "
+            ::= { dpSystem 14 }
+
+       dpSysTime OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                Current system time.
+                "
+            ::= { dpSystem 24 }
+
+
+        dpSystemStatus  OBJECT IDENTIFIER ::= { dpSystem 15 }
+
+
+        dpCpuRatio OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The average, over the last a few minutes, of the percentage
+                of time that this processor was not idle.
+                Implementations may approximate this one minute
+                smoothing period if necessary.
+                "
+            ::= { dpSystemStatus 1 }
+
+        dpCpuRatioPeak OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The threshold of the usage of CPU. When dpCpuRatio is over than
+                dpCpuThreshold, syslog will be reported.
+                "
+            ::= { dpSystemStatus 2 }
+
+        dpCpuRatioAverage OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                ""
+            ::= { dpSystemStatus 3 }
+
+        dpCpuTemperature OBJECT-TYPE
+            SYNTAX     Integer32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The temprature of CPU.
+                "
+            ::= { dpSystemStatus 4 }
+
+        dpMemRatio OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The average, over the last a few minutes, of the percentage
+                of memory was not used.
+                Implementations may approximate this one minute
+                smoothing period if necessary.
+                "
+            ::= { dpSystemStatus 5 }
+
+        dpMemRatioPeak OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                ""
+            ::= { dpSystemStatus 6 }
+
+        dpMemRatioAverage OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                ""
+            ::= { dpSystemStatus 7 }
+
+        dpMainboardTemperature OBJECT-TYPE
+            SYNTAX     Integer32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The temprature of mainboard
+                "
+            ::= { dpSystemStatus 8 }
+            
+        dpSession OBJECT-TYPE
+            SYNTAX     Gauge32
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The product session
+                "
+            ::= { dpSystemStatus 9 }
+            
+        dpCpuRatio30s OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The average, over the last 30s, of the percentage
+                of cpu useage ratio that this processor was not idle.
+                Implementations may approximate this half minute
+                smoothing period if necessary.
+                "
+            ::= { dpSystemStatus 10 }
+			
+        dpCpuRatio5min OBJECT-TYPE
+            SYNTAX     Integer32 (0..100)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+                The average, over the last 5min, of the percentage
+                of cpu useage ratio that this processor was not idle.
+                Implementations may approximate this five minute
+                smoothing period if necessary.
+                "
+            ::= { dpSystemStatus 11 }
+					  
+
+					  
+-- the DPtech Trap table
+
+-- The DPtech Trap table contains this DPtech Trap information.
+
+        dpSystemTraps  OBJECT IDENTIFIER ::= { dpSystem 16 }
+
+
+        dpCpuTemperatureHigh NOTIFICATION-TYPE
+            OBJECTS {dpCpuTemperature,dpCpuTemperatureThresholdLow, dpCpuTemperatureThresholdHigh}
+            STATUS     current
+            DESCRIPTION
+                "
+                The Cpu Temperature is High.
+                "
+            ::= { dpSystemTraps 1 }
+
+        dpCpuTemperatureHighClear NOTIFICATION-TYPE
+            OBJECTS {dpCpuTemperature,dpCpuTemperatureThresholdLow, dpCpuTemperatureThresholdHigh}
+            STATUS     current
+            DESCRIPTION
+                "
+                The Cpu Trap(dpCpuTemperatureHigh) is Clear.
+                "
+            ::= { dpSystemTraps 2 }
+
+       dpMainBoardTemperatureHigh NOTIFICATION-TYPE
+            OBJECTS {dpMainboardTemperature,dpMainBoardTemperatureThresholdLow,dpMainBoardTemperatureThresholdHigh}
+            STATUS     current
+            DESCRIPTION
+                "
+                The Main Board Temperature is High.
+                "
+            ::= { dpSystemTraps 3 }
+
+        dpMainBoardTemperatureHighClear NOTIFICATION-TYPE
+            OBJECTS {dpMainboardTemperature,dpMainBoardTemperatureThresholdLow,dpMainBoardTemperatureThresholdHigh}
+            STATUS     current
+            DESCRIPTION
+                "
+                The Main Board Trap(dpMainBoardTemperatureHigh) is Clear.
+                "
+            ::= { dpSystemTraps 4 }
+
+        dpCpuRatioHigh NOTIFICATION-TYPE
+        	OBJECTS {dpCpuRatio,dpCpuRatioThreshold}
+        	STATUS     current
+        	DESCRIPTION
+        		"
+        		The Cpu Ratio is High.
+        		"
+        	::= { dpSystemTraps 5 }
+
+        deCpuRatioHighClear NOTIFICATION-TYPE
+        	OBJECTS {dpCpuRatio,dpCpuRatioThreshold}
+        	STATUS     current
+        	DESCRIPTION
+        		"
+        		The Cpu Trap(dpCpuRatioHigh) is Clear.
+        		"
+        	::= { dpSystemTraps 6 }
+
+        dpMemRatioHigh NOTIFICATION-TYPE
+        	OBJECTS {dpMemRatio,dpMemRatioThreshold}
+        	STATUS     current
+        	DESCRIPTION
+        		"
+        		The Memory Ratio is High.
+        		"
+        	::= { dpSystemTraps 7 }
+
+        dpMemRatioHighClear NOTIFICATION-TYPE
+        	OBJECTS {dpMemRatio,dpMemRatioThreshold}
+        	STATUS     current
+        	DESCRIPTION
+        		"
+        		The Memory Trap(dpMemRatioHigh) is Clear.
+        		"
+        	::= { dpSystemTraps 8 }
+
+        dpWanIpAddrChange NOTIFICATION-TYPE
+        	OBJECTS {ipAdEntAddr, ipAdEntIfIndex, ipAdEntNetMask}
+        	STATUS	current
+        	DESCRIPTION
+        		"
+        		The IP address of the WAN interface have modified.
+        		"
+        	::= { dpSystemTraps 9 }
+        	
+        dpFanAbnormal NOTIFICATION-TYPE
+        	OBJECTS {entPhysicalIndex}
+        	STATUS	current
+        	DESCRIPTION
+        		"
+        		The Fan does not work well.
+        		"
+        	::= { dpSystemTraps 10 }
+        dpPowerAbnormal NOTIFICATION-TYPE
+        	OBJECTS {entPhysicalIndex}
+        	STATUS	current
+        	DESCRIPTION
+        		"
+        		The Power does not work well.
+        		"
+        	::= { dpSystemTraps 11 }
+
+        dpRemoteMangement   OBJECT IDENTIFIER ::= { dpSystem 17 }
+
+        dpSnmp     	        OBJECT IDENTIFIER ::= { dpRemoteMangement 1 }
+
+        dpSnmpAgentVersion OBJECT-TYPE
+            SYNTAX     INTEGER { v1(1),v2c(2),v3(3),all(4)}
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								The SnmpAgent version.
+                "
+            ::= { dpSnmp 1 }
+
+
+        dpSnmpTrustHostTable  OBJECT-TYPE
+            SYNTAX     SEQUENCE OF DpSnmpTrustHostEntry
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								A table containing trust-host information.
+                "
+            ::= { dpSnmp 2 }
+
+        dpSnmpTrustHostEntry  OBJECT-TYPE
+            SYNTAX     DpSnmpTrustHostEntry
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								Information about a particular trust host.
+                "
+            INDEX{dpSnmpTrustHostAddr}
+            ::= { dpSnmpTrustHostTable 1 }
+
+        DpSnmpTrustHostEntry ::=
+	            SEQUENCE {
+                  	        dpSnmpTrustHostAddr        IpAddress,
+                  	        dpSnmpTrustHostNetMask     IpAddress
+                  	    }
+
+
+        dpSnmpTrustHostAddr  OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								The ip address of trust host.
+                "
+            ::= { dpSnmpTrustHostEntry 1 }
+
+        dpSnmpTrustHostNetMask  OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								The netmask of trust host.
+                "
+            ::= { dpSnmpTrustHostEntry 2 }
+
+        dpWeb       	      OBJECT IDENTIFIER ::= { dpRemoteMangement 2 }
+
+--        dpWebTrustHost      OBJECT IDENTIFIER ::= { dpWeb 1 }
+        dpWebTrustHostTable  OBJECT-TYPE
+            SYNTAX     SEQUENCE OF DpWebTrustHostEntry
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								A table containing trust-host information.
+                "
+            ::= { dpWeb 2 }
+
+        dpWebTrustHostEntry  OBJECT-TYPE
+            SYNTAX     DpWebTrustHostEntry
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								Information about a particular trust host.
+                "
+            INDEX{dpWebTrustHostAddr}
+            ::= { dpWebTrustHostTable 1 }
+
+        DpWebTrustHostEntry ::=
+	            SEQUENCE {
+                  	        dpWebTrustHostAddr        IpAddress,
+                  	        dpWebTrustHostNetMask     IpAddress
+                  	    }
+        dpWebTrustHostAddr  OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								The ip address of trust host.
+                "
+            ::= { dpWebTrustHostEntry 1 }
+
+        dpWebTrustHostNetMask  OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+								The netmask of trust host.
+                "
+            ::= { dpWebTrustHostEntry 2 }
+
+
+dpSystemReboot  OBJECT-TYPE
+            SYNTAX     INTEGER { reboot(1), none(2)}
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "
+						The system reboot.
+                "
+            ::= { dpSystem 18 }
+            
+-- The dpBoardStatus
+
+dpBoardStatusTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpBoardStatusEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of board entries.  The number of entries
+		is given by the value of board number.  This table
+		contains additional objects for the board status table."
+	::= { dpSystem 19 }
+
+		dpBoardStatusEntry OBJECT-TYPE
+			SYNTAX DpBoardStatusEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				"An entry containing additional management information
+              	 applicable to a particular board."
+      AUGMENTS	{ dpSlotEntry }
+			::= {dpBoardStatusTable 1}
+
+		DpBoardStatusEntry ::=
+			SEQUENCE {
+					dpBoardTemperature	INTEGER
+			}
+
+			dpBoardTemperature OBJECT-TYPE
+				SYNTAX INTEGER
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					"
+					The temperature of the board.
+					"
+			::= { dpBoardStatusEntry 1 }
+			
+-- The dpSystemPower	
+
+dpSystemPowerTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpSystemPowerEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of power entries.  The number of entries
+		is given by the value of power number.  This table
+		contains additional objects for the power status table."
+	::= { dpSystem 20 }
+
+		dpSystemPowerEntry OBJECT-TYPE
+			SYNTAX DpSystemPowerEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				"An entry containing additional management information
+              	 applicable to a particular power."
+
+				 ::= {dpSystemPowerTable 1}
+
+		DpSystemPowerEntry ::=
+			SEQUENCE {
+					dpSystemPowerNo	     INTEGER,
+					dpSystemPowerStat    DisplayString
+			}
+
+			dpSystemPowerNo OBJECT-TYPE
+				SYNTAX INTEGER
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					"
+					The No of power.
+					"
+			::= { dpSystemPowerEntry 1 } 
+			
+			dpSystemPowerStat OBJECT-TYPE
+				SYNTAX DisplayString
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					"
+					The status of power.
+					"
+			::= { dpSystemPowerEntry 2 }  
+
+-- The dpSystemFan	
+
+dpSystemFanTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpSystemFanEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of fan entries.  The number of entries
+		is given by the value of fan number.  This table
+		contains additional objects for the fan status table."
+	::= { dpSystem 21 }
+
+		dpSystemFanEntry OBJECT-TYPE
+			SYNTAX DpSystemFanEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				"An entry containing additional management information
+              	 applicable to a particular fan."
+
+				 ::= {dpSystemFanTable 1}
+
+		DpSystemFanEntry ::=
+			SEQUENCE {
+					dpSystemFanNo	     INTEGER,
+					dpSystemFanStat      DisplayString
+			}
+
+			dpSystemFanNo OBJECT-TYPE
+				SYNTAX INTEGER
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					"
+					The No of fan.
+					"
+				::= { dpSystemFanEntry 1 } 
+			
+			dpSystemFanStat OBJECT-TYPE
+				SYNTAX DisplayString
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					"
+					The status of fan.
+					"
+				::= { dpSystemFanEntry 2 }  			
+
+END

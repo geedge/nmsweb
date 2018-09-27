@@ -1,0 +1,1 @@
+UPDATE xt_mk_jbxx t SET t.mkurl='/detection/detectionWarning.do?action=queryAll' WHERE t.mkmc='告警信息';

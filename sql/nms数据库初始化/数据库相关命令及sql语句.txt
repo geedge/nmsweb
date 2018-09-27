@@ -1,0 +1,39 @@
+-------db_files---------------------begin
+
+	1.查看db_files设定的值
+	  show parameter db_files;
+	  
+	2.查看当前数据文件的个数
+	  select count(*) from dba_data_files;
+	
+	3.修改数据库数据文件大小：db_files
+	  (1) alter system set db_files=1000 scope=spfile;
+	  (2) 重启数据库
+
+-------db_files---------------------end
+
+-------权限--------------------------begin
+
+    将 按天定时增加和删除分区存储过程 添加到job时，需要赋予用户一下权限
+
+	1.查询数据字段的权限
+	  grant select any dictionary to 用户名;
+	  
+	2.删除表空间的权限
+	  grant drop tablespace to 用户名;
+
+-------权限--------------------------end
+
+-------删除表的时候要彻底清除------------begin
+
+    1.drop table 表名 purge 
+    
+    注：如果不加purge，则表被删除到回收站中，从user_part
+    
+---------赋予用户执行dbma_lock的权限:需要sys或者dba才能赋予权限----------------------begin
+    grant execute on dbms_lock to nms; 
+    
+---------赋予用户执行dbma_lock的权限----------------------end
+    
+    
+    

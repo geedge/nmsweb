@@ -1,0 +1,2 @@
+对于默认的数据：
+	check_type_info表的 TABLE_DESC字段长度不够，存在一条无法插入的记录

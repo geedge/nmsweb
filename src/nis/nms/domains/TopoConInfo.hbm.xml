@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="nis.nms.domains.TopoConInfo"
+		table="TOPO_CON_INFO">
+		<id name="id" type="java.lang.Long">
+			<column name="id" precision="11" scale="0" />
+			<generator class="nis.nms.persistence.SequenceGenerator" >
+				<param name="sequence">SEQ_NODEGROUP_POSITION</param>
+			</generator>
+		</id>
+		<many-to-one name="topoInfo" class="nis.nms.domains.TopoInfo" fetch="select">
+           <column name="TOPO_ID" precision="11" scale="0" />
+        </many-to-one>
+		<property name="x" type="java.lang.Long">
+			<column name="X" precision="11" scale="0" />
+		</property>
+		<property name="y" type="java.lang.Long">
+			<column name="Y" precision="11" scale="0" />
+		</property>
+		<property name="width" type="java.lang.Long">
+			<column name="WIDTH" precision="11" scale="0" />
+		</property>
+		<property name="height" type="java.lang.Long">
+			<column name="HEIGHT" precision="11" scale="0" />
+		</property>
+		<property name="createTime" type="java.util.Date">
+			<column name="CREATE_TIME" length="7" />
+		</property>
+		<property name="createUser" type="java.lang.Long">
+			<column name="CREATE_USER" precision="11" scale="0" />
+		</property>
+		<property name="updateTime" type="java.util.Date">
+			<column name="UPDATE_TIME" length="7" />
+		</property>
+		<property name="updateUser" type="java.lang.Long">
+			<column name="UPDATE_USER" precision="11" scale="0" />
+		</property>
+		<property name="topoConInfoClass" type="java.lang.String">
+			<column name="CLASS" length="64" />
+		</property>
+		<property name="text" type="java.lang.String">
+			<column name="TEXT" length="64" />
+		</property>
+		<property name="flag" type="java.lang.Long">
+			<column name="FLAG" precision="11" scale="0" />
+		</property>
+	</class>
+</hibernate-mapping>

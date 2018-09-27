@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<link href="css/nms.css" rel="stylesheet" type="text/css" />	
+<script type="text/javascript">
+	function choseNode(v){
+		for(var i=1;i<=5;i++){
+			if(v==i){
+				document.getElementById("node"+i).className="nodeSelStyle";
+				document.getElementById("rightNodes"+i).style.display="block";
+			}
+			else{
+				document.getElementById("node"+i).className="nodeStyle";
+				document.getElementById("rightNodes"+i).style.display="none";
+			}
+		}
+	}
+	function switchLeft(){
+		var switchimage=document.getElementById("switchlefts").src.split("/");
+		var every=switchimage[switchimage.length-1];		
+		if(every=="an1.jpg"){
+			document.getElementById("middleRight").className="middle_rightswitch";
+			document.getElementById("switchlefts").src="images/an2.jpg";
+			document.getElementById("leftNodes").style.display="none";
+		}
+		else{
+			document.getElementById("middleRight").className="middle_right";
+			document.getElementById("switchlefts").src="images/an1.jpg";
+			document.getElementById("leftNodes").style.display="block";
+		}
+	}
+</script>
+</head>
+
+
+<body style="overflow:scroll;overflow-x:hidden;overflow-y:hidden;">
+<!--顶部开始-->
+<div class="top">
+<table width="100%" border="0" cellpadding="0" cellspacing="0"  >
+  <tr>
+   <td class="top_img"><img src="images/top.jpg" /  ></td>
+    </tr>
+      <tr>
+        <td height="5" class="top_color1"></td>
+       </tr>
+       <tr>
+        <td height="20" class="top_color2" ><div id="nav">
+              <ul>
+                <li><a href="#">系统首页&nbsp;|</a></li>
+                <li><a href="#">系统设置&nbsp;|</a></li>
+                <li><a href="#">系统指南&nbsp;|</a></li>
+                <li><a href="#">退出系统&nbsp;|</a></li>
+              </ul>
+            </div>		
+		 </td>
+       </tr>
+  </table>
+</div>
+<!--顶部结束-->
+<!--中间部分开始-->
+<div class="middle">
+ <div class="middle_mid" align="cneter" >
+    <iframe  src="middle.html"  scrolling="auto" height="100%" width="100%" frameBorder="0"  ></iframe>
+</div>
+</div>
+<!--中间部分结束--> 
+
+<div style="clear:both;"></div>
+</body>
+</html>

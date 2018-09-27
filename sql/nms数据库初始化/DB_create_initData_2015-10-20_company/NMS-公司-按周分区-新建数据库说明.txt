@@ -1,0 +1,75 @@
+
+注意：以下操作需要将用户名、表空间、数据文件的路径修改为对应的内容，以下内容默认的用户及密码均为nms
+									
+		若之前新建过NMS的库，则清空库：
+				drop user nms cascade;
+				drop tablespace nms including contents and datafiles;
+
+--------------------------------------------------------------------------------------
+1.以oracle用户登录，执行AutoCreate_user.sh（此脚本默认新建NMS用户，修改对应内容：用户名、密码、表空间名称、数据文件目录）:建默认表空间、用户名、密码、给用户赋权限；也可以直接在plsql的SQL window执行以下语句
+	
+		--直接在plsql中执行，需要sysdba用户------
+		-- 获取表空间路径   select  distinct substr(FILE_NAME,1,instr(FILE_NAME,'/','-1',1))  from dba_data_files t where t.tablespace_name = 'USERS'		
+		create bigfile tablespace nms datafile'/data/d4/oradata/ict/nms.dbf' size 10M reuse autoextend on next 50M maxsize unlimited;
+		create user nms identified by nms default tablespace nms quota unlimited on nms;
+		grant dba to nms;
+		grant create table to nms;
+		grant create tablespace to nms;
+		grant drop tablespace to nms;
+		grant select on v_$tablespace to nms;-------------grant select on v_\$tablespace to nms;linux下执行脚本对于$需要加\,在plsql的SQL window中执行就不用了
+		grant select any dictionary to nms;
+		grant execute on dbms_lock to nms;     
+	
+	
+2.以新建的用户登录plsql，main.sql所在路径不能有特殊字符，如空格。修改main.sql中的数据文件路径，以新建的用户登录plsql，执行initDB-company文件夹下的main.sql（如在plsql的Command Window下输入：@E:\main.sql）
+		main.sql主要完成的功能：
+			1.默认新建一个表空间DI_W201529，分区表默认的分区所在的表空间
+			2.建表：所有的表（分区表的索引为本地索引，默认分区为DI_W201529-之后执行job会新建最新的）
+			3.建Sequence
+			4.建view
+			5.建package
+			6.建trigger
+			7.建function
+			8.建存储过程
+			9.初始化基本数据
+
+3.创建2个job：先执行createJob1.sql，再执行createJob2.sql
+     执行：
+         将initDB-company下的createJob1.sql、createJob2.sql  中的语句依次在sql窗口执行（先执行增加表空间的job，再执行删除表空间的job）
+         可以修改删除表空间执行时删除默认生成的第一个表空间201529，不删除也没关系
+4.查看触发器是否有异常
+--------------------------------------------------------------------------------------
+
+
+界面部分初始化：默认有一个admin用户，密码123
+-------------新增----------------------------------
+
+1.新增部门：权限管理->部门配置：新增研发部
+
+1.配置管理->业务系统配置：
+          新增业务系统：
+                   系统名称：NMSWEB系统
+                   系统描述：NMS界面控制系统
+                   注册IP：web部署的ip
+                   注册端口：8080
+                   用户组非必选
+2.新增用户组：业务系统必选
+			 管理人员用户组
+       开发人员用户组
+       查看人员用户组
+3.新增用户：权限管理->用户管理
+       是否接收邮件（是指如监测和任务等）
+       选择：角色、用户组、部门
+
+4.节点组新增：
+			 配置管理->节点配置：新增
+5.节点新增：snmp版本是version2c
+       配置管理下：
+		      机房新增：机房配置->新增
+		      机柜新增：机房配置->机柜管理->新增
+					新增节点：节点配置->选中节点组->节点管理->新增
+6.新增DC：
+			配置管理->DC范围配置：管理新增的节点
+7.安装NC，DC，进行相应的配置
+8.配置web
+--------------------------------------------------------		             

@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<link href="css/nms.css" rel="stylesheet" type="text/css" />	
+<script type="text/javascript">
+	function choseNode(v){
+		for(var i=1;i<=5;i++){
+			if(v==i){
+				document.getElementById("node"+i).className="nodeSelStyle";
+				document.getElementById("rightNodes"+i).style.display="block";
+			}
+			else{
+				document.getElementById("node"+i).className="nodeStyle";
+				document.getElementById("rightNodes"+i).style.display="none";
+			}
+		}
+	}
+	function switchLeft(){
+		var switchimage=document.getElementById("switchlefts").src.split("/");
+		var every=switchimage[switchimage.length-1];		
+		if(every=="an1.jpg"){
+			document.getElementById("middleRight").className="middle_rightswitch";
+			document.getElementById("switchlefts").src="images/an2.jpg";
+			document.getElementById("leftNodes").style.display="none";
+		}
+		else{
+			document.getElementById("middleRight").className="middle_right";
+			document.getElementById("switchlefts").src="images/an1.jpg";
+			document.getElementById("leftNodes").style.display="block";
+		}
+	}
+</script>
+</head>
+
+
+<body>
+
+<div class="middle">
+<!--中间部分左边开始-->
+  <div class="middle_left" id="leftNodes">
+    <div class="menu_1" >
+	   <ul>
+	     <li class="nodeSelStyle" onClick="choseNode(1);" id="node1"><div class="m_1">网络管理</div></li>
+		 <li class="nodeStyle" onClick="choseNode(2);" id="node2" ><div class="m_1">运营中心</div></li>
+		 <li class="nodeStyle" onClick="choseNode(3);" id="node3"><div class="m_1">信息管理</div></li>
+		 <li class="nodeStyle" onClick="choseNode(4);" id="node4"><div class="m_1">账户管理</div></li>
+		 <li class="nodeStyle" onClick="choseNode(5);" id="node5"><div class="m_1">用户管理</div></li>
+	  </ul>
+    </div>
+	 <div class="menu_2" id="rightNodes1">
+	   <ul>
+	     <li>设备管理</li>
+		 <li>借用的设备</li>
+		 <li>归还的设备</li>
+		 <li>维修的设备</li>
+		 <li>个人设备</li>
+		 <li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li><li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li>
+		</ul>
+	 </div>
+	 
+	  <div class="menu_2" id="rightNodes2" style="display:none;">
+	   <ul>
+	     <li>gggggxxz</li>
+		 <li>借用的设备</li>
+		 <li>归还的设备</li>
+		 <li>维修的设备</li>
+		 <li>个人设备</li>
+		 <li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li>
+		</ul>
+	 </div>
+	 
+	 
+	  <div class="menu_2" id="rightNodes3" style="display:none;">
+	   <ul>
+	     <li>sdfsdfsadfsdfsdf</li>
+		 <li>借用的设备</li>
+		 <li>归还的设备</li>
+		 <li>维修的设备</li>
+		 <li>个人设备</li>
+		 <li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li>
+		</ul>
+	 </div>
+	 
+	  <div class="menu_2" id="rightNodes4" style="display:none;">
+	   <ul>
+	     <li>dsfsadfsafsadfsdf</li>
+		 <li>借用的设备</li>
+		 <li>归还的设备</li>
+		 <li>维修的设备</li>
+		 <li>个人设备</li>
+		 <li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li>
+		</ul>
+	 </div>
+	 
+	  <div class="menu_2" id="rightNodes5" style="display:none;">
+	   <ul>
+	     <li>erererewrewrwerewrew</li>
+		 <li>借用的设备</li>
+		 <li>归还的设备</li>
+		 <li>维修的设备</li>
+		 <li>个人设备</li>
+		 <li><img src="images/yuandian.png" />&nbsp;数量</li>
+		 <li><img src="images/yuandian.png" />&nbsp;名称</li>
+		 <li><img src="images/yuandian.png" />&nbsp;种类</li>
+		</ul>
+	 </div>
+</div>
+<!--中间部分左边结束-->
+<table border="0" cellpadding="0" cellspacing="0" class="middle_tab">
+  <tr>
+    <td>
+    <img src="images/an1.jpg" class="img_middle" id="switchlefts" onclick="switchLeft()" />
+    </td>
+   </tr>
+ </table>
+<!--中间部分右边开始-->
+<div class="middle_right" id="middleRight">
+<div class="box_1">
+	    <img src="images/sanjiao.png" class="img_middle" />&nbsp;你现在所在的位置是：信息管理</div>
+		<div class="box_2"> 信息查找
+	        <select class="option1">
+                <option>--请选择--</option>
+	            <option>24</option>
+	             <option>25</option>
+            </select>
+	             所有信息
+	             <select class="option1">
+                    <option>--请选择--</option>
+	                <option>本科</option>
+	                <option>研究生</option>
+	           </select>
+			   <img src="images/button_chaxun.png" class="img_middle"  />
+          </div>
+			<table  border="0" cellpadding="0" cellspacing="0" class="table" >
+				<tr>
+					<td class="color_top">信息</td>
+					<td class="color_top">用户名</td>
+					<td class="color_top">真实姓名</td>
+					<td class="color_top">目前状态</td>
+					<td colspan="2" class="color_8">操作</td>
+				</tr>
+			<tr>
+				<td class="color_1">信息的名字</td>
+				<td class="color_1">用户的名字</td>
+				<td class="color_1">用户的真实姓名</td>
+				<td class="color_1">正常</td>
+				<td class="color_7">
+					<img src="images/logo_1.png" class="img_middle"/>&nbsp;操作</td>
+				<td class="color_7">
+					<img src="images/logo_2.png" class="img_middle" />&nbsp;删除</td>
+				</tr>
+				
+							
+                      </table>
+              <div class="box_3">共50页信息&nbsp;&nbsp;当前第1页</div>
+				 <div class="box_2">转到
+	               <select class="option2">
+                    <option>11</option>
+	                <option>12</option>
+	                <option>13</option>
+                  </select>页
+				 <img src="images/button_up.png" class="img_middle"   />
+			     <img src="images/button_down.png" class="img_middle"  />
+		    </div>
+		<!--中间部分右边结束-->	
+  </div>
+</div>  
+<!--中间部分结束-->
+<div style="clear:both;"></div>
+</body>
+</html>

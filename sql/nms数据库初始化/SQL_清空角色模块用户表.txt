@@ -1,0 +1,5 @@
+truncate  table XT_JS_JBXX;
+truncate  table XT_JS_MK_INDEX;
+truncate  table XT_MK_JBXX;
+truncate  table XT_YH_JBXX;
+truncate  table XT_YH_JS_INDEX;

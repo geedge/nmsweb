@@ -1,0 +1,249 @@
+-- ============================================================================
+-- Copyright (C) 2010 by DPtech Technologies. All rights reserved.
+--
+-- Description: DPtech Network MIB
+--
+-- Reference: DPtech Enterprise MIB
+-- Version: V1.00
+-- History:
+--   V1.00 2010-03-19 created by zhaoy
+-- ============================================================================
+DPTECH-NETWORK-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS
+            dpNetwork
+                FROM DPTECH-OID-MIB
+            OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+                FROM SNMPv2-CONF
+            Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks,Counter32
+                FROM SNMPv2-SMI
+            RowPointer, DateAndTime, DisplayString, RowStatus, PhysAddress
+                FROM SNMPv2-TC
+            SnmpTagList, SnmpTagValue
+                FROM SNMP-TARGET-MIB
+            IpAddress
+                FROM RFC1155-SMI
+            ifEntry
+            	FROM IF-MIB;
+
+
+--
+-- Node definitions
+--
+
+dpNetConfig  OBJECT IDENTIFIER ::= { dpNetwork 1 }
+        dpWanAddr OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION
+                "The WAN interface's ip address."
+            ::= { dpNetConfig 1 }
+
+        dpWanNetMask OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The WAN interface's netmask."
+            ::= { dpNetConfig 2 }
+
+        dpPrimaryDns OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The primary dns information."
+            ::= { dpNetConfig 3 }
+
+        dpSecondaryDns OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The secondary dns information(not supported, currently)."
+            ::= { dpNetConfig 4 }
+
+-- The dpIfTable
+dpIfTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpIfEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of interface entries.  The number of entries
+		is given by the value of ifNumber.  This table
+		contains additional objects for the interface table."
+	::= { dpNetwork 2 }
+
+		dpIfEntry OBJECT-TYPE
+			SYNTAX DpIfEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				"An entry containing additional management information
+              	 applicable to a particular interface."
+           	AUGMENTS	{ ifEntry }
+		::= {dpIfTable 1}
+
+		DpIfEntry ::=
+			SEQUENCE {
+					dpIfType	 INTEGER,
+					dpIfRxPower  INTEGER,
+					dpIfTxPower  INTEGER,
+					dpIfRxBps    Counter32,
+					dpIfTxBps    Counter32,
+					dpIfProtocol INTEGER
+			}
+
+	    dpIfType OBJECT-TYPE
+				SYNTAX INTEGER {
+					Normal-interface(0),
+						WAN-interface(1),
+						LAN-interface(2),
+						Management-interface(3) }
+					MAX-ACCESS read-only
+					STATUS current
+					DESCRIPTION	"A value which indicates the type of the interface."
+				::= { dpIfEntry 1 }
+			
+			dpIfRxPower OBJECT-TYPE
+				SYNTAX INTEGER 
+        MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION	"A value which indicates the rx_power of the interface."
+			::= { dpIfEntry 2 }
+			
+			dpIfTxPower OBJECT-TYPE
+				SYNTAX INTEGER
+        MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION "A value which indicates the tx_power of the interface."
+				::= { dpIfEntry 3 }
+			
+			dpIfRxBps  OBJECT-TYPE
+				SYNTAX Counter32 
+        MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION	"A value which indicates the input bps of the interface."
+				::= { dpIfEntry 4 }
+			
+      dpIfTxBps OBJECT-TYPE
+				SYNTAX Counter32 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION	"A value which indicates the output bps of the interface."
+			::= { dpIfEntry 5 }  
+			
+	 		dpIfProtocol OBJECT-TYPE
+				SYNTAX INTEGER {hdlc(0),ppp(1),eth(2) }
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION "A value which indicates the protocol type of the interface."
+		   ::= { dpIfEntry 6 }
+
+			
+-- The dpPrivateMacTable
+dpPrivateMacTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF DpPrivateMacEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+            "The MAC Address table used for mapping from IP
+            addresses to MAC addresses for private net."
+    ::= { dpNetwork 3 }
+
+dpPrivateMacEntry OBJECT-TYPE
+    SYNTAX      DpPrivateMacEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+            "Each entry contains one IpAddress to MAC address
+            equivalence."
+    INDEX       { dpPrivateMacIfIndex,
+                  dpPrivateMacIPAddress }
+    ::= { dpPrivateMacTable 1 }
+
+DpPrivateMacEntry ::= SEQUENCE {
+        dpPrivateMacIfIndex      INTEGER,
+        dpPrivateMacAddress  PhysAddress,
+        dpPrivateMacIPAddress   IpAddress
+ }
+
+dpPrivateMacIfIndex OBJECT-TYPE
+    SYNTAX      INTEGER (1..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+            "The interface on which this entry's equivalence is
+            effective.  The interface identified by a particular value
+            of this index is the same interface as identified by the
+            same value of RFC 1573's ifIndex."
+    ::= { dpPrivateMacEntry 1 }
+
+dpPrivateMacAddress OBJECT-TYPE
+    SYNTAX      PhysAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+            "The MAC address."
+    ::= { dpPrivateMacEntry 2 }
+
+dpPrivateMacIPAddress OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+            "The IpAddress corresponding to the MAC address."
+    ::= { dpPrivateMacEntry 3 }
+    
+ -- the DPtech Trap table
+-- The DPtech Trap table contains this DPtech Trap information.
+
+dpNetworkTraps  OBJECT IDENTIFIER ::= { dpNetwork 4 }
+
+
+        dpPosCRC NOTIFICATION-TYPE
+            OBJECTS {ifIndex}
+            STATUS   current
+            DESCRIPTION
+                "
+                CRC is not instable.
+                "
+            ::= { dpNetworkTraps 1 }
+
+        dpPosScramble NOTIFICATION-TYPE
+            OBJECTS {ifIndex}
+            STATUS     current
+            DESCRIPTION
+                "
+                Scrambling is instable.
+                "
+            ::= { dpNetworkTraps 2 }
+
+       dpPosJ0 NOTIFICATION-TYPE
+            OBJECTS {ifIndex}
+            STATUS     current
+            DESCRIPTION
+                "
+                The j0 flag is instable.
+                "
+            ::= { dpNetworkTraps 3 }
+
+        dpPosJ1 NOTIFICATION-TYPE
+            OBJECTS {ifIndex}
+            STATUS     current
+            DESCRIPTION
+                "
+               	The j1 flag is instable.
+               	"
+            ::= { dpNetworkTraps 4 }
+
+        dpPosC2 NOTIFICATION-TYPE
+        	OBJECTS {ifIndex}
+        	STATUS     current
+        	DESCRIPTION
+        		"
+        		The c2 flag is instable.
+        		"
+        	::= { dpNetworkTraps 5 }
+
+
+END
+

@@ -1,0 +1,4 @@
+查询以564节点开始的，及其所有的子节点：往下查
+	select t.*, t.rowid from xt_mk_jbxx t start with id=564 connect by prior id=pid;
+查询以276节点，及其所有的父亲节点：	往上查
+  select t.*, t.rowid from xt_mk_jbxx t start with id=276 connect by prior pid=id;

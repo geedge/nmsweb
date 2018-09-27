@@ -1,0 +1,20 @@
+//表字段更新
+  alter table SERVER_IP_SEGMENT modify (SEGMENT_STATE NUMBER default 0);
+
+  alter table DI_SYSTEMINFO_NET add (NET_MAC VARCHAR2(50));
+  comment on column DI_SYSTEMINFO_NET.NET_MAC is 'MAC地址'; 
+
+
+//视图更新
+
+create or replace view v_detection_set_info as
+select dsi."ID",dsi."NODE_IP",dsi."CHECK_TYPE_ID",dsi."CHECK_GAP",dsi."CHECK_WAY",dsi."CHECK_OUT_TIME",dsi."CHECK_MAX_TIMES",dsi."PROCESS_IDEN",dsi."DETECTION_SET_STATE",dsi."PROCESS_FILE",dsi."PROCESS_PATH",dsi."OID",dsi."IS_CONTROL_START",dsi."IS_ISSUE_FILE",dsi."IS_ISSUED",dsi."CONTROL_START_TIME",dsi."UPLOAD_GAP",dsi."IS_ISSUE",dsi."PLAN_CHECK_TIME",dsi."GROUP_ID",dsi."VIEW_LEVEL",dsi."CONTACT_USER_IDS",dsi."CREATE_USER_ID",dsi."CREATE_USERGROUP_ID",dsi."SYSTEM_ID",dsi."NODE_GROUPS_ID",dsi."NODE_IPS_ID",dsi.process_search_keycode,ngt.group_id node_group_id,ngt.is_valid,nt.node_id,nt.node_state,nt.seq_id from detection_set_info dsi
+left join nodegroup_table ngt  on ('0,'||dsi.node_groups_id||',0' like '%,' || ngt.group_id || ',%')
+left join node_table nt  on ('0,'||dsi.node_ips_id||',0' like '%,' || nt.node_id || ',%')
+  and nt.node_group_id = ngt.group_id
+;
+
+
+//监测数据更新
+update check_type_info cti set cti.is_schedule=0 where lower(cti.check_type_name) in (lower('SWITCHPORT'),lower('SYSTEM')) and cti.is_schedule=1;
+

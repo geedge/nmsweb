@@ -1,0 +1,471 @@
+ZDJZ-MIB DEFINITIONS ::= BEGIN
+ 
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, TimeTicks FROM SNMPv2-SMI
+       DisplayString, FROM SNMPv2-TC
+    enterprises			
+		FROM RFC1155-SMI;
+	zdjz OBJECT IDENTIFIER ::= { enterprises 5000001 }
+ 
+	
+	device OBJECT IDENTIFIER ::= { zdjz 1 }
+           		
+
+	DeviceOverviewEntry::=
+		SEQUENCE {
+			deviceIndex  INTEGER,
+			deviceWorkMode INTEGER,
+			deviceRunTimes DisplayString,
+			deviceCpuUtilization DisplayString,
+			deviceMemUtilization DisplayString
+		}
+
+	deviceOverviewTable OBJECT-TYPE
+		SYNTAX SEQUENCE OF DeviceOverviewEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " Device Overview "
+		::= { device  1 }
+ 
+	deviceOverviewEntry OBJECT-TYPE
+		SYNTAX CpuEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " CPU status description table entry "
+		INDEX   { deviceIndex }
+		::= { deviceOverviewTable 1 }
+	 
+		deviceIndex  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device Index "
+			::= { deviceOverviewEntry 1 }
+	 
+		deviceWorkMode  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device Work Mode(1:normal  0:abnormal) "
+			::= { deviceOverviewEntry 2 }
+			
+		deviceRunTimes  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device Run Times "
+			::= { deviceOverviewEntry 3 }
+					
+		deviceCpuUtilization  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device Cpu Utilization "
+			::= { deviceOverviewEntry 4 }
+			
+		deviceMemUtilization  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device Memory Utilization "
+			::= { deviceOverviewEntry 5 }
+		
+		
+	CpuEntry::=
+		SEQUENCE {
+	        deviceIndex  INTEGER,
+			userPerc DisplayString,
+			sysPerc DisplayString,
+			waitPerc DisplayString,
+			nicePerc DisplayString,
+			idlePerc DisplayString,
+			totalPerc DisplayString,
+			freq DisplayString
+	    }
+		
+	cpuTable OBJECT-TYPE
+		SYNTAX SEQUENCE OF CpuEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " CPU INFO "
+		::= { device  2 }
+ 
+	cpuEntry OBJECT-TYPE
+		SYNTAX CpuEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " CPU status description table entry "
+		INDEX   { deviceIndex }
+		::= { cpuTable 1}
+ 
+		deviceIndex  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device ID "
+			::= { cpuEntry 1 }
+	 
+		userPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " User Cpu Percent "
+			::= { cpuEntry 2 }
+			
+		sysPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " System Cpu Percent "
+			::= { cpuEntry 3 }
+			
+		waitPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Wait Cpu Percent "
+			::= { cpuEntry 4 }
+			
+		nicePerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Nice Cpu Percent "
+			::= { cpuEntry 5 }
+			
+		idlePerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Idle Cpu Percent "
+			::= { cpuEntry 6 }
+			
+		totalPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Total Cpu Used Percent "
+			::= { cpuEntry 7 }
+			
+		freq  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Frequency Of Cpu(MHz) "
+			::= { cpuEntry 8 }
+		
+		
+	MemEntry::=
+		SEQUENCE {
+			deviceIndex  INTEGER,
+			swapTotal DisplayString,
+			swapFree DisplayString, 
+			memTotal DisplayString, 
+			memUsed DisplayString, 
+			memFree DisplayString, 
+			memUsedPerc DisplayString
+		}
+
+	memTable OBJECT-TYPE
+		SYNTAX SEQUENCE OF MemEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " MEMORY INFO "
+		::= { device  3 }
+	 
+	memEntry OBJECT-TYPE
+		SYNTAX memEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " Memory status description table entry "
+		INDEX   { deviceIndex }
+		::= { memTable 1}
+		 		 
+		deviceIndex  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device ID "
+			::= { memEntry 1 }
+	 
+		swapTotal  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Swap total(G) "
+			::= { memEntry 2 }
+			
+		swapFree  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Swap free(G) "
+			::= { memEntry 3 }
+			
+		memTotal  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Mem total(G) "
+			::= { memEntry 4 }
+			
+		memUsed  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Mem used(G) "
+			::= { memEntry 5 }
+			
+		memFree  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Mem free(G) "
+			::= { memEntry 6 }
+			
+		memUsedPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Mem used percent(%) "
+			::= { memEntry 7 }
+	
+	DiskEntry::=
+	    SEQUENCE {
+			deviceIndex  INTEGER,
+			dirName DisplayString,
+			total DisplayString,
+			free DisplayString,
+			usedPerc DisplayString,
+			isWrited INTEGER
+		}	
+		
+	diskTable OBJECT-TYPE
+		SYNTAX SEQUENCE OF DiskEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " DISK INFO "
+		::= { device  4 }
+ 	
+	diskEntry OBJECT-TYPE
+		SYNTAX diskEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " Disk status description table entry "
+		INDEX   { deviceIndex }
+		::= { diskTable 1}
+		
+		deviceIndex  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device ID "
+			::= { diskEntry 1 }
+			
+		dirName  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Disk Dir Name "
+			::= { diskEntry 2 }
+	 
+		total  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Total Size "
+			::= { diskEntry 3 }
+			
+		free  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Free Size "
+			::= { diskEntry 4 }
+			
+		usedPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Disk Used Percent "
+			::= { diskEntry 5 }
+			
+		isWrited  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " 0:is; 1:isn't "
+			::= { diskEntry 6 }
+	
+	NetEntry::=
+		SEQUENCE {
+			deviceIndex  INTEGER,
+			name DisplayString,
+			rxPackets DisplayString,
+			txPackets DisplayString,
+			rxBytes DisplayString,
+			txBytes DisplayString,
+			rxErrors DisplayString,
+			txErrors DisplayString,
+			rxDropped DisplayString,
+			txDropped DisplayString,
+			speed DisplayString,
+			rxBps DisplayString,
+			txBps DisplayString,
+			rxPps DisplayString,
+			txPps DisplayString,
+			rxErrorPerc DisplayString,
+			txErrorPerc DisplayString,
+			rxDroppedPerc DisplayString,
+			txDroppedPerc DisplayString
+ 	    }	
+		
+	netTable OBJECT-TYPE
+		SYNTAX SEQUENCE OF NetEntry
+		MAX-ACCESS not-accessible
+		STATUS current
+		DESCRIPTION " NET INFO "
+		::= { device  5 }
+ 
+		netEntry OBJECT-TYPE
+			SYNTAX netEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION " Net status description table entry "
+			INDEX   { deviceIndex }
+			::= { netTable 1}
+					
+		deviceIndex  OBJECT-TYPE
+			SYNTAX  INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Device ID "
+			::= { netEntry 1 }
+			
+		name  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " Network Name "
+			::= { netEntry 2 }
+	 
+		rxPackets  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxPackets "
+			::= { netEntry 3 }
+			
+		txPackets  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txPackets "
+			::= { netEntry 4 }
+			
+		rxBytes  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxBytes "
+			::= { netEntry 5 }
+			
+		txBytes  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txBytes "
+			::= { netEntry 6 }
+					
+		rxErrors  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxErrors "
+			::= { netEntry 7 }
+					
+		txErrors  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txErrors "
+			::= { netEntry 8 }
+					
+		rxDropped  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxDropped "
+			::= { netEntry 9 }
+					
+		txDropped  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txDropped "
+			::= { netEntry 10 }
+					
+		speed  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " speed "
+			::= { netEntry 11 }
+					
+		rxBps  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxBps "
+			::= { netEntry 12 }
+			
+		txBps  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txBps "
+			::= { netEntry 13 }
+			
+		rxPps  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxPps "
+			::= { netEntry 14 }
+		
+		txPps  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txPps "
+			::= { netEntry 15 }
+			
+		rxErrorPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxErrorPerc "
+			::= { netEntry 16 }
+			
+		txErrorPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txErrorPerc "
+			::= { netEntry 17 }
+			
+		rxDroppedPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " rxDroppedPerc "
+			::= { netEntry 18 }
+			
+		txDroppedPerc  OBJECT-TYPE
+			SYNTAX  DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION " txDroppedPerc "
+			::= { netEntry 19 }
+				
+END

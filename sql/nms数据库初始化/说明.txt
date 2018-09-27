@@ -1,0 +1,100 @@
+初始化数据库过程中的注意点
+一、使用时修改create.sql文件中的表空间和将要导入用户的表空间一致；
+二、 create.sql文件中的procedure pro_driver_Partition存储过程中的表分区文件space_path=修改为正确的路径;
+使用该修改后的存储过程创建语句创建当前表空间文件；搜索create.sql文件中partition by range修改分区名和表空间名称，及分区的范围，使用刚创建的表空间。
+三、导入create.sql文件，导入initdata.sql文件，最后创建job，把sql中的to_date修改为正确的日期，即job下次执行时间最近将到的一个星期六的日期：
+declare   
+      job_id   pls_integer; 
+begin
+  sys.dbms_job.submit(job => job_id,
+                      what => 'pro_driver_partition;',
+                      next_date => to_date('22-12-2012 00:43:23', 'dd-mm-yyyy hh24:mi:ss'),
+                      interval => 'next_day(sysdate,''星期六'')');
+  commit;
+end;
+/
+四、删除过期分区整理中目前需要手工删除过期分区。
+
+五、如果需要初始化监测设置，则需要在初始化数据表添加监测设置数据。
+设置信息表
+insert into DETECTION_SET_INFO (ID, NODE_IP, CHECK_TYPE_ID, CHECK_GAP, CHECK_WAY, CHECK_OUT_TIME, CHECK_MAX_TIMES, PROCESS_IDEN, DETECTION_SET_STATE, PROCESS_FILE, PROCESS_PATH, OID, IS_CONTROL_START, IS_ISSUE_FILE, IS_ISSUED, CONTROL_START_TIME, UPLOAD_GAP, IS_ISSUE, PLAN_CHECK_TIME, GROUP_ID, VIEW_LEVEL, CONTACT_USER_IDS, CREATE_USER_ID, CREATE_USERGROUP_ID, SYSTEM_ID, NODE_GROUPS_ID, NODE_IPS_ID, PROCESS_IDEN_NAME)
+values (450, '10.0.6.242', 1, 15, '1', 0, 3, 'fd', '0', null, null, null, '0', null, null, null, null, null, null, null, 1, '580', 580, null, 192, '446', '182', 'CPU信息');
+报警设置信息表
+insert into DATA_POLICE_RELATION (ID, DETECTION_SET_INFO_ID, METADATA_ID, POLICE_STATE, POLICE_VALUE, POLICE_UNIT, POLICE_SYMBOLS, POLICE_LEVEL, POLICE_SHOW_INFO)
+values (301, 456, 109, '0', '1', null, '>', 99, null);
+
+
+
+
+
+六、为分区准备
+grant connect,resource,dba to nms;
+grant all privileges  TO nms;
+
+create or replace procedure pro_driver_Partition_I is
+C_DATE            VARCHAR2(64);
+tempstr           VARCHAR2(64);
+space_path        varchar2(1000); --存储过程上次执行的时间
+end_date         VARCHAR2(32);--要添加新分区的表
+begin
+
+--获取系统当前年
+select to_char(sysdate, 'yyyy') into C_DATE from dual;
+--select to_char(sysdate+1, 'yyyy') into C_DATE from dual;
+--获取系统当前月
+--select to_char(sysdate+1, 'MM') into C_MONTH from dual;
+--获取系统下一周
+--select to_char(sysdate+7, 'iw') into tempstr from dual;
+select to_char(sysdate, 'iw') into tempstr from dual;
+----tempstr := '44';
+--获取系统当前日
+--select to_char(sysdate+1, 'dd') into C_DAY from dual;
+--获取系统当前时间季度
+--select to_char(sysdate+1, 'q')  into tempstr from dual;
+--获取三个月后的今天日期
+--select add_months(trunc(sysdate+1),3) into end_date from dual;
+--获取下周的第一天
+--select to_char(trunc(sysdate+9,'d'),'yyyy-mm-dd') into end_date from dual;
+select to_char(trunc(sysdate+7,'d'),'yyyy-mm-dd') into end_date from dual;
+----end_date := '2012-12-23';
+--di_2010q4
+--拼写分区名称和分区文件名（相同）
+tempstr := 'di_'||C_DATE||'w'||tempstr;
+space_path := 'D:\oracle\product\10.2.0\db_1\oradata\nmsdata\'||tempstr||'.dbf';
+--到了表空间使用要过期之前，建立新的表空间：
+ pro_createweekspace_I(tempstr,space_path);
+--为表添加新分区和表空间：
+--获取check_type_info表所有已经创建的表，为这些表添加新分区和表空间。
+--select cti.table_name into extendtab from check_type_info cti where cti.crete_state = 1;
+--pro_extendtabspace(tempstr,'to_date('''||end_date||' 00:00:00'',''SYYYY-MM-DD HH24:MI:SS'')');
+--为表添加新分区和表空间：
+--pro_extenddefaulttabspace(tempstr,'to_date('''||end_date||' 00:00:00'',''SYYYY-MM-DD HH24:MI:SS'')');
+
+end pro_driver_Partition_I;
+
+
+create or replace procedure PRO_CREATEWEEKSPACE_I(spaceName IN VARCHAR2,spacePath IN VARCHAR2) is
+space_sql VARCHAR2(5000);
+execParm number;
+proexecinfoid number;
+execption_sql VARCHAR2(5000);
+
+begin
+   execParm := 0;
+ space_sql :='create tablespace '||spaceName||' datafile '''||spacePath||''' size 500M default storage(initial 200M next 20M minextents 1 maxextents unlimited pctincrease 1)';
+    execParm := 1;
+    EXECUTE IMMEDIATE space_sql;
+ --EXECUTE IMMEDIATE 'create tablespace '||spaceName||' datafile '''||spacePath||''' size 50M default
+ --  storage(initial 10M next 10M minextents 1 maxextents unlimited pctincrease 1)';
+  --execParm := 2;
+ --EXCEPTION WHEN OTHERS THEN
+ --   select SEQ_PROEXECINFO.NEXTVAL into proexecinfoid from dual;
+ --   execption_sql := 'insert into PROEXECINFO(ID,proname,param,prodesc) values('||proexecinfoid||',''PRO_CREATEQUTESPACE'','||execParm||','''||to_char(sysdate,'YYYY-MM-DD HH:MI')||spaceName||spacePath||''')';
+--    EXECUTE IMMEDIATE execption_sql;
+--
+   --dbms_output.put_line(sqlerrm);
+--ROLLBACK;
+end PRO_CREATEWEEKSPACE_I;
+--end;
+
+七、修改sequence

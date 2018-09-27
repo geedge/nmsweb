@@ -1,0 +1,18 @@
+select 'truncate table '||table_name||';' from user_tables t where t.table_name like '%MISSION%'
+
+truncate table LOOPMISSION_STATE_TABLE;
+truncate table MISSION_FILE_INFORMATION;
+truncate table MISSION_PARAMETER_DEFAULTS;
+truncate table MISSION_PARAMETER_TABLE1;
+truncate table MISSION_PARAMETER_TABLE2;
+truncate table MISSION_PARAMETER_TABLE3;
+truncate table MISSION_PARAMETER_TABLE4;
+truncate table MISSION_PARAMETER_TABLE5;
+truncate table MISSION_PARAMETER_TABLE6;
+truncate table MISSION_RESULT_TABLE1;
+truncate table MISSION_RESULT_TABLE2;
+truncate table MISSION_RESULT_TABLE3;
+truncate table MISSION_RESULT_TABLE4;
+truncate table MISSION_RESULT_TABLE5;
+truncate table MISSION_RESULT_TABLE6;
+truncate table MISSION_STATE_TABLE;

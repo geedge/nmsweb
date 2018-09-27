@@ -1,0 +1,4 @@
+configPath=/home/snmp/configs
+ip1=10.0.6.247
+ip2=10.0.6.247
+snmp_result_dir=/home/snmp/csv

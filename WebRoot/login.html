@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head><link rel="Shortcut icon" href="images/logo.ico"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>网络管理系统_用户登录</title>
+		<script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/menu.js"></script>
+		<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+html,body {;
+	background: #EBECEB;;
+}
+
+.login {
+	font-size: 14px;
+	margin-left: 10px;
+	width: 200px;
+	height: 155px;
+}
+</style>
+	</head>
+	<script type="text/javascript">  
+	function sub(){
+		var userName=document.getElementById("yhmc").value;
+		var password=document.getElementById("yhmm").value;
+		if(userName==''){
+			//ymPrompt.errorInfo({message:'请输入用户名或密码！',title:'提示',width:250,height:180});
+			alert("请输入用户名或密码");
+			return false;
+		}
+		if(password==''){
+			//ymPrompt.errorInfo({message:'请输入用户编号或密码！',title:'提示',width:250,height:180});
+			alert("请输入用户名或密码");
+			return false;
+		}
+		
+		document.form1.submit();
+			
+	}
+	function enterkey(){
+	    try{	
+	    	var userName=document.getElementById("yhmc").value;
+			var password=document.getElementById("yhmm").value;
+	        var el_keydown=window.event.srcElement;
+	        
+	         if(event.keyCode==13){
+	         	if(el_keydown.id=="yhmc" && el_keydown.value!=''&& password!=''){
+	         		 document.form1.submit();
+	         	}else if(el_keydown.id=="yhmm" && el_keydown.value!=''&& userName!=''){
+	         		 document.form1.submit();
+	         	}else{
+	         		//ymPrompt.errorInfo({message:'请输入用户名或密码！',title:'提示',width:250,height:180});
+	         		alert("请输入用户名或密码");
+					return false;
+	         	}
+	         } 
+	    }catch(e){
+			return ;
+	    }
+}
+$(function(){
+	var wHight = $(window).height();//alert('wHight '+wHight);
+	var dHight = $(document).height();//alert('dHight '+dHight);
+	if(dHight > wHight){//滚动条滚动
+		$(document).scrollTop((dHight-wHight)/2);
+	}
+	$("#yhmc").trigger('focus');
+});
+$(function(){
+	 if(isFirefox=navigator.userAgent.indexOf("Firefox")>0){
+		$(document).keypress(function(e) {  
+		       if(e.which == 13) { 
+		       		sub(); 
+		       }  
+		}); 
+	 }		
+});
+</script>
+	<body style="height: 100%;width: 100%;overflow: hidden;overflow-x: hidden;overflow-y: hidden;font-size: 12px; border: 0px;margin: 0px;padding: 0px; overflow: false;">
+
+		<form action="login!login.do" name="form1" method="post">
+			<!-- 外部表格开始 -->
+			<table width="100%" height="100%" align="center" style="vertical-align: middle">
+				<tr>
+					<td width="55">
+						&nbsp;
+					</td>
+					<td height="750">
+						<div align="center" style="vertical-align: middle">
+							<table cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td>
+										<img src="images/login_web_03.jpg" height="114" />
+									</td>
+									<td rowspan="4" style="background: #999999; width: 4px;"></td>
+								</tr>
+								<tr>
+									<td>
+										<img src="images/login_web_04.jpg" height="157" />
+									</td>
+									<td width="">
+										<div class="login" id="login">
+											<table width="216" height="100" cellpadding="0"
+												cellspacing="0">
+												<tr>
+													<td style="float: left;" colspan="2">
+														<img src="images/login_07.jpg" width="202" />
+													</td>
+												</tr>
+												<tr>
+													<td height="25" colspan="2" style="font-family: '微软雅黑';font-size: 15px">
+														<label style="display:inline-block; width: 65px;">用&nbsp;户&nbsp;名：</label>
+														<input type="text" name="logInInfo.yhmc" title="请输入用户名" id="yhmc" value="" onkeyDown="enterkey();" style="width: 130px;" />
+													</td>
+												</tr>
+												<tr>
+													<td height="25" colspan="2" style="font-family: '微软雅黑';font-size: 15px">
+														<label style="display:inline-block; width: 65px;">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+														<input type="password" name="logInInfo.yhmm" id="yhmm" value="" onkeyDown="enterkey();" style="width: 130px;" />
+													</td>
+												</tr>
+												<tr>
+													<td height="25" colspan="2" style="font-family: '微软雅黑';font-size: 15px">
+														<label style="display:inline-block; width: 65px;">语言：</label>
+														<select name="i18n_lang">
+															<option value="en_US">ENGLISH</option>
+															<option value="zh_CN">简体中文</option>
+															<!-- <option value=""></option> -->
+														</select>
+													</td>
+												</tr>
+												<!-- 
+											<tr>
+												<td width="163"  height="25">验证码：<input type="text" name="验证码" style="width:95px;" /></td>
+												<td width="53" ><img src="images/img.jpg" /></td>
+											</tr>
+											 -->
+												<tr>
+													<td>
+														<table cellpadding="0" cellspacing="0"
+															style="margin-left: 56px;" height="40">
+															<tr>
+																<td width="45">
+																	<img src="images/button1.png" onclick="sub();" />
+																</td>
+																<td width="5">
+																	&nbsp;
+																</td>
+																<td width="45">
+																	<img src="images/button2.png"
+																		onclick="javascript:document.forms['form1'].reset()" />
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="images/login_web_05.jpg" height="134" />
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+					<td width="55">
+						&nbsp;
+					</td>
+				</tr>
+			</table>
+			<!-- 外部表格结束 -->
+		</form>
+	</body>
+	<script>
+//document.getElementById("yhmc").focus();
+</script>
+</html>

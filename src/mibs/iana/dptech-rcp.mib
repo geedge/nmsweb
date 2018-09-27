@@ -1,0 +1,313 @@
+DPTECH-RCP-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS
+            dpRcpManage
+                FROM DPTECH-OID-MIB
+            Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks
+                FROM SNMPv2-SMI
+            OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+                FROM SNMPv2-CONF
+            RowPointer, DateAndTime, DisplayString, RowStatus
+                FROM SNMPv2-TC
+            SnmpTagList, SnmpTagValue
+                FROM SNMP-TARGET-MIB
+            IpAddress
+                FROM RFC1155-SMI
+            PhysAddress
+            	FROM SNMPv2-TC
+            ifEntry
+            	FROM IF-MIB;
+
+--
+-- Node definitions
+--
+--dpRcpManage
+
+--dpRcpManageMib  OBJECT IDENTIFIER ::= { dpRcpManage 1 }
+
+dpRcpTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpRcpEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of rcp managent entries."
+	::= { dpRcpManage 1 }
+
+	dpRcpEntry OBJECT-TYPE
+		SYNTAX DpRcpEntry
+		MAX-ACCESS  not-accessible
+		STATUS	current
+		DESCRIPTION " "
+    INDEX   { dpRcpUserIndex  }
+		::= {dpRcpTable 1}
+
+	DpRcpEntry ::=
+		SEQUENCE {
+			dpRcpUserIndex 	   INTEGER ,
+			dpRcpUserName      DisplayString,
+			dpUserActiveTime   DisplayString,
+			dpUserPutRuleSum   INTEGER
+			}
+
+			dpRcpUserIndex OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpRcpEntry 1 }
+			
+			dpRcpUserName OBJECT-TYPE
+				SYNTAX DisplayString  
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpRcpEntry 2 }
+			
+			dpUserActiveTime OBJECT-TYPE
+				SYNTAX DisplayString   
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpRcpEntry 3 }
+			
+			dpUserPutRuleSum OBJECT-TYPE
+				SYNTAX INTEGER  
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpRcpEntry 4 }
+
+--dpAclParam
+--dpAclParam  OBJECT IDENTIFIER ::= { dpRcpManage 2 }
+		
+dpAclParamTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpAclParamEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of rcp managent entries."
+	::= { dpRcpManage 2 }
+
+
+		dpAclParamEntry OBJECT-TYPE
+			SYNTAX  DpAclParamEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				" "
+			::= {dpAclParamTable 1}
+
+		DpAclParamEntry ::=
+			SEQUENCE {
+				dpAclRuleSort         DisplayString,
+				dpAclMaxRuleNum       INTEGER,
+				dpAclUsedRuleNum      INTEGER,
+				dpAclAbleRuleNum      INTEGER
+			}
+			
+			dpAclRuleSort OBJECT-TYPE
+				SYNTAX DisplayString 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpAclParamEntry 1 }
+
+			dpAclMaxRuleNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpAclParamEntry 2 }
+			
+			dpAclUsedRuleNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpAclParamEntry 3 }
+
+			dpAclAbleRuleNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpAclParamEntry 4 }	
+					
+--dpPortGroupStat
+--dpPortGroupStat  OBJECT IDENTIFIER ::= { dpRcpManage 3 }
+			
+dpPortGroupStatTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpPortGroupStatEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of rcp managent entries."
+	::= { dpRcpManage 3 }
+
+
+		dpPortGroupStatEntry OBJECT-TYPE
+			SYNTAX  DpPortGroupStatEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				" "
+			::= {dpPortGroupStatTable 1}
+
+		DpPortGroupStatEntry ::=
+			SEQUENCE {
+				dpPortGroupId 	     INTEGER,
+				dpPortGroupDesc      DisplayString,
+				dpAgedTime           INTEGER,
+				dpRuleNum            INTEGER,
+				dpTcamRuleCap        INTEGER,
+				dpTcamRuleNum        INTEGER,
+				dpHitSum             INTEGER
+			}
+					
+			dpPortGroupId OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 1 }
+			
+			dpPortGroupDesc OBJECT-TYPE
+				SYNTAX DisplayString 
+				MAX-ACCESS read-write
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 2 }
+
+			dpAgedTime OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 3 }
+			
+			dpRuleNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 4 }
+			
+			dpTcamRuleCap OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 5 }
+			
+			dpTcamRuleNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 6 }
+			
+			dpHitSum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpPortGroupStatEntry 7 }																	
+
+--dpTrustIpAddr
+--dpTrustIpAddr  OBJECT IDENTIFIER ::= { dpRcpManage 4 }
+
+dpTrustIpAddrTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpTrustIpAddrEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of rcp managent entries."
+	::= { dpRcpManage 4 }
+
+		dpTrustIpAddrEntry OBJECT-TYPE
+			SYNTAX  DpTrustIpAddrEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION " "
+      INDEX   { dpTrustIpIndex  }
+			::= {dpTrustIpAddrTable 1}
+
+		DpTrustIpAddrEntry ::=
+			SEQUENCE {
+					dpTrustIpIndex      INTEGER,
+					dpTrustIpAddr 	    IpAddress
+			}
+			
+			dpTrustIpIndex OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpTrustIpAddrEntry 1 }
+
+			dpTrustIpAddr OBJECT-TYPE
+				SYNTAX IpAddress 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpTrustIpAddrEntry 2 }					
+		
+--dpRcpState
+--dpRcpState  OBJECT IDENTIFIER ::= { dpRcpManage 5 }
+
+dpRcpStateTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpRcpStateEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of rcp state entries."
+	::= { dpRcpManage 5 }
+
+		dpRcpStateEntry OBJECT-TYPE
+			SYNTAX  DpRcpStateEntry
+			MAX-ACCESS  not-accessible
+			STATUS	current
+			DESCRIPTION
+				" "
+			::= {dpRcpStateTable 1}
+
+		DpRcpStateEntry ::=
+			SEQUENCE {
+				dpRcpCurState     DisplayString,
+				dpCurSessionNum 	INTEGER
+			}
+			
+			dpRcpCurState OBJECT-TYPE
+				SYNTAX DisplayString 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpRcpStateEntry 1 }
+			
+			dpCurSessionNum OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS read-only
+				STATUS current
+				DESCRIPTION
+					""
+				::= { dpRcpStateEntry 2 }
+			
+END

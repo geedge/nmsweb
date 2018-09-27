@@ -1,0 +1,86 @@
+DPTECH-PACKETFILTER-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS
+            dpPacketFilter
+                FROM DPTECH-OID-MIB
+            OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+                FROM SNMPv2-CONF
+            Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks, IpAddress
+                FROM SNMPv2-SMI
+            RowPointer, DateAndTime, DisplayString, RowStatus
+                FROM SNMPv2-TC
+            SnmpTagList, SnmpTagValue
+                FROM SNMP-TARGET-MIB;
+
+--dpPacketFilterMib  OBJECT IDENTIFIER ::= { dpPacketFilter 1 }
+
+        dpPacketProtocol OBJECT-TYPE
+            SYNTAX     DisplayString(SIZE(0..64))
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The protocol of the packet."
+            ::= { dpPacketFilter 1 }
+
+        dpSrcIp OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The soure ip of this packet. "
+            ::= { dpPacketFilter 2 }
+
+        dpDstIp OBJECT-TYPE
+            SYNTAX     IpAddress
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION " The destination ip of this packet."
+            ::= { dpPacketFilter 3 }
+
+        dpSrcPortOrType OBJECT-TYPE
+            SYNTAX     Integer32 (0..65535)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION " The soure port or type of this packet(According to different protocol)."
+            ::= { dpPacketFilter 4 }
+
+        dpDstPortOrCode OBJECT-TYPE
+            SYNTAX     Integer32 (0..65535)
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION " The destination port or code of this packet(According to different protocol). "
+            ::= { dpPacketFilter 5 }
+            
+       dpPacketInifname OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The ifname where the packet is from."
+            ::= { dpPacketFilter 6 }
+
+        dpPacketOutifname OBJECT-TYPE
+            SYNTAX     DisplayString
+            MAX-ACCESS read-only
+            STATUS     current
+            DESCRIPTION "The ifname where the packet is going to."
+            ::= { dpPacketFilter 7 }
+
+
+dpPacketFilterTraps     OBJECT IDENTIFIER ::= { dpPacketFilter 8 }
+
+	dpPacketFilterDrop NOTIFICATION-TYPE
+        	OBJECTS {dpPacketProtocol, dpSrcIp, dpDstIp, dpSrcPortOrType, dpDstPortOrCode}
+        	STATUS	current
+        	DESCRIPTION
+        		"
+        		The packet is passed.
+        		"
+        	::= { dpPacketFilterTraps 1}
+
+	dpPacketFilterPass  NOTIFICATION-TYPE
+		OBJECTS {dpPacketProtocol,dpSrcIp,dpDstIp, dpSrcPortOrType, dpDstPortOrCode, dpPacketInifname, dpPacketOutifname}
+        	STATUS	current
+        	DESCRIPTION
+        		"
+        		The packet is denied.
+        		"
+        	::= { dpPacketFilterTraps 2}
+END

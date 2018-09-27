@@ -1,0 +1,131 @@
+-- ============================================================================
+-- Copyright (C) 2011 by DPtech Technologies. All rights reserved.
+--
+-- Description: DPtech Login Managent MIB
+--
+-- Reference: DPtech Enterprise MIB
+-- Version: V1.00
+-- History:
+--   V1.00 2011-06-17 created by lifeipeng
+-- ============================================================================
+DPTECH-LOGIN-MANAGENT-MIB DEFINITIONS ::= BEGIN
+
+        IMPORTS
+            dpLoginManagent
+                FROM DPTECH-OID-MIB
+            OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+                FROM SNMPv2-CONF
+            Integer32, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, TimeTicks, IpAddress
+                FROM SNMPv2-SMI
+            RowPointer, DateAndTime, DisplayString, RowStatus
+                FROM SNMPv2-TC
+            SnmpTagList, SnmpTagValue
+                FROM SNMP-TARGET-MIB;
+
+--dpLoginTable
+
+dpLoginTable OBJECT-TYPE
+	SYNTAX	SEQUENCE OF DpLoginEntry
+	MAX-ACCESS  not-accessible
+	STATUS	current
+	DESCRIPTION
+		"A list of login managent entries."
+	::= { dpLoginManagent 1 }
+
+	dpLoginEntry OBJECT-TYPE
+		SYNTAX DpLoginEntry
+		MAX-ACCESS  not-accessible
+		STATUS	current
+		DESCRIPTION " "
+                INDEX { dpLoginIndex  }
+		::= {dpLoginTable 1}
+
+	DpLoginEntry ::=
+			SEQUENCE {
+				dpLoginIndex 	 INTEGER ,
+				dpLoginName      DisplayString,
+				dpLoginIP        IpAddress,
+				dpLoginType      DisplayString,
+				dpOperateModule  DisplayString,  
+				dpOperate        DisplayString,
+				dpOperateResult  INTEGER
+			}
+
+			dpLoginIndex OBJECT-TYPE
+				SYNTAX INTEGER 
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 1 }
+			
+			dpLoginName OBJECT-TYPE
+				SYNTAX DisplayString  
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 2 }
+			
+			dpLoginIP OBJECT-TYPE
+				SYNTAX IpAddress   
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 3 }
+			
+			dpLoginType OBJECT-TYPE
+				SYNTAX DisplayString  
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 4 }
+			
+			dpOperateModule OBJECT-TYPE
+				SYNTAX DisplayString 
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 5 }
+			
+			dpOperate OBJECT-TYPE
+				SYNTAX DisplayString  
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 6 }
+			
+      dpOperateResult OBJECT-TYPE
+				SYNTAX INTEGER {Success(0),Fail(1) } 
+				MAX-ACCESS not-accessible
+				STATUS current
+				DESCRIPTION
+					""
+			::= { dpLoginEntry 7 }
+
+
+--dpLoginManagentTraps
+
+dpLoginManagentTraps  OBJECT IDENTIFIER ::= { dpLoginManagent 2 }
+
+        
+        dpSubmit NOTIFICATION-TYPE
+        	OBJECTS {dpLoginIP ,dpLoginName, dpOperateModule}
+        	STATUS	current
+        	DESCRIPTION
+        		""   
+        	::= { dpLoginManagentTraps 1 }
+        
+        dpSysLog NOTIFICATION-TYPE
+        	OBJECTS {dpLoginIP, dpLoginName, dpLoginType, dpOperateResult, dpOperate}
+        	STATUS	current
+        	DESCRIPTION
+        		""   
+        	::= { dpLoginManagentTraps 2 }
+        	
+END
+   	

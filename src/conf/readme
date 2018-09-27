@@ -1,0 +1,9 @@
+数据库切换说明：
+1、修改jdbc.properties文件中
+	jdbc.drive
+	jdbc.url
+	jdbc.username
+	jdbc.password
+	hibernate.dialect
+2、修改myconfig.properties文件
+	db_type

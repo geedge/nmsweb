@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head><link rel="Shortcut icon" href="favicon.ico"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>网络管理系统_命令参数填写说明</title>
+		<script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/menu.js"></script>
+		<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+html,body {;
+	background: #EBECEB;;
+}
+
+.login {
+	font-size: 14px;
+	margin-left: 10px;
+	width: 200px;
+	height: 155px;
+}
+</style>
+</head>
+	<body>
+		<table cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="background: #999999;" align="center">
+				模板描述：<br />
+				{}是内容块，其中内容均为键值对，键值对间逗号隔开，<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;如：{"backup":"保存文件或目录","backupTo":"备份路径","except":["排除的文件或目录路径"]}；<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;键与值冒号一一对应，<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;如："username":"用户名"；<br />
+				[]是顺序数组，其中数组元素个数不限，元素间逗号隔开，<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;如：["要指定权限的文件或目录","要指定权限的文件或目录"]；<br />
+				""是值，属性名和属性值和元素值都要用双引号括起来，保证数据格式的正确性，<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;所以针对带有英文双引号（""）的配置信息要做转移（\"）处理；<br />
+				;是内容块的分隔符号，多个内容块分号分隔，执行程序将顺序执行。<br />
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

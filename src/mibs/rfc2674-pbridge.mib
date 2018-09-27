@@ -1,0 +1,428 @@
+P-BRIDGE-MIB DEFINITIONS ::= BEGIN
+
+-- =============================================================
+-- MIB for IEEE 802.1p devices
+-- =============================================================
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Counter32, Counter64
+        FROM SNMPv2-SMI
+    TruthValue, TimeInterval, MacAddress, TEXTUAL-CONVENTION
+        FROM SNMPv2-TC
+    MODULE-COMPLIANCE, OBJECT-GROUP
+        FROM SNMPv2-CONF    
+    dot1dBridge
+        FROM BRIDGE-MIB
+    ifEntry, ifIndex
+        FROM IF-MIB 
+        ;
+pBridgeMIB MODULE-IDENTITY
+    LAST-UPDATED "9908250000Z"
+    ORGANIZATION "IETF Bridge MIB Working Group"
+    CONTACT-INFO
+        "       Les Bell
+        Postal: 3Com Europe Ltd.
+                3Com Centre, Boundary Way
+                Hemel Hempstead, Herts. HP2 7YU
+                UK
+         Phone: +44 1442 438025
+         Email: Les_Bell@3Com.com
+
+                Andrew Smith
+        Postal: Extreme Networks
+                3585 Monroe St.
+                Santa Clara CA 95051
+                USA
+         Phone: +1 408 579 2821
+         Email: andrew@extremenetworks.com
+
+                Paul Langille
+        Postal: Newbridge Networks
+                5 Corporate Drive
+                Andover, MA 01810
+                USA
+         Phone: +1 978 691 4665
+         Email: langille@newbridge.com
+
+                Anil Rijhsinghani
+        Postal: Cabletron Systems
+                50 Minuteman Road
+                Andover, MA 01810
+                USA
+         Phone: +1 978 684 1295
+         Email: anil@cabletron.com
+
+                Keith McCloghrie
+        Postal: cisco Systems, Inc.
+                170 West Tasman Drive
+                San Jose, CA 95134-1706
+                USA
+         Phone: +1 408 526 5260
+         Email: kzm@cisco.com"
+
+    DESCRIPTION
+        "The Bridge MIB Extension module for managing Priority
+        and Multicast Filtering, defined by IEEE 802.1D-1998."
+-- revision history
+
+    REVISION     "9908250000Z"
+    DESCRIPTION
+         "Initial version, published as RFC 2674."
+
+    ::= { dot1dBridge 6 }
+
+pBridgeMIBObjects OBJECT IDENTIFIER ::= { pBridgeMIB 1 }
+
+-- =============================================================
+-- Textual Conventions
+-- =============================================================
+
+EnabledStatus ::= TEXTUAL-CONVENTION
+    STATUS      current
+    DESCRIPTION
+        "A simple status value for the object."
+    SYNTAX      INTEGER { enabled(1), disabled(2) }
+
+-- =============================================================
+
+-- =============================================================
+-- groups in the P-BRIDGE MIB
+-- =============================================================
+
+dot1dExtBase    OBJECT IDENTIFIER ::= { pBridgeMIBObjects 1 }
+dot1dPriority   OBJECT IDENTIFIER ::= { pBridgeMIBObjects 2 }
+dot1dGarp       OBJECT IDENTIFIER ::= { pBridgeMIBObjects 3 }
+dot1dGmrp       OBJECT IDENTIFIER ::= { pBridgeMIBObjects 4 }
+
+-- =============================================================
+
+-- =============================================================
+-- the dot1dExtBase group
+-- =============================================================
+
+dot1dDeviceCapabilities OBJECT-TYPE
+    SYNTAX      BITS {
+        dot1dExtendedFilteringServices(0),
+                              -- can perform filtering of
+                              -- individual multicast addresses
+                              -- controlled by GMRP.
+        dot1dTrafficClasses(1),
+                              -- can map user priority to
+                              -- multiple traffic classes.
+
+
+        dot1qStaticEntryIndividualPort(2),
+                              -- dot1qStaticUnicastReceivePort &
+                              -- dot1qStaticMulticastReceivePort
+                              -- can represent non-zero entries.
+        dot1qIVLCapable(3),   -- Independent VLAN Learning.
+        dot1qSVLCapable(4),   -- Shared VLAN Learning.
+        dot1qHybridCapable(5),
+                              -- both IVL & SVL simultaneously.
+        dot1qConfigurablePvidTagging(6),
+                              -- whether the implementation
+                              -- supports the ability to
+                              -- override the default PVID
+                              -- setting and its egress status
+                              -- (VLAN-Tagged or Untagged) on
+                              -- each port.
+        dot1dLocalVlanCapable(7)
+                              -- can support multiple local
+                              -- bridges, outside of the scope
+                              -- of 802.1Q defined VLANs.
+    }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Indicates the optional parts of IEEE 802.1D and 802.1Q
+        that are implemented by this device and are manageable
+        through this MIB.  Capabilities that are allowed on a
+        per-port basis are indicated in dot1dPortCapabilities."
+    REFERENCE
+        "ISO/IEC 15802-3 Section 5.2,
+        IEEE 802.1Q/D11 Section 5.2, 12.10.1.1.3/b/2"
+    ::= { dot1dExtBase 1 }
+
+dot1dTrafficClassesEnabled OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The value true(1) indicates that Traffic Classes are
+        enabled on this bridge.  When false(2), the bridge
+        operates with a single priority level for all traffic."
+    DEFVAL      { true }
+    ::= { dot1dExtBase 2 }
+
+dot1dGmrpStatus OBJECT-TYPE
+    SYNTAX      EnabledStatus
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "The administrative status requested by management for
+        GMRP.  The value enabled(1) indicates that GMRP should
+        be enabled on this device, in all VLANs, on all ports
+        for which it has not been specifically disabled.  When
+        disabled(2), GMRP is disabled, in all VLANs, on all
+        ports and all GMRP packets will be forwarded
+        transparently.  This object affects both Applicant and
+        Registrar state machines.  A transition from disabled(2)
+        to enabled(1) will cause a reset of all GMRP state
+        machines on all ports."
+    DEFVAL      { enabled }
+    ::= { dot1dExtBase 3 }
+
+-- =============================================================
+-- Port Capabilities Table
+-- =============================================================
+
+dot1dPortCapabilitiesTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF Dot1dPortCapabilitiesEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A table that contains capabilities information about
+        every port that is associated with this bridge."
+    ::= { dot1dExtBase 4 }
+
+dot1dPortCapabilitiesEntry OBJECT-TYPE
+    SYNTAX      Dot1dPortCapabilitiesEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A set of capabilities information about this port
+        indexed by dot1dBasePort."
+    AUGMENTS { ifEntry }
+    ::= { dot1dPortCapabilitiesTable 1 }
+
+Dot1dPortCapabilitiesEntry ::=
+    SEQUENCE {
+        dot1dPortCapabilities
+            BITS
+    }
+
+dot1dPortCapabilities OBJECT-TYPE
+    SYNTAX      BITS {
+        dot1qDot1qTagging(0), -- supports 802.1Q VLAN tagging of
+                              -- frames and GVRP.
+        dot1qConfigurableAcceptableFrameTypes(1),
+                              -- allows modified values of
+
+                              -- dot1qPortAcceptableFrameTypes.
+        dot1qIngressFiltering(2)
+                              -- supports the discarding of any
+                              -- frame received on a Port whose
+                              -- VLAN classification does not
+                              -- include that Port in its Member
+                              -- set.
+    }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Indicates the parts of IEEE 802.1D and 802.1Q that are
+        optional on a per-port basis that are implemented by
+        this device and are manageable through this MIB."
+    REFERENCE
+        "ISO/IEC 15802-3 Section 5.2,
+        IEEE 802.1Q/D11 Section 5.2"
+    ::= { dot1dPortCapabilitiesEntry 1 }
+
+-- =============================================================
+-- the dot1dPriority group
+-- =============================================================
+
+-- =============================================================
+-- Port Priority Table
+-- =============================================================
+
+dot1dPortPriorityTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF Dot1dPortPriorityEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A table that contains information about every port that
+        is associated with this transparent bridge."
+    ::= { dot1dPriority 1 }
+
+dot1dPortPriorityEntry OBJECT-TYPE
+    SYNTAX      Dot1dPortPriorityEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A list of Default User Priorities for each port of a
+        transparent bridge.  This is indexed by dot1dBasePort."
+    AUGMENTS { ifEntry }
+    ::= { dot1dPortPriorityTable 1 }
+
+Dot1dPortPriorityEntry ::=
+    SEQUENCE {
+        dot1dPortDefaultUserPriority
+            INTEGER,
+        dot1dPortNumTrafficClasses
+            INTEGER
+    }
+
+dot1dPortDefaultUserPriority OBJECT-TYPE
+    SYNTAX      INTEGER (0..7)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "The default ingress User Priority for this port.  This
+        only has effect on media, such as Ethernet, that do not
+        support native User Priority."
+    DEFVAL  {0}
+    ::= { dot1dPortPriorityEntry 1 }
+
+dot1dPortNumTrafficClasses OBJECT-TYPE
+    SYNTAX      INTEGER (1..8)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The number of egress traffic classes supported on this
+        port.  This object may optionally be read-only."
+    ::= { dot1dPortPriorityEntry 2 }
+
+
+
+-- =============================================================
+-- the dot1dGarp group
+-- =============================================================
+
+-- =============================================================
+-- The GARP Port Table
+-- =============================================================
+
+
+dot1dPortGarpTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF Dot1dPortGarpEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A table of GARP control information about every bridge
+        port.  This is indexed by dot1dBasePort."
+    ::= { dot1dGarp 1 }
+
+dot1dPortGarpEntry OBJECT-TYPE
+    SYNTAX      Dot1dPortGarpEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "GARP control information for a bridge port."
+    AUGMENTS { ifEntry }
+    ::= { dot1dPortGarpTable 1 }
+
+Dot1dPortGarpEntry ::=
+    SEQUENCE {
+        dot1dPortGarpJoinTime
+            TimeInterval,
+        dot1dPortGarpLeaveTime
+            TimeInterval,
+        dot1dPortGarpLeaveAllTime
+            TimeInterval
+    }
+
+dot1dPortGarpJoinTime OBJECT-TYPE
+    SYNTAX      TimeInterval
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "The GARP Join time, in centiseconds."
+    DEFVAL      { 20 }
+    ::= { dot1dPortGarpEntry 1 }
+
+dot1dPortGarpLeaveTime OBJECT-TYPE
+    SYNTAX      TimeInterval
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "The GARP Leave time, in centiseconds."
+    DEFVAL      { 60 }
+    ::= { dot1dPortGarpEntry 2 }
+
+dot1dPortGarpLeaveAllTime OBJECT-TYPE
+    SYNTAX      TimeInterval
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The GARP LeaveAll time, in centiseconds."
+    DEFVAL      { 1000 }
+    ::= { dot1dPortGarpEntry 3 }
+
+-- =============================================================
+-- The GMRP Port Configuration and Status Table
+-- =============================================================
+
+dot1dPortGmrpTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF Dot1dPortGmrpEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "A table of GMRP control and status information about
+        every bridge port.  Augments the dot1dBasePortTable."
+    ::= { dot1dGmrp 1 }
+
+dot1dPortGmrpEntry OBJECT-TYPE
+    SYNTAX      Dot1dPortGmrpEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "GMRP control and status information for a bridge port."
+    AUGMENTS { ifEntry }
+    ::= { dot1dPortGmrpTable 1 }
+
+Dot1dPortGmrpEntry ::=
+    SEQUENCE {
+        dot1dPortGmrpStatus
+            EnabledStatus,
+        dot1dPortGmrpFailedRegistrations
+            Counter32,
+        dot1dPortGmrpLastPduOrigin
+            MacAddress
+    }
+
+dot1dPortGmrpStatus OBJECT-TYPE
+    SYNTAX      EnabledStatus
+    MAX-ACCESS  read-write
+    STATUS      current
+
+
+
+    DESCRIPTION
+        "The administrative state of GMRP operation on this port. The
+        value enabled(1) indicates that GMRP is enabled on this port
+        in all VLANs as long as dot1dGmrpStatus is also enabled(1).
+        A value of disabled(2) indicates that GMRP is disabled on
+        this port in all VLANs: any GMRP packets received will
+        be silently discarded and no GMRP registrations will be
+        propagated from other ports. Setting this to a value of
+        enabled(1) will be stored by the agent but will only take
+        effect on the GMRP protocol operation if dot1dGmrpStatus
+        also indicates the value enabled(1).  This object affects
+        all GMRP Applicant and Registrar state machines on this
+        port.  A transition from disabled(2) to enabled(1) will
+        cause a reset of all GMRP state machines on this port."
+    DEFVAL      { enabled }
+    ::= { dot1dPortGmrpEntry 1 }
+
+dot1dPortGmrpFailedRegistrations OBJECT-TYPE
+    SYNTAX      Counter32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The total number of failed GMRP registrations, for any
+        reason, in all VLANs, on this port."
+    ::= { dot1dPortGmrpEntry 2 }
+
+dot1dPortGmrpLastPduOrigin OBJECT-TYPE
+    SYNTAX      MacAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The Source MAC Address of the last GMRP message
+        received on this port."
+    ::= { dot1dPortGmrpEntry 3 }
+
+
+
+END
+

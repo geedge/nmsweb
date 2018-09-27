@@ -1,0 +1,52 @@
+-- ============================================================================
+-- Copyright (C) 2010 by DPtech Technologies. All rights reserved.
+--
+-- Description: DPtech Product OID MIB
+--
+-- Reference: DPTECH-OID-MIB
+-- Version: V1.00
+-- History:
+--   V1.00 2010-02-21 created by zhaoy
+-- ============================================================================
+DPTECH-PRODUCT-ID-MIB DEFINITIONS ::= BEGIN
+    IMPORTS
+        dpProductId
+            FROM DPTECH-OID-MIB;
+
+dp-IPS2000-GA-EI     	        OBJECT IDENTIFIER ::= { dpProductId 10101 }
+
+dp-IPS2000-GE-N     	        OBJECT IDENTIFIER ::= { dpProductId 10102 }
+
+dp-IPS2000-TGM-N   	        OBJECT IDENTIFIER ::= { dpProductId 10103 }
+
+dp-IPS2000-GA-N     	        OBJECT IDENTIFIER ::= { dpProductId 10104 }
+
+dp-IPS2000-ME-N        	        OBJECT IDENTIFIER ::= { dpProductId 10105 }
+
+dp-IPS2000-GM-N        	        OBJECT IDENTIFIER ::= { dpProductId 10106 }
+
+dp-IPS2000-GS-N	                OBJECT IDENTIFIER ::= { dpProductId 10107 }
+
+dp-IPS2000-MA-N	                OBJECT IDENTIFIER ::= { dpProductId 10108 }
+
+dp-UAG3000-MA       	        OBJECT IDENTIFIER ::= { dpProductId 10201 }
+
+dp-UAG3000-MS        	        OBJECT IDENTIFIER ::= { dpProductId 10202 }
+
+dp-UAG3000-GA	                OBJECT IDENTIFIER ::= { dpProductId 10203 }
+
+dp-UAG3000-MC	                OBJECT IDENTIFIER ::= { dpProductId 10204 }
+
+dp-UAG3000-MM	                OBJECT IDENTIFIER ::= { dpProductId 10205 }
+
+--dp-UAG3000-MS	                OBJECT IDENTIFIER ::= { dpProductId 10206 }
+
+dp-UAG3000-GE	                OBJECT IDENTIFIER ::= { dpProductId 10207 }
+
+dp-FW1000-GE-N	                OBJECT IDENTIFIER ::= { dpProductId 10301 }
+
+dp-FW1000-GS-N	                OBJECT IDENTIFIER ::= { dpProductId 10302 }
+
+dp-FW1000-MA-N	                OBJECT IDENTIFIER ::= { dpProductId 10303 }
+
+END

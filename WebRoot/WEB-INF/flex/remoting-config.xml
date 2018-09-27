@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service" 
+    class="flex.messaging.services.RemotingService">
+
+    <adapters>
+        <adapter-definition id="java-object" class="flex.messaging.services.remoting.adapters.JavaAdapter" default="true"/>
+    </adapters>
+	<destination id="topoShow">
+		<properties>
+			<source>
+				nis.nms.web.actions.nodePosition.TopoShow
+			</source>
+		</properties>
+	</destination>
+    <default-channels>
+        <channel ref="my-amf"/>
+    </default-channels>
+
+</service>

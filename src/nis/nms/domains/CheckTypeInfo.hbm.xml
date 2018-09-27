@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="nis.nms.domains.CheckTypeInfo" table="CHECK_TYPE_INFO">
+        <id name="id" type="java.lang.Long">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="nis.nms.persistence.SequenceGenerator" >
+            	<param name="sequence">seq_check_type_info</param>
+            </generator>
+        </id>
+        <property name="checkTypeName" type="java.lang.String">
+            <column name="CHECK_TYPE_NAME" length="64" />
+        </property>
+        <property name="checkTypeName1" type="java.lang.String">
+            <column name="CHECK_TYPE_NAME1" length="64" />
+        </property>
+        <property name="checkParamValue" type="java.lang.String">
+            <column name="CHECK_PARAM_VALUE" length="64" />
+        </property>
+        <property name="checkRemark" type="java.lang.String">
+            <column name="CHECK_REMARK" length="200" />
+        </property>
+        <property name="tableName" type="java.lang.String">
+            <column name="TABLE_NAME" length="50" />
+        </property>
+        <property name="tableComments" type="java.lang.String">
+            <column name="TABLE_DESC" length="50" />
+        </property>
+        <property name="creteState" type="java.lang.String">
+            <column name="CRETE_STATE" length="1" />
+        </property>
+        <property name="isSchedule" type="java.lang.String">
+            <column name="IS_SCHEDULE" length="1" />
+        </property>
+        <property name="createTime" type="java.util.Date">
+            <column name="CREATE_TIME" length="7" />
+        </property>
+        <property name="viewLevel" type="java.lang.Long">
+            <column name="VIEW_LEVEL" precision="22" scale="0" />
+        </property>
+        <property name="systemId" type="java.lang.Long">
+            <column name="SYSTEM_ID" precision="22" scale="0" />
+        </property>
+        <property name="groupId" type="java.lang.Long">
+            <column name="GROUP_ID" precision="22" scale="0" />
+        </property>
+        <property name="userId" type="java.lang.Long">
+            <column name="USER_ID" precision="22" scale="0" />
+        </property>
+        <property name="isSnmp" type="java.lang.Long">
+            <column name="IS_SNMP" precision="22" scale="0" />
+        </property>
+        <property name="snmpOID" type="java.lang.String">
+            <column name="OID" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

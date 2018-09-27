@@ -1,0 +1,29 @@
+DPTECH-OID-MIB DEFINITIONS ::= BEGIN
+    IMPORTS
+        enterprises
+            FROM RFC1155-SMI;
+
+dptech MODULE-IDENTITY 
+    LAST-UPDATED "1101140000Z"
+    ORGANIZATION " dpOid Working"
+    CONTACT-INFO
+            "                   
+              This MIB will maintain  DPtech products .
+            "
+    DESCRIPTION
+            " The MIB module for dpDevice entities . "
+    REVISION      "1101140000Z" 
+    DESCRIPTION
+            " The initial revision of this MIB module was published as dp dev ."
+    ::= { enterprises 31648 }
+    
+    dpProductId               OBJECT IDENTIFIER ::= { dptech 1 }
+    dpEntityVendorTypeOID     OBJECT IDENTIFIER ::= { dptech 2 }
+    dpSystem                  OBJECT IDENTIFIER ::= { dptech 3 }
+    dpNetwork                 OBJECT IDENTIFIER ::= { dptech 4 }
+    dpPacketFilter            OBJECT IDENTIFIER ::= { dptech 5 }
+    dpDevice                  OBJECT IDENTIFIER ::= { dptech 6 }
+    dpLoginManagent           OBJECT IDENTIFIER ::= { dptech 7 }
+    dpRcpManage               OBJECT IDENTIFIER ::= { dptech 8 }
+
+END
