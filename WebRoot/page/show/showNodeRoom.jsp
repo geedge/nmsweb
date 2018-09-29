@@ -25,6 +25,8 @@
 			type="text/css"></link>
 		<script type="text/javascript"
 			src="<c:url value='/js/jquery-easyui-1.1.2/jquery.easyui.min.js' />"></script>
+		<script type="text/javascript"
+			src="<c:url value='/js/jquery-easyui-1.1.2/layer.js' />"></script>
 		<style>
 body {
 	background-image: url("${pageContext.request.contextPath}/images/show/bg.jpg");
@@ -224,9 +226,9 @@ body {
 						 if(textStatus == "success" && (data!= null && data!= "" )){
 						 	$("#nodeBoxs").html("");
 							 var t =$("#nodeBox").dialog("options").title;
-						 	$("#nodeBox").dialog("setTitle", params[1]);
+							$("#nodeBox").dialog("setTitle", params[1]);
 						 	$("#nodeBox").dialog("open"); 
-						 	
+						 
 						 	var length = $(data).length;
 						 	var raphaelBox = Raphael("nodeBoxs",boxWidth,boxHeight);
 						 	//raphaelBox.rect(0,0,boxWidth,boxHeight).attr({'stroke-width':1,stroke: "#FFFFFF", fill: "#FBFBEA"});

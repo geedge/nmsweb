@@ -195,7 +195,7 @@ body {
 	     	}
 	     	
 	     }
-	     with (oSon){  
+	     with (oSon){
 		      innerHTML = info;  
 		      style.display = "block";  
 			if(navigator.userAgent.indexOf("MSIE")>0) {  
@@ -207,6 +207,12 @@ body {
 		        y = e.clientY;
 				  style.left = x + window.document.body.scrollLeft-200 ;  
 			      style.top =  y + window.document.body.scrollTop-50;  
+   			}else if(navigator.userAgent.indexOf("Chrome")>0){
+   				var e = event ? event : window.event;
+		        x = e.clientX;
+		        y = e.clientY;
+				  style.left = x + window.document.body.scrollLeft-200 ;  
+			      style.top =  y + window.document.body.scrollTop-50;
    			}		      
 	     	}  
     	} 

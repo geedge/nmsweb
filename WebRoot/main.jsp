@@ -220,7 +220,7 @@ $(function(){
 		   					var name=$("alarm_level",this).text();//alert("pass:name"+name);
 							var urlStr=$("url",this).text();//alert("pass:urlStr"+urlStr);
 							var count=$("count",this).text(); //alert("count："+count);
-							var msgList="<a  target='I3' title='"+name+"("+count+")"+"' href='"+urlStr+"' ><li style='margin-left: 5px;'>"+name+"<font color='red'>("+count+")</font></a>";
+							var msgList="<a onclick='warnLink(this)' target='I3' title='"+name+"("+count+")"+"' href='"+urlStr+"' ><li style='margin-left: 5px;'>"+name+"<font color='red'>("+count+")</font></a>";
 							$("#msgTable").append("<tr><td>"+msgList+"<td></tr>");
 		   				})	
 			  		}
@@ -378,6 +378,39 @@ $(function(){
 			objA.attr("href",val+"&addr="+url);
 		});
 		
+		var a_warn;
+		
+		$(function(){
+			$("li > a").click(function(){
+				var a_href=$(this).prop("href");
+				if(a_href != "javascript:;"){
+					$("li > a").removeProp("style");
+					$(this).prop("style","background-color:#F3F3F8;");
+					if(a_warn!=null&&a_warn!=undefined){
+						$(a_warn).removeProp("style");
+						var text=$(a_warn).children("font").first().html();
+						$(a_warn).html(text);
+						a_warn=null;
+						console.log(text);
+					}
+					
+					
+				}
+			});	
+			
+		});
+		
+		function warnLink(obj){
+			
+			a_warn=obj;
+			$("li > a").removeProp("style");
+			var text=$(obj).html();
+			$(obj).html("<font color='black'>"+text+"</font>");
+			$(obj).prop("style","background-color:#F3F3F8;");
+			
+		}
+		
+		
 </script>
 <style type="text/css">	
 html, body {
@@ -450,7 +483,7 @@ html, body {
                 <li><a href="<c:url value='/login!systemSelect.do?SytemChange=yes'/>">i18n_main.text.systemSelect_n81i&nbsp;&nbsp;|</a></li>
                 <%-- <li><a href="<c:url value='/main.jsp?i18n_lang=zh_CN'/>">简体中文&nbsp;&nbsp;|</a></li> 
                 <li><a href="<c:url value='/main.jsp?i18n_lang=en_US'/>">ENGLISH&nbsp;&nbsp;|</a></li> --%>
-                <li>
+                <li <%=!"ALL".equals(systemname)?"style='display:none'":"" %>>
                 	<!-- <a href="<c:url value="/authentication/identificat.do?action=toTargetSys"/>">To Grafana &nbsp;&nbsp;|</a> -->
                 	<a href="<c:url value='/authentication/identificat.do?action=toTargetSys'/>" id="toTarget" target='_blank'>To Grafana &nbsp;&nbsp;|<a/>
                 </li>
