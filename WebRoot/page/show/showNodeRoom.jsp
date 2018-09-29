@@ -224,7 +224,7 @@ body {
 						 if(textStatus == "success" && (data!= null && data!= "" )){
 						 	$("#nodeBoxs").html("");
 							 var t =$("#nodeBox").dialog("options").title;
-						 	/* $("#nodeBox").dialog("setTitle", params[1]);
+						 	$("#nodeBox").dialog("setTitle", params[1]);
 						 	$("#nodeBox").dialog("open"); 
 						 	
 						 	var length = $(data).length;
