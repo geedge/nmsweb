@@ -99,7 +99,7 @@ public class HibernateGeneralDaoImpl<T> extends HibernateDaoSupport implements H
 				txSession.flush();
 				tx.commit();
 				txFlag = false;
-				txSession.clear();
+//				txSession.clear();
 				tx = null;
 			}
 		} catch (Exception e) {
