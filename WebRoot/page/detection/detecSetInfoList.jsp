@@ -448,7 +448,7 @@
 							&nbsp;
 				</div>
 				<div class="box_2">
-				<input type="button" class=btn3_mouseout
+				<!-- <input type="button" class=btn3_mouseout
 									onmouseover="this.className='btn3_mouseover'"
 									onmouseout="this.className='btn3_mouseout'"
 									onmousedown="this.className='btn3_mousedown'"
@@ -464,14 +464,15 @@
 									onmousedown="this.className='btn3_mousedown'"
 									onmouseup="this.className='btn3_mouseup'"
 									onclick="javascript:importXls();" value="i18n_dsil.button.importXls_n81i"/>
-									&nbsp;
+									&nbsp;-->
+									
 								<input type="button" class=btn3_mouseout
 									onmouseover="this.className='btn3_mouseover'"
 									onmouseout="this.className='btn3_mouseout'"
 									onmousedown="this.className='btn3_mousedown'"
 									onmouseup="this.className='btn3_mouseup'"
-									onclick="javascript:showDiv();" value="i18n_dsil.button.showDiv_n81i"/>
-				<br/>
+									onclick="javascript:showDiv();" value="i18n_dsil.button.showDiv_n81i" style="float: right"/>	
+				<br/> 
 				<div style="float: left">
 					<jsp:include page="/include/include.jsp" />	
 					</div>				

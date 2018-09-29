@@ -450,7 +450,6 @@
 											if(type == 9){
 												if(da[3]!=null && da[3]==0){//服务器/pc
 													td1 ="<input id='nodeIds' name='nodeCheckBoxName' class='alldisabled' type='checkbox' disabled='disabled' value='"+da[0]+"'/>"+index;
-													tit="这特么是服务器！";
 												}else if(da[3]!=null && da[3]==1 ){//交换机
 													td1 ="<input id='nodeIds' name='nodeCheckBoxName' type='checkbox' value='"+da[0]+"' checked />"+index;
 												}

@@ -1,9 +1,12 @@
 package nis.nms.web.actions.sysManage;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import nis.nms.core.Constants;
 import nis.nms.core.Resource;
 import nis.nms.domains.GorupSystemTable;
 import nis.nms.domains.NodePosition;
@@ -12,6 +15,7 @@ import nis.nms.domains.NodegroupTable;
 import nis.nms.domains.SystemTable;
 import nis.nms.domains.XtJsJbxx;
 import nis.nms.domains.XtYhJbxx;
+import nis.nms.domains.XtYhJsIndex;
 import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
 import nis.nms.util.IpCovert;
@@ -269,6 +273,7 @@ public class SystemManageAction  extends BaseAction{
 	//添加业务系统
 	public String addSystemInfo(){
 		try{
+			commonService.beginTransaction();
 			List list =null;
 			/*List list = this.commonService.find("from SystemTable where systemName=?", system.getSystemName());
 			if(list!=null && list.size()>0){
@@ -297,6 +302,19 @@ public class SystemManageAction  extends BaseAction{
 			//将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "system_table", "INSERT", system.getSystemId());
 			
+			//2018-09-28新增，创建业务系统时，创建同名用户组，并将该用户组权限赋给nationRole用户
+			XtJsJbxx role=new XtJsJbxx();
+			role.setCtime(system.getSystemCreatetime());
+			role.setZxbz("0");
+			role.setType(1l);
+			role.setJsbh(commonService.getSequenceValue("SEQ_XT_JS_JBXX"));
+			role.setJsmc(system.getSystemName());
+			role.setJsms(system.getSystemDesc());
+			commonService.save(role);
+			
+			//将添加操作写到操作日志中
+			this.addDBOperationRpt(commonService, "xt_js_jbxx", "INSERT", system.getSystemId());
+			
 			//保存用户组到关联表
 			if(mkid!=null && !mkid.equals("")){
 				String[] sMk = mkid.split(",");
@@ -307,7 +325,33 @@ public class SystemManageAction  extends BaseAction{
 						groupSys.setUserGroupId(Long.parseLong(sMk[i].trim()));
 						this.commonService.save(groupSys);
 					}
+					GorupSystemTable groupSys= new GorupSystemTable();
+					groupSys.setSystemId(system.getSystemId());
+					groupSys.setUserGroupId(role.getJsbh());
+					this.commonService.save(groupSys);
 			    }
+			}else{
+				GorupSystemTable groupSys= new GorupSystemTable();
+				groupSys.setSystemId(system.getSystemId());
+				groupSys.setUserGroupId(role.getJsbh());
+				this.commonService.save(groupSys);
+			}
+			
+			//获取角色为nationoRole的用户
+			String sql="select yhbh,yhid from xt_yh_jbxx where yhbh in(select yhbh from xt_yh_js_index where jsbh="+Constants.NATION_ROLE+") ";
+			List<Object[]> users = commonService.executeSQL(sql);
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			for (Object[] user : users) {
+				XtYhJsIndex xtYhJsIndex=new XtYhJsIndex();
+				xtYhJsIndex.setCtime(role.getCtime());
+				xtYhJsIndex.setId(commonService.getSequenceValue("SEQ_XT_YH_JS_INDEX"));
+				xtYhJsIndex.setJsbh(role.getJsbh());
+				xtYhJsIndex.setType(role.getType());
+				xtYhJsIndex.setYhbh((String)user[0]);
+				xtYhJsIndex.setYhId(((BigDecimal)user[1]).longValue());
+				
+				commonService.save(xtYhJsIndex);
 			}
 			
 			//拓扑图的数据维护
@@ -335,7 +379,9 @@ public class SystemManageAction  extends BaseAction{
 			}else{
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.success_n81i');this.location='systemManage.do?action=query'</script>");
 			}
+			commonService.commit();
 		}catch (Exception e){
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.faild_n81i');" +
@@ -384,6 +430,7 @@ public class SystemManageAction  extends BaseAction{
 	//修改业务系统
 	public String updateSystemInfo(){
 		try{
+			commonService.beginTransaction();
 			/*List list = this.commonService.find(
 					"from SystemTable where systemName=? and systemId<>?",
 					system.getSystemName(), system.getSystemId());
@@ -429,7 +476,9 @@ public class SystemManageAction  extends BaseAction{
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.success_n81i');" +
 					"this.location='systemManage.do?action=query&pageNo=" + pageNo +
 					"&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		}catch (Exception e){
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.faild_n81i');" +
@@ -443,6 +492,7 @@ public class SystemManageAction  extends BaseAction{
 	//停用业务系统
 	public String stopSystemInfo(){
 		try{
+			commonService.beginTransaction();
 			if(ids!=null && ids.length>0){
 				for(int i=0; i<ids.length; i++){
 					List sysList = this.commonService.find(
@@ -465,7 +515,9 @@ public class SystemManageAction  extends BaseAction{
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.success_n81i');" +
 					"this.location='systemManage.do?action=query&pageNo=" + pageNo +
 					"&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		}catch (Exception e){ 
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.faild_n81i');" +
@@ -478,6 +530,7 @@ public class SystemManageAction  extends BaseAction{
 	//启用业务系统
 	public String startSystemInfo(){
 		try{
+			commonService.beginTransaction();
 			if(ids!=null && ids.length>0){
 				for(int i=0; i<ids.length; i++){
 					this.commonService.updateByHql(
@@ -491,7 +544,9 @@ public class SystemManageAction  extends BaseAction{
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.success_n81i');" +
 					"this.location='systemManage.do?action=query&pageNo=" + pageNo +
 					"&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		}catch (Exception e){ 
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SystemManageAction.ajaxCheck.faild_n81i');" +

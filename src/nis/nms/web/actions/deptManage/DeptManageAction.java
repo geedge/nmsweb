@@ -85,6 +85,7 @@ public class DeptManageAction extends BaseAction {
 	// 进行修改模块信息操作
 	public void update() {
 		try {
+			commonService.beginTransaction();
 			if(dept.getDeptid()!=null && !dept.getDeptid().toString().equals("1")){
 				if(dept.getDeptstate()!=null){
 					if(dept.getDeptstate().equals("1")){//置为无效，则其下部门全部职位无效
@@ -128,10 +129,12 @@ public class DeptManageAction extends BaseAction {
 					}
 				}
 			}
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.success_n81i');this.location='deptManage!execute.do?action=queryDeptInfo'</script>");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.faild_n81i');this.location='deptManage!execute.do?action=queryDeptInfo'</script>");
 		}
 	}
@@ -139,6 +142,7 @@ public class DeptManageAction extends BaseAction {
 	// 添加模块信息操作
 	public void add() {
 		try {
+			commonService.beginTransaction();
 			TableDepartment dptDepartment = new TableDepartment();
 			dptDepartment.setDeptname(dept.getDeptname());
 			dptDepartment.setDeptstate(dept.getDeptstate());
@@ -151,10 +155,12 @@ public class DeptManageAction extends BaseAction {
 			this.commonService.save(dptDepartment);
 			// 将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "TABLEDEPARTMENT", "INSERT",dptDepartment.getDeptid());
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.success_n81i');this.location='deptManage!execute.do?action=queryDeptInfo'</script>");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.faild_n81i');this.location='deptManage!execute.do?action=queryDeptInfo'</script>");
 		}
 	}

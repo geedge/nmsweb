@@ -192,6 +192,7 @@ public class BoxSetAction extends BaseAction {
 	public String addBoxInfo(){
 		List list = null;
 		try {
+			commonService.beginTransaction();
 			//判断数据是否存在
 			/*list = this.commonService.find("from NodeBoxTable where ispn=?",nodeBox.getIspn());
 			if(list!=null && list.size()>0){
@@ -230,7 +231,9 @@ public class BoxSetAction extends BaseAction {
 				String str= "<script type=\"text/javascript\">alert('i18n_BoxSetAction.queryBoxInfo.success_n81i');this.location='boxSet.do?action=query&roomIspn="+roomIspn+"&roomid="+roomid+"'</script>";
 				outHtmlString(str);
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			this.outHtmlString("<script>alert('i18n_BoxSetAction.queryBoxInfo.addBoxFaild_n81i');history.back();</script>");
 			return null;
@@ -281,6 +284,7 @@ public class BoxSetAction extends BaseAction {
 	 */
 	public String doUpdBox(){
 		try {
+			commonService.beginTransaction();
 			List list =null;
 			/*List list = this.commonService.find("from NodeBoxTable where ispn='"+nodeBox.getIspn()+"' and nodeBoxId <> "+nodeBox.getNodeBoxId());
 			if (list != null && list.size() > 0) {
@@ -352,7 +356,9 @@ public class BoxSetAction extends BaseAction {
 			
 			this.commonService.update(nbt);
 			this.getRequest().setAttribute("MSG", 1);
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			this.outHtmlString("<script>alert('i18n_BoxSetAction.queryBoxInfo.updateFaild_n81i');history.back();</script>");
 			return null;
@@ -365,6 +371,7 @@ public class BoxSetAction extends BaseAction {
 	public String delBoxInfo(){
 		try {
 			if(ids!=null && ids.length>0){
+				commonService.beginTransaction();
 				for(Long id : ids){
 					List list = this.commonService.find(
 							"from NodeLatticeTable where nodeBoxId=? and nodeSeqId is not null", id);
@@ -379,8 +386,10 @@ public class BoxSetAction extends BaseAction {
 				//删除记录
 				this.commonService.updateBatchBySql("delete from NODE_BOX_TABLE where BOX_ID=?", Arrays.asList(ids));
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_BoxSetAction.queryBoxInfo.success_n81i');this.location='boxSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"&roomid="+roomid+"&roomIspn="+roomIspn+"'</script>");
+				commonService.commit();
 			}
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			this.outHtmlString("<script>alert('i18n_BoxSetAction.queryBoxInfo.deleteFaild_n81i');history.back();</script>");
 			return null;
@@ -642,6 +651,7 @@ public class BoxSetAction extends BaseAction {
 	private String saveNode(NodeBoxTableVo vo) {
 		String desc = "";
 		try {
+			commonService.beginTransaction();
 			// 保存节点信息
 			NodeBoxTable nodeT = new NodeBoxTable();
 			nodeT.setIspn(vo.getIspn());
@@ -698,7 +708,9 @@ public class BoxSetAction extends BaseAction {
 									nodeT.getNodeBoxId(), nodeT.getRoomIspn(),
 									nodeT.getRoomRowPosition(), nodeT
 									.getRoomColPosition());
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc = getI18nText("i18n_BoxSetAction.queryBoxInfo.nodeInfoErr_n81i");
 		}

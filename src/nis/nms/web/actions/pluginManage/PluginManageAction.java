@@ -355,6 +355,7 @@ public class PluginManageAction extends BaseAction {
 
 	public String doUpdatePlugin() throws Exception {
 		try {
+			commonService.beginTransaction();
 			PluginInfo info = (PluginInfo) commonService.get(PluginInfo.class, pluginInfo.getId());
 			info.setUpdateTime(new Date());
 			info.setUpdateUserId(getUserID());
@@ -389,7 +390,9 @@ public class PluginManageAction extends BaseAction {
 			} else {
 				commonService.saveOrUpdate(info);
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_PluginManageAction.downloadPlugin.faild_n81i');this.location='pluginManage.do?action=queryInfo&pageNo="

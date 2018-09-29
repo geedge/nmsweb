@@ -2512,6 +2512,7 @@ public class SwitchDetectionAction extends BaseAction {
 
 	public void addSpecialDeviceConfig() {
 		try {
+			commonService.beginTransaction();
 			if (StringUtils.isNotBlank(seqId) && rootDevice != null && deviceConfigList.size() > 0) {
 				// 第一步：配置之前，先从node_figure_info表里删除seqId的相应配置
 				this.commonService.delete(NodeFigureInfo.class, "seqid", Long.parseLong(seqId));
@@ -2562,9 +2563,11 @@ public class SwitchDetectionAction extends BaseAction {
 					}
 				}
 			}
+			commonService.commit();
 			outHtmlString(
 					"<script type=\"text/javascript\">alert(\"i18n_SwitchDetectionAction.emportXls.configSuccess_n81i\");this.location='switchDetection.do?action=toConfigSpecialDevice'</script>");
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("Get subdevice of device model " + deviceBrandTypeCode + " exception", e);
 		}
 	}
@@ -2723,6 +2726,7 @@ public class SwitchDetectionAction extends BaseAction {
 	private void configAndSaveNodeFigureInfo(List<DeviceInfo> devConfigList, Date createDate, Long nodePid,
 			String devParShowIndex, String parDevCode, String posiIndex, Long parX, Long parY) {
 		try {
+			commonService.beginTransaction();
 			if (devConfigList != null && devConfigList.size() > 0 && StringUtils.isNotBlank(devParShowIndex)
 					&& StringUtils.isNotBlank(parDevCode) && nodePid != null && createDate != null) {
 
@@ -2750,7 +2754,9 @@ public class SwitchDetectionAction extends BaseAction {
 					}
 				}
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("Recursive generation of nodeFigureInfo records exception", e);
 		}
 	}

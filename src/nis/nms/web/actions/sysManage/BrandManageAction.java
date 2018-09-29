@@ -115,13 +115,16 @@ public class BrandManageAction extends BaseAction {
 	//添加品牌信息操作
 	public String addBrand() {
 		try {
+			commonService.beginTransaction();
 			if(brand!=null){
 				this.commonService.save(brand);
 				// 将添加操作写到操作日志中
 				this.addDBOperationRpt(commonService, "Brand", "INSERT",brand.getId());
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_BrandManageAction.addBrand.success_n81i');this.location='brandManage.do?action=queryBrandInfo'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_BrandManageAction.addBrand.faild_n81i');this.location='brandManage.do?action=queryBrandInfo'</script>");
 		}
@@ -147,6 +150,7 @@ public class BrandManageAction extends BaseAction {
 	// 进行修改品牌信息操作
 	public String updateBrand() {
 		try {
+			commonService.beginTransaction();
 			Brand brandForUpdate = (Brand) commonService.get(Brand.class, brand.getId());
 			brandForUpdate.setBrandDesc(brand.getBrandDesc());
 			brandForUpdate.setBrandName(brand.getBrandName());
@@ -155,8 +159,10 @@ public class BrandManageAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "Brand", "UPDATE",brandForUpdate.getId());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_BrandManageAction.addBrand.success_n81i');this.location='brandManage.do?action=queryBrandInfo&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
+			commonService.commit();
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_BrandManageAction.addBrand.faild_n81i');this.location='brandManage.do?action=queryBrandInfo&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 			return null;

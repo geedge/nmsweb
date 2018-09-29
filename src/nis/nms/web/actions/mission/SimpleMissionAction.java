@@ -293,6 +293,7 @@ public class SimpleMissionAction  extends BaseAction{
 	@SuppressWarnings("static-access")
 	private String addMissionParameter1(){
 		try {
+			commonService.beginTransaction();
 			XtYhJbxx user = this.getUser();
 			//保存上传文件
 			String uploadFilePath = getConfigValue("uploadServerPath");
@@ -343,7 +344,9 @@ public class SimpleMissionAction  extends BaseAction{
 				MSG = "i18n_SimpleMissionAction.check.message1_n81i";
 				outHtmlString("<script type=\"text/javascript\">alert('"+MSG+"');this.history.go(-1);</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 		}
 		return null;
@@ -351,6 +354,7 @@ public class SimpleMissionAction  extends BaseAction{
 	//配置验证任务添加方法
 	private String addMissionParameter2(){
 		try {
+			commonService.beginTransaction();
 			XtYhJbxx user = this.getUser();
 			
 //			String uploadFilePath = getConfigValue("uploadServerPath");
@@ -410,7 +414,9 @@ public class SimpleMissionAction  extends BaseAction{
 				MSG = "i18n_SimpleMissionAction.check.message2_n81i";
 				outHtmlString("<script type=\"text/javascript\">alert('"+MSG+"');this.history.go(-1);</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 		}
 		return null;

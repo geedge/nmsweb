@@ -205,6 +205,7 @@ public class NodeManageAction extends BaseAction {
 			}
 			//IP在同一节点组下不重复
 			if(!groupNodeIpIsRepeat(nodeTable.getNodeIp(),mkid)){
+				commonService.beginTransaction();
 				NodegroupTable group = (NodegroupTable) this.commonService.get(NodegroupTable.class, mkid);
 				if (group != null ) {
 					//处理节点类型与节点U位，为了保证拓扑图的正常显示
@@ -260,19 +261,22 @@ public class NodeManageAction extends BaseAction {
 							}
 						}
 					}
-					
+					// 将添加操作写到操作日志中
+					this.addDBOperationRpt(commonService, "node_table", "INSERT",nodeTable.getNodeId());
+					commonService.commit();
 					if(new Long(1).equals(group.getIsValid())){		//节点组有效
 						this.sendNodeAndGroupId(nodeTable.getGroupId(), nodeTable.getNodeId(),commonService);	//通知NMSServer更新节点组的监控信息
 					}
-					// 将添加操作写到操作日志中
-					this.addDBOperationRpt(commonService, "node_table", "INSERT",nodeTable.getNodeId());
+					
 				}
 				this.getRequest().setAttribute("MSG", 1);
+				
 			}else{
 				this.outHtmlString("<script>alert('i18n_NodeManageAction.addNodeInfo.nodeGroupHadIp_n81i');history.back();</script>");
 				return null;
 			}
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			return "error";
 		}
@@ -542,6 +546,7 @@ public class NodeManageAction extends BaseAction {
 			}
 			//IP在同一节点组下不重复
 			if(!groupNodeIpIsRepeat(nodeTable.getNodeIp(),mkid,nodeTable.getNodeId())){	
+				commonService.beginTransaction();
 				NodeTable nt = (NodeTable) this.commonService.get(NodeTable.class, nodeTable.getNodeId());
 				if (nt != null ) {
 					boolean flag =false;
@@ -588,22 +593,26 @@ public class NodeManageAction extends BaseAction {
 					}
 	
 					this.commonService.update(nt);
+					// 将更新操作写到操作日志中
+					this.addDBOperationRpt(commonService, "node_table", "UPDATE",
+							nodeTable.getNodeId());
+					commonService.commit();
 					if(flag){
 						if(new Long(1).equals(group.getIsValid())){		//节点组有效
 							this.sendNodeAndGroupId(nt.getGroupId(), nt.getNodeId(),commonService);	//通知NMSServer更新节点组的监控信息
 						}
 					}
-					// 将更新操作写到操作日志中
-					this.addDBOperationRpt(commonService, "node_table", "UPDATE",
-							nodeTable.getNodeId());
+				
 				}
 	
 				this.getRequest().setAttribute("MSG", 1);
+				
 			}else{
 				this.outHtmlString("<script>alert('i18n_NodeManageAction.addNodeInfo.nodeGroupHadIp_n81i');history.back();</script>");
 				return null;
 			}
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			return "error";
 		}
@@ -613,6 +622,7 @@ public class NodeManageAction extends BaseAction {
 	// 停用节点
 	public String stopNodeInfo() {
 		try {
+			commonService.beginTransaction();
 			List noList = this.commonService.find(
 					"from NodeTable where nodeId=?", nodeId);
 
@@ -623,18 +633,23 @@ public class NodeManageAction extends BaseAction {
 				nd.setNodeStoptime(new Date());
 
 				this.commonService.update(nd);
+				
+				// 将更新操作写到操作日志中
+				this.addDBOperationRpt(commonService, "node_table", "UPDATE",
+						nd.getNodeId());
+				commonService.commit();
 				NodegroupTable group = (NodegroupTable) this.commonService.get(NodegroupTable.class, nd.getGroupId());
 				if(new Long(1).equals(group.getIsValid())){		//节点组有效
 					this.sendNodeAndGroupId(nd.getGroupId(), nd.getNodeId(),commonService);	//通知NMSServer更新节点组的监控信息
 				}
 				
-				// 将更新操作写到操作日志中
-				this.addDBOperationRpt(commonService, "node_table", "UPDATE",
-						nd.getNodeId());
+				
 			}
 
 			this.getRequest().setAttribute("MSG", 1);
+			
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			return "error";
 		}
@@ -644,17 +659,21 @@ public class NodeManageAction extends BaseAction {
 	// 启用节点
 	public String startNodeInfo() {
 		try {
+			commonService.beginTransaction();
 			this.commonService.updateByHql(
 					"update NodeTable set nodeState=0 where nodeId=?", nodeId);
 			NodeTable nd = (NodeTable) this.commonService.get(NodeTable.class, nodeId);
 			NodegroupTable group = (NodegroupTable) this.commonService.get(NodegroupTable.class, nd.getGroupId());
-			if(new Long(1).equals(group.getIsValid())){		//节点组有效
-				this.sendNodeAndGroupId(nd.getGroupId(), nd.getNodeId(),commonService);	//通知NMSServer更新节点组的监控信息
-			}
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "node_table", "UPDATE",
 					nodeId);
+			commonService.commit();
+			if(new Long(1).equals(group.getIsValid())){		//节点组有效
+				this.sendNodeAndGroupId(nd.getGroupId(), nd.getNodeId(),commonService);	//通知NMSServer更新节点组的监控信息
+			}
+			
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			return "error";
 		}
@@ -871,6 +890,7 @@ public class NodeManageAction extends BaseAction {
 	private String saveNode(NodeTableVo vo, NodegroupTable group) {
 		String desc = "";
 		try {
+			commonService.beginTransaction();
 			if (group != null) {
 				// IP在同一节点组下不重复
 				if (!groupNodeIpIsRepeat(vo.getNodeIp(), group
@@ -899,8 +919,9 @@ public class NodeManageAction extends BaseAction {
 			}else {
 				desc = getI18nText("i18n_NodeManageAction.downloadExample.nodeGroupIsNull_n81i");
 			}
-
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc =getI18nText("i18n_NodeManageAction.downloadExample.nodeInfoImportErr_n81i");
 		}

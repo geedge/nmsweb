@@ -1240,6 +1240,7 @@ public class NodePositionAction extends BaseAction {
 	
 	private String saveBoxInfo(){
 		try {
+			commonService.beginTransaction();
 			//保存格子和节点表格子ID
 			String nodeGroupId = this.getRequest().getParameter("nodeGroupId");
 			String boxId = this.getRequest().getParameter("boxId");
@@ -1425,7 +1426,9 @@ public class NodePositionAction extends BaseAction {
 			}else{
 				outHtmlString("2");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("The saveBoxInfo method, error saving cabinet information"+e.getMessage());
 			e.printStackTrace();
 		}
@@ -1436,6 +1439,7 @@ public class NodePositionAction extends BaseAction {
 	private String updateNodes(){
 		
 		try {
+			commonService.beginTransaction();
 				if(nodeM!=null){
 					if (nodeM.getId() != null
 							&& !"0".equals(nodeM.getId().toString())
@@ -1494,8 +1498,9 @@ public class NodePositionAction extends BaseAction {
 						}
 					}
 				}
-			
+				commonService.commit();
 		}catch (Exception e) {
+			commonService.rollback();
 			logger.error("The updateNodes method, error saving location information"+e.getMessage());
 			outHtmlString("2");
 		}
@@ -1505,6 +1510,7 @@ public class NodePositionAction extends BaseAction {
 		List ngtList = null;
 		String sql ="";
 		try {
+			commonService.beginTransaction();
 			//nodeposition ids
 			String ids = this.getRequest().getParameter("npids");
 			//nodegroup ids
@@ -1533,7 +1539,9 @@ public class NodePositionAction extends BaseAction {
 				//this.commonService.delete("delete from NodePosition np where np.id in ("+ids+")");
 			}
 			outHtmlString("1");
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("The deleteNodes method, error deleting node"+e.getMessage());
 			outHtmlString("2");
 		}
@@ -1543,6 +1551,7 @@ public class NodePositionAction extends BaseAction {
 	
 	private String updateLines(){
 		try {
+			commonService.beginTransaction();
 			String tableName1 = this.getRequest().getParameter("tableName1");
 			String nodeId1 = this.getRequest().getParameter("nodeId1");
 			String tableName2 = this.getRequest().getParameter("tableName2");
@@ -1565,7 +1574,9 @@ public class NodePositionAction extends BaseAction {
 				}
 			}
 			outHtmlString("1");
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("The updateLines method, update connection error"+e.getMessage());
 			outHtmlString("2");
 		}
@@ -1575,6 +1586,7 @@ public class NodePositionAction extends BaseAction {
 	//删除机柜内节点
 	private String deleteLatt(){
 		try {
+			commonService.beginTransaction();
 			String seqId= this.getRequest().getParameter("seqId");
 			System.out.println(seqId);
 			if(seqId!=null && !"".equals(seqId)){
@@ -1589,7 +1601,9 @@ public class NodePositionAction extends BaseAction {
 				}
 				
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("The deleteLatt method, delete the node in the cabinet"+e.getMessage());
 		}
 		return null;

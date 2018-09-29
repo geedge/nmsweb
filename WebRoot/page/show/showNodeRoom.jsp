@@ -17,6 +17,8 @@
 		<script language="javascript" type="text/javascript"
 			src="<c:url value='/js/onmouse.js'/>"></script>
 		<script language="javascript" type="text/javascript"
+			src="<c:url value='/js/layer.js'/>"></script>
+		<script language="javascript" type="text/javascript"
 			src="<c:url value='/js/raphael.js'/>"></script>
 		<link rel="stylesheet"
 			href="<c:url value='/js/jquery-easyui-1.1.2/themes/default/easyui.css'/>"
@@ -221,9 +223,16 @@ body {
 					 success:function (data,textStatus){
 						 if(textStatus == "success" && (data!= null && data!= "" )){
 						 	$("#nodeBoxs").html("");
-							 var t =$("#nodeBox").dialog("options").title;
-						 	$("#nodeBox").dialog("setTitle", params[1]);
-						 	$("#nodeBox").dialog("open");
+							// var t =$("#nodeBox").dialog("options").title;
+						 	/* $("#nodeBox").dialog("setTitle", params[1]);
+						 	$("#nodeBox").dialog("open");  */
+						 	window.top.layer.open({
+						 		title:params[1],
+						 		type:1,
+						 		content:$("#nodeBox"),
+						 		shade:0.3
+						 	});
+						 	
 						 	var length = $(data).length;
 						 	var raphaelBox = Raphael("nodeBoxs",boxWidth,boxHeight);
 						 	//raphaelBox.rect(0,0,boxWidth,boxHeight).attr({'stroke-width':1,stroke: "#FFFFFF", fill: "#FBFBEA"});
@@ -308,6 +317,7 @@ body {
 						 				nodeIndex++;
 						 				nodeIndexs[nodeIndex]={"x":subBoxStartX-5,"y":subBoxY+5};
 						 			}
+						 			console.log("rephaelBox:"+raphaelBox);
 						 		}else{
 						 			var title="i18n_snr.message.UBit_n81i"+item.nodeposition;
 						 			raphaelBox.rect(subBoxStartX,subBoxY,subWidth,newHeight).attr({stroke: "#CEDBEF",'stroke-width':0.1,title:title, fill: "#ffffff"})

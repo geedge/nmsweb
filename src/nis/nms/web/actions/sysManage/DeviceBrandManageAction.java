@@ -993,6 +993,7 @@ public class DeviceBrandManageAction extends BaseAction {
 		String desc = "";
 		DeviceTypeInfo devType1=null;
 		try {
+			commonService.beginTransaction();
 			String operator="save"; 
 			// 设备型号不能重复:不同品牌可以重复吗？
 			List<DeviceTypeInfo> list = this.commonService
@@ -1076,7 +1077,9 @@ public class DeviceBrandManageAction extends BaseAction {
 				commonService.clear();
 				this.commonService.update(devType);
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc = getI18nText("BrandManageAction.downloadExampleType.nodeInfoImportErr_n81i")+";";
 		}
@@ -1086,6 +1089,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	private String saveNodeBrandType(DeviceBrandType deviceBrandType) {
 		String desc = "";
 		try {
+			commonService.beginTransaction();
 			List<DeviceBrandInfo> DeviceBrandInfolist = commonService.find("from DeviceBrandInfo where deviceRandCode=?",deviceBrandType.getDeviceBrandCode());
 			if(DeviceBrandInfolist==null||DeviceBrandInfolist.size()==0){
 				return getI18nText("i18n_DeviceBrandManageAction.downloadExampleType.deviceBrandCodeNotExists_n81i");
@@ -1119,7 +1123,9 @@ public class DeviceBrandManageAction extends BaseAction {
 			}
 			
 			commonService.save(deviceBrandType);
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc = getI18nText("i18n_DeviceBrandManageAction.downloadExampleType.nodeInfoImportErr_n81i");
 		}
@@ -1501,6 +1507,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	//添加品牌信息操作
 	public void addDevBrand() {
 		try {
+			commonService.beginTransaction();
 			if(devBrand!=null && StringUtils.isNotBlank(devBrand.getDeviceRandCode())){
 				//品牌编号不能重复
 				List list = this.commonService.find("from DeviceBrandInfo where deviceRandCode='"+devBrand.getDeviceRandCode().trim()+"'");
@@ -1522,7 +1529,9 @@ public class DeviceBrandManageAction extends BaseAction {
 			}else {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.emportCurrentXls.brandIdIsNotNull_n81i');this.location='deviceBrandManage.do?action=toAddDevBrand';</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceBrandInfo'</script>");
 		}
@@ -1556,6 +1565,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	// 进行修改品牌信息操作
 	public String updateDevBrand() {
 		try {
+			commonService.beginTransaction();
 			if(devBrand!=null && StringUtils.isNotBlank(devBrand.getDeviceRandCode())) {
 				//品牌编号不能重复
 				List list = this.commonService.find("from DeviceBrandInfo where deviceRandCode='"+devBrand.getDeviceRandCode().trim()+"' and id<>"+devBrand.getId());
@@ -1588,8 +1598,10 @@ public class DeviceBrandManageAction extends BaseAction {
 			}else {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.emportCurrentXls.brandCodeIsNotNull_n81i');window.history.go(-1);</script>");
 			}
+			commonService.commit();
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceBrandInfo&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 			return null;
@@ -1939,6 +1951,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	//配置设备的位置 
 	public void configDevicePos(){
 		try {
+			commonService.beginTransaction();
 			if(devTypeForPosList!=null && devTypeForPosList.size()>0){
 				List<DeviceTypeInfo> updateBatchDevList = new ArrayList<DeviceTypeInfo>();  //更新板槽位置信息
 				List<DeviceBoardsoltBoard> updateDBBList = new ArrayList<DeviceBoardsoltBoard>();
@@ -1983,7 +1996,9 @@ public class DeviceBrandManageAction extends BaseAction {
 				this.addDBOperationRpt(commonService, "DeviceTypeInfo", "UPDATE",null);
 			}
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.success_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
-	     }catch(Exception e){
+			commonService.commit();
+		}catch(Exception e){
+			commonService.rollback();
 	    	 e.printStackTrace();
 	    	 outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 	     }
@@ -1993,6 +2008,7 @@ public class DeviceBrandManageAction extends BaseAction {
 		System.out.println("right here!");
 		//System.out.println("banka bancao关系:"+pzbkbc+"size:"+devTypeForPosList.size());
 		try {
+			commonService.beginTransaction();
 			if(devTypeForPosList!=null && devTypeForPosList.size()>0){
 //				String[] strGroup = new String[0];
 				List<DeviceTypeInfo> updateBatchDevList = new ArrayList<DeviceTypeInfo>();  //更新板卡位置信息
@@ -2056,7 +2072,9 @@ public class DeviceBrandManageAction extends BaseAction {
 				this.addDBOperationRpt(commonService, "DeviceTypeInfo", "UPDATE",null);
 			}
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.success_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}
@@ -2065,6 +2083,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	
 	public void addDevType() {
 		try {
+			commonService.beginTransaction();
 			if(devType!=null && StringUtils.isNotBlank(devType.getDeviceTypeCode())){
 				//设备型号不能重复:不同品牌可以重复吗？
 				List list = this.commonService.find("from DeviceTypeInfo where deviceTypeCode='"+devType.getDeviceTypeCode().trim()+"' and deviceRandCode='"+devType.getDeviceRandCode()+"'");
@@ -2186,7 +2205,9 @@ public class DeviceBrandManageAction extends BaseAction {
 			}else {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.toConfDevPos.deviceBrandIsNotNull_n81i');window.history.go(-1);</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}
@@ -4314,6 +4335,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	//新增槽位设备
 	public void addPosDevType() {
 		try {
+			commonService.beginTransaction();
 			if(devType!=null && StringUtils.isNotBlank(devType.getDeviceTypeCode())){
 				Integer indexStart = devType.getShowIndexStart();
 				Integer indexEnd = devType.getShowIndexEnd();
@@ -4384,7 +4406,9 @@ public class DeviceBrandManageAction extends BaseAction {
 			}else {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.toConfDevPos.deviceBrandIsNotNull_n81i');window.history.go(-1);</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}
@@ -4393,6 +4417,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	//批量新增设备型号(一级设备没有批量新增，也不需要)：编号是一个范围，无最大叠加数，需要上传多个图片（图片和设备如何对应呢？？？）:批量插入多条
 	public void addBatchDevType() {
 		try {
+			commonService.beginTransaction();
 			if(devType!=null && StringUtils.isNotBlank(devType.getDeviceTypeCode())
 					&& StringUtils.isNotBlank(devType.getPid())){
 				//设备型号不能重复:不同品牌可以重复吗？
@@ -4505,7 +4530,9 @@ public class DeviceBrandManageAction extends BaseAction {
 			}else {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.toConfDevPos.deviceBrandIsNotNull_n81i');window.history.go(-1);</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}
@@ -4597,6 +4624,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	
 	public String deleteDevType()throws Exception{
 		try {
+			commonService.beginTransaction();
 			if(ids!=null&&!"".equals(ids)) {
 				//不能删除有设备型号的品牌
 				List list = this.commonService.find("from DeviceTypeInfo where pid in( "+ids+")");
@@ -4631,7 +4659,9 @@ public class DeviceBrandManageAction extends BaseAction {
 				}
 			}
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.success_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo&devTypeCodeForSearch="+devTypeCodeForSearch+"&devRandCodeForSearch="+devRandCodeForSearch+"&parDevId="+parDevId+"'</script>");
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}
@@ -4690,6 +4720,7 @@ public class DeviceBrandManageAction extends BaseAction {
 	//jsp界面控制：只可以修改叶子设备
 	public void updateDevType() {
 		try {
+			commonService.beginTransaction();
 			if(devType!=null && StringUtils.isNotBlank(devType.getDeviceTypeCode())){
 				//设备型号不能重复:不同品牌可以重复吗？
 				/*List list = this.commonService.find("from DeviceTypeInfo where deviceTypeCode='"+devType.getDeviceTypeCode().trim()+"' and deviceRandCode='"+devType.getDeviceRandCode()+"' and id<>"+devType.getId());
@@ -4842,7 +4873,9 @@ public class DeviceBrandManageAction extends BaseAction {
 					this.addDBOperationRpt(commonService, "DeviceTypeInfo", "UPDATE",devType.getId());
 					outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.success_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo&devTypeCodeForSearch="+devTypeCodeForSearch+"&devRandCodeForSearch="+devRandCodeForSearch+"&parDevId="+parDevId+"'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeviceBrandManageAction.importXls.faild_n81i');this.location='deviceBrandManage.do?action=queryDeviceTypeInfo'</script>");
 		}

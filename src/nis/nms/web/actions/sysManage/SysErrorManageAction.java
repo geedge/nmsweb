@@ -104,6 +104,7 @@ public class SysErrorManageAction extends BaseAction {
 	
 	public void addErrorInfo() {
 		try {
+			commonService.beginTransaction();
 		//	if(checkCode(troubleState.getTroubleCode())){
 				SystemTable sys = null;
 				if(this.getAdminMark()){//是
@@ -126,7 +127,9 @@ public class SysErrorManageAction extends BaseAction {
 				this.outHtmlString("<script>alert('故障代码已存在，请重新输入！');history.back();</script>");
 				return;
 			}*/
+				commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysErrorManageAction.addErrorInfo.faild_n81i');this.location='sysErrorManage!execute.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		}
@@ -184,6 +187,7 @@ public class SysErrorManageAction extends BaseAction {
 
 	public void doUpdate() {
 		try {
+			commonService.beginTransaction();
 			TroubleState md = (TroubleState) commonService.get(TroubleState.class, troubleState
 					.getId());
 			SystemTable sys = null;
@@ -207,7 +211,9 @@ public class SysErrorManageAction extends BaseAction {
 			this.addDBOperationRpt(commonService, "Trouble_State", "UPDATE",
 					troubleState.getId());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysErrorManageAction.addErrorInfo.success_n81i');this.location='sysErrorManage!execute.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysErrorManageAction.addErrorInfo.faild_n81i');this.location='sysErrorManage!execute.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		}

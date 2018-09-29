@@ -350,8 +350,10 @@
 						          </c:if>
 					            </td>
 							    <td class="${tdClassR }">
+							    	<c:if test="${aji.jsbh gt 100100}">
 							    	<img src="<c:url value='/images/logo_1.png'/>" class="img_middle" />&nbsp;
 									<a href="javascript:openUpdateRecord('${aji.jsbh}')">i18n_gil.text.updateInfo_n81i</a>
+							  	 	</c:if>
 							    </td >							
 							</tr>
 							<c:set var="index" value="${index + 1}" />

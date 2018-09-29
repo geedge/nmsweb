@@ -80,6 +80,7 @@ public class NodeGroupPositionAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			System.out.println("nodegroupBgImgPositions:"+nodegroupBgImgPositions);
 			System.out.println("nodegroupArrowPositions:"+nodegroupArrowPositions);
 			String[] nodegroupBgImgPositionInfos = nodegroupBgImgPositions.split(":");
@@ -179,8 +180,10 @@ public class NodeGroupPositionAction extends BaseAction
 			commonService.saveOrUpdate(nodegroupBgimgPositionList);
 			commonService.saveOrUpdate(nodeGroupPositionList);
 			commonService.saveOrUpdate(nodegroupArrowPositionList);
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			logger.error("Failed to save topology map configuration information", e);
 		}
 		return configTopo();

@@ -633,6 +633,7 @@ public class ServerManagerAction extends BaseAction {
 	
 	public String stop(){
 		try {
+			commonService.beginTransaction();
 			if(ids !=null && ids.length>0){
 				for(int i= 0;i<ids.length;i++){
 					List serverList = this.commonService.find(
@@ -647,6 +648,7 @@ public class ServerManagerAction extends BaseAction {
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "Server_Table", "UPDATE", st.getId());
 						ServerTable serverTable = (ServerTable) commonService.get(ServerTable.class, ids[i]);
+						commonService.commit();
 						//将DC变更发送到DC
 						this.sendDataControllerReset(ids[i], serverTable.getServerIp(), commonService);
 					}	
@@ -654,6 +656,7 @@ public class ServerManagerAction extends BaseAction {
 			}
 			
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 		}
 		outHtmlString("<script type=\"text/javascript\">alert('i18n_ServerManagerAction.downloadExample.success_n81i');" +
@@ -664,6 +667,7 @@ public class ServerManagerAction extends BaseAction {
 	
 	public String start(){
 		try {
+			commonService.beginTransaction();
 			if(ids !=null && ids.length>0){
 				for(int i= 0;i<ids.length;i++){
 					List serverList = this.commonService.find(
@@ -678,12 +682,15 @@ public class ServerManagerAction extends BaseAction {
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "Server_Table", "UPDATE", st.getId());
 						ServerTable serverTable = (ServerTable) commonService.get(ServerTable.class, ids[i]);
+						commonService.commit();
 						//将DC变更发送到DC
 						this.sendDataControllerReset(ids[i], serverTable.getServerIp(), commonService);
 					}	
 				}
 			}
+			
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 		}
 		outHtmlString("<script type=\"text/javascript\">alert('i18n_ServerManagerAction.downloadExample.success_n81i');" +
@@ -763,6 +770,7 @@ public class ServerManagerAction extends BaseAction {
 	
 	public String doAdd(){
 		try {
+			commonService.beginTransaction();
 			/*List list =  commonService.find("from ServerTable where serverIp = ? or serverName = ? ", serverTable.getServerIp(),serverTable.getServerName());
 			
 			if(list!=null && list.size()>0){
@@ -789,9 +797,11 @@ public class ServerManagerAction extends BaseAction {
 					}
 				}
 			}
+			commonService.commit();
 			//将DC变更发送到DC
 			this.sendDataControllerReset(serverTable.getId(), serverTable.getServerIp(), commonService);
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			logger.info("DC范围配置新增失败！", e);
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_ServerManagerAction.downloadExample.faild_n81i');" +
@@ -866,6 +876,7 @@ public class ServerManagerAction extends BaseAction {
 	public String doUpdate(){
 		
 		try {
+			commonService.beginTransaction();
 			/*List list =  commonService.find("from ServerTable where (serverIp = ? or serverName = ?) and id <> ?", serverTable.getServerIp(),serverTable.getServerName(),serverTable.getId());
 			
 			if(list!=null && list.size()>0){
@@ -929,7 +940,9 @@ public class ServerManagerAction extends BaseAction {
 				//将DC变更发送到DC
 //				this.sendDataControllerReset(table.getId(), oldIP, commonService);
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			logger.info("DC范围配置修改失败",e);
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_ServerManagerAction.downloadExample.faild_n81i');" +

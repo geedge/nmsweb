@@ -317,13 +317,16 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			module.setCtime(new Date());
 			this.commonService.save(module);
 			// 将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_MK_JBXX", "INSERT", module.getId());
 			this.getRequest().setAttribute("MSG", "1");// 操作成功
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", "2");// 操作失败
 			e.printStackTrace();
 			
@@ -378,6 +381,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			XtMkJbxx md = (XtMkJbxx) commonService.get(XtMkJbxx.class, module.getId());
 			// md.setMkbh(module.getMkbh());
 			md.setMkmc(module.getMkmc());
@@ -388,8 +392,10 @@ public class SysPopedomManageAction extends BaseAction
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_MK_JBXX", "UPDATE", module.getId());
 			this.getRequest().setAttribute("MSG", "1");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", "2");
 			updateMkInfo();
 			e.printStackTrace();
@@ -521,6 +527,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			role.setZxbz("0");
 			this.commonService.save(role);
 			// 将添加操作写到操作日志中
@@ -536,8 +543,10 @@ public class SysPopedomManageAction extends BaseAction
 					this.commonService.save(roleModule);
 				}
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.success_n81i');this.location='sysPopedomManage.do?action=queryJsInfo'</script>");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.faild_n81i');this.location='sysPopedomManage.do?action=queryJsInfo'</script>");
 			e.printStackTrace();
 		}
@@ -678,6 +687,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			String[] sMk = mkid.split(",");
 			// 删除旧的角色模块信息
 			this.commonService.delete("delete XtJsMkIndex where jsbh=" + role.getJsbh());
@@ -699,8 +709,10 @@ public class SysPopedomManageAction extends BaseAction
 					this.commonService.save(roleModule);
 				}
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.success_n81i');this.location='sysPopedomManage.do?action=queryJsInfo'</script>");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			queryJsInfoByid();
 			queryJsMkInfoByJsbh();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.faild_n81i');this.location='sysPopedomManage.do?action=queryJsInfo'</script>");
@@ -728,6 +740,7 @@ public class SysPopedomManageAction extends BaseAction
 		String pwdString = "";
 		try
 		{
+			commonService.beginTransaction();
 			/*List list = this.commonService.find("from XtYhJbxx where yhbh=?", user.getYhbh());
 			if (list != null && list.size() > 0)
 			{
@@ -823,8 +836,10 @@ public class SysPopedomManageAction extends BaseAction
 				}
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.success_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
 		//	}
+				commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.faild_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
 		}
@@ -1022,6 +1037,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			XtYhJbxx userNew = (XtYhJbxx) this.commonService.get(XtYhJbxx.class, this.getUserID());
 			if (isUpdatePwd == 0l)
 			{// 修改密码
@@ -1036,8 +1052,10 @@ public class SysPopedomManageAction extends BaseAction
 			// 将删除操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_YH_JBXX", "UPDATE", this.getUserID());
 			this.getRequest().setAttribute("MSG", 1);
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", 2);
 			queryUserInfoById();
 			e.printStackTrace();
@@ -1049,6 +1067,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			// 删除旧的用户角色信息
 			this.commonService.delete("delete XtYhJsIndex where type is null and  yhbh='"
 					+ new String(yhbh.getBytes("ISO-8859-1"), "UTF-8") + "'");
@@ -1118,8 +1137,10 @@ public class SysPopedomManageAction extends BaseAction
 			}
 			
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.success_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			queryUserInfoById();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.faild_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
@@ -1131,6 +1152,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			XtYhJbxx userNew = (XtYhJbxx) this.commonService.get(XtYhJbxx.class, Long
 					.parseLong(yhid.trim()));
 			userNew.setYhmc(user.getYhmc());
@@ -1150,8 +1172,10 @@ public class SysPopedomManageAction extends BaseAction
 			// //将删除操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_YH_JBXX", "UPDATE", userNew.getYhid());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.success_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			queryUserInfoById();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SysPopedomManageAction.addJsInfo.faild_n81i');this.location='sysPopedomManage.do?action=queryUserInfo'</script>");
@@ -1375,6 +1399,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			if (dept.getUpperlayer() == null)
 			{
 				dept.setUpperlayer(-1l);
@@ -1385,8 +1410,10 @@ public class SysPopedomManageAction extends BaseAction
 			this.addDBOperationRpt(commonService, "TABLEDEPARTMENT", "INSERT", dept.getDeptid());
 			
 			this.getRequest().setAttribute("MSG", "1");// 操作成功
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", "2");// 操作失败
 			e.printStackTrace();
 		}
@@ -1417,6 +1444,7 @@ public class SysPopedomManageAction extends BaseAction
 	{
 		try
 		{
+			commonService.beginTransaction();
 			TableDepartment deptNew = (TableDepartment) commonService.get(TableDepartment.class,
 					Long.parseLong(deptid.trim()));
 			if (dept.getUpperlayer() == null)
@@ -1432,8 +1460,10 @@ public class SysPopedomManageAction extends BaseAction
 			this.addDBOperationRpt(commonService, "TABLEDEPARTMENT", "UPDATE", dept.getDeptid());
 			
 			this.getRequest().setAttribute("MSG", "1");
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", "2");
 			updateMkInfo();
 			e.printStackTrace();
@@ -1875,6 +1905,7 @@ public class SysPopedomManageAction extends BaseAction
 		String pwdString = "";
 		try
 		{
+			commonService.beginTransaction();
 			List list = this.commonService.find("from XtYhJbxx where yhbh=?", user.getYhbh());
 			if (list != null && list.size() > 0)
 			{
@@ -1906,8 +1937,10 @@ public class SysPopedomManageAction extends BaseAction
 				this.addDBOperationRpt(commonService, "XT_YH_JBXX", "INSERT", user.getYhid());
 				this.getRequest().setAttribute("MSG", 1);
 			}
+			commonService.commit();
 		} catch (Exception e)
 		{
+			commonService.rollback();
 			this.getRequest().setAttribute("MSG", 2);
 			e.printStackTrace();
 			resu = getI18nText("i18n_SysPopedomManageAction.addJsInfo.userInfoImportErr_n81i");

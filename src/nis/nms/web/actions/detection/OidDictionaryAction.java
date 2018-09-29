@@ -80,6 +80,7 @@ public class OidDictionaryAction extends BaseAction {
 	
 	public void addOidDictionary(){
 		try {
+			commonService.beginTransaction();
 			if(checkOid(od.getOid())){
 				this.commonService.save(od);
 				// 将添加操作写到操作日志中
@@ -90,7 +91,9 @@ public class OidDictionaryAction extends BaseAction {
 				this.outHtmlString("<script>alert('i18n_OidDictionaryAction.queryDictionary.oidExists_n81i');history.back();</script>");
 				return;
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			this.outHtmlString("<script>alert('i18n_OidDictionaryAction.queryDictionary.addBoxFaild_n81i');history.back();</script>");
 			return;
@@ -118,6 +121,7 @@ public class OidDictionaryAction extends BaseAction {
 	
 	public void doUpdOidDictionary(){
 		try {
+			commonService.beginTransaction();
 			List list = this.commonService.find("from OidDictionary where oid=? and id<>?",
 					od.getOid().trim(),od.getId());
 			if (list != null && list.size() > 0){
@@ -132,8 +136,10 @@ public class OidDictionaryAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "oid_dictionary", "UPDATE",
 					md.getId());
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_OidDictionaryAction.queryDictionary.success_n81i');this.location='oidDictionary.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error(e.getStackTrace());
 			this.outHtmlString("<script>alert('i18n_OidDictionaryAction.queryDictionary.updateFaild_n81i');history.back();</script>");
 			return;

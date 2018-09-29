@@ -592,6 +592,7 @@ public class CheckTypeSetAction extends BaseAction {
 		String desc = "";
 		Metadata metadata = new Metadata();
 		try {
+			commonService.beginTransaction();
 			String hql = "from CheckTypeInfo where checkTypeName1=?";
 			List<CheckTypeInfo> list = commonService.find(hql, checkTypeName1);
 			if(list==null||list.size()==0){
@@ -672,8 +673,7 @@ public class CheckTypeSetAction extends BaseAction {
 			this.commonService.save(metadata);
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"metadata", "INSERT", metadata.getId());
-			//与NMSServer通信
-			this.sendCheckTypeId(checkTypeInfo.getId()+"",commonService);
+			
 			
 			//如果表已经生成，则需要修改表的结构
 			if(new MetaDataSetAction().hasCreatedTable(checkTypeInfo.getTableName())){
@@ -687,9 +687,14 @@ public class CheckTypeSetAction extends BaseAction {
 				//执行添加字段
 				this.commonService.updateBatchBySql(sqlString.toString());
 			}
+			commonService.commit();
+			//与NMSServer通信
+			this.sendCheckTypeId(checkTypeInfo.getId()+"",commonService);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
+			commonService.rollback();
 			desc = getI18nText("i18n_CheckTypeSetAction.downloadExample.importInfo_n81i");
 		}
 		return desc;
@@ -699,6 +704,7 @@ public class CheckTypeSetAction extends BaseAction {
 		String desc = "";
 		CheckTypeInfo checkTypeInfo = new CheckTypeInfo();
 		try {
+			commonService.beginTransaction();
 			// 保存节点信息
 			checkTypeInfo.setCheckTypeName(checkTypeName);
 			checkTypeInfo.setCheckTypeName1(checkTypeName1);
@@ -800,8 +806,10 @@ public class CheckTypeSetAction extends BaseAction {
 			}else{
 				this.commonService.save(checkTypeInfo);
 			}
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
+			commonService.rollback();
 //			logger.error(e.getStackTrace());//i18nlog
 			desc = getI18nText("i18n_CheckTypeSetAction.downloadExample.importInfo_n81i");
 		}
@@ -1086,6 +1094,7 @@ public class CheckTypeSetAction extends BaseAction {
 		Date createDate = null;
 		Date dNow=null;
 		try {	
+			commonService.beginTransaction();
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			dNow = new Date();
 			createDate = sdf.parse(sdf.format(dNow));
@@ -1216,9 +1225,11 @@ public class CheckTypeSetAction extends BaseAction {
 //					outHtmlString("<script type=\"text/javascript\">alert('操作成功');this.location='boxSet.do?action=query'</script>");
 //				}
 			}
+			commonService.commit();
 		} catch (Exception e) {
 			logger.error(e.getStackTrace());
 			e.printStackTrace();
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.faild_n81i');this.location='checkTypeSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		}
 	}
@@ -1313,6 +1324,7 @@ public class CheckTypeSetAction extends BaseAction {
 	
 	public void doUpdateCheckTypeSet()throws Exception{
 		try {
+			commonService.beginTransaction();
 			CheckTypeInfo cti = (CheckTypeInfo)this.commonService.get(CheckTypeInfo.class, checkTypeInfo.getId());
 			if(!cti.getTableName().equals(checkTypeInfo.getTableName().trim().toUpperCase())){
 				//与NMSServer通信
@@ -1331,16 +1343,19 @@ public class CheckTypeSetAction extends BaseAction {
 			this.commonService.update(cti);
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"check_type_info", "UPDATE", checkTypeInfo.getId());
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_CheckTypeSetAction.downloadExample.success_n81i');this.location='checkTypeSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		} catch (Exception e) {
 			logger.error(e.getStackTrace());
 			e.printStackTrace();
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.faild_n81i');this.location='checkTypeSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		}
 	}
 	
 	public void delCheckTypeSetInfo()throws Exception{
 		try {
+			commonService.beginTransaction();
 			if(ids!=null && ids.length>0){
 				for(Long setid : ids){
 					CheckTypeInfo cti = (CheckTypeInfo)this.commonService.get(CheckTypeInfo.class,setid);
@@ -1374,9 +1389,11 @@ public class CheckTypeSetAction extends BaseAction {
 					}
 				}
 			}
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_CheckTypeSetAction.downloadExample.success_n81i');this.location='checkTypeSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		} catch (Exception e) {
 			logger.error(e.getStackTrace());
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DeptManageAction.update.faild_n81i');this.location='checkTypeSet.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 		}
 	}

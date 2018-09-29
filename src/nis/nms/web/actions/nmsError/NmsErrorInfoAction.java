@@ -129,6 +129,7 @@ public class NmsErrorInfoAction extends BaseAction {
 	private String changeState(){
 		if(ids != null){
 			try {
+				commonService.beginTransaction();
 				/* 当前用户ID */
 				this.getUserID();
 				/* 当前用户ID */
@@ -159,8 +160,10 @@ public class NmsErrorInfoAction extends BaseAction {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_NmsErrorInfoAction.query.faild_n81i');"
 						+ "this.location='nmsErrorInfo.do?action=query&pageNo="
 						+ pageNo + "&pageSize=" + pageSize + "&position=" + position + "&errorCodeStr=" + errorCodeStr + "&errorIp=" + errorIp + "&eiState=" + (eiState==null?"":eiState) + "'</script>");
+				commonService.commit();
 				return null;
 			} catch (Exception e) {
+				commonService.rollback();
 				e.printStackTrace();
 				this.outHtmlString("<script>alert('i18n_NmsErrorInfoAction.query.queryFaild_n81i');history.back();</script>");
 				return null;

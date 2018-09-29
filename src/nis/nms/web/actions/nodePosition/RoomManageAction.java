@@ -116,6 +116,7 @@ public class RoomManageAction extends BaseAction {
 				resultpage = this.openUpdRoom();
 			}else if("doUpdate".equals(this.action)){
 				this.doUpdRoom();
+				resultpage = this.queryRoomInfo();
 			}else if("del".equals(this.action)){
 				resultpage = this.delRoomInfo();
 			}else if ("downloadExample".equals(this.action)) {
@@ -298,6 +299,7 @@ public class RoomManageAction extends BaseAction {
 		String desc = "";
 		NodeRoomTable nodeRoomTable = new NodeRoomTable();
 		try {
+			commonService.beginTransaction();
 			// 保存节点信息
 			nodeRoomTable.setCreateDatetime(new Date());
 			nodeRoomTable.setCreateUserId(getUserID());
@@ -326,7 +328,9 @@ public class RoomManageAction extends BaseAction {
 				}
 			}			
 			this.commonService.saveOrUpdate(list2);
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc = getI18nText("i18n_RoomManageAction.downloadExample.nodeInfoImportErr_n81i");
 		}
@@ -431,6 +435,7 @@ public class RoomManageAction extends BaseAction {
 	public String addRoomInfo(){
 	//	List list = null;
 		try {
+			commonService.beginTransaction();
 			//判断数据是否存在
 			/*list = this.commonService.find("from NodeRoomTable where roomIspn=?",nodeRoom.getRoomIspn());
 			if(list!=null && list.size()>0){
@@ -463,7 +468,9 @@ public class RoomManageAction extends BaseAction {
 			}else{
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_RoomManageAction.downloadExample.success_n81i');this.location='roomManage.do?action=query'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("Failed to add room information", e);
 		}
 		return null;
@@ -511,6 +518,7 @@ public class RoomManageAction extends BaseAction {
 	 */
 	public void doUpdRoom(){
 		try {
+			commonService.beginTransaction();
 			NodeRoomTable nrt = (NodeRoomTable) this.commonService.get(
 					NodeRoomTable.class, nodeRoom.getRoomId());
 			String ispn = nrt.getRoomIspn();
@@ -586,7 +594,9 @@ public class RoomManageAction extends BaseAction {
 				String sql = "update node_box_table set ROOM_ISPN = ? where ROOM_ISPN = ?";
 				this.commonService.updateBySql(sql, nodeRoom.getRoomIspn(),ispn);
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("Failed to update room information", e);
 		}
 		outHtmlString("<script type=\"text/javascript\">alert('i18n_RoomManageAction.downloadExample.success_n81i');this.location='roomManage.do?action=query&rIspn="+rIspn+"&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
@@ -594,6 +604,7 @@ public class RoomManageAction extends BaseAction {
 	
 	public String delRoomInfo(){
 		try {
+			commonService.beginTransaction();
 			if(ids!=null && ids.length>0){
 				for(Long id : ids){
 					List list = this.commonService.find(
@@ -611,7 +622,9 @@ public class RoomManageAction extends BaseAction {
 				this.commonService.updateBatchBySql("delete from NODE_ROOM_TABLE where ROOM_ID=?", Arrays.asList(ids));
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_RoomManageAction.downloadExample.success_n81i');this.location='roomManage.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			logger.error("Failed to delete room information", e);
 			return "error";
 		}

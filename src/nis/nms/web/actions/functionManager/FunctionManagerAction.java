@@ -69,6 +69,7 @@ public class FunctionManagerAction extends BaseAction {
 		XtMkJbxx xt = null;
 		List<XtMkJbxx> newFunctionlists = null;
 		try {
+			commonService.beginTransaction();
 			// 判断是否是修改排序
 			if (sort != null) {
 				// 上升
@@ -134,8 +135,9 @@ public class FunctionManagerAction extends BaseAction {
 			}else{
 				updateMKInfo();
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("2");	
 			//outHtmlString("<script type=\"text/javascript\">alert('操作失败');this.location='functionManager.do?action=queryMkInfo'</script>");
@@ -168,6 +170,7 @@ public class FunctionManagerAction extends BaseAction {
 	
 	public String updateMKInfo(){
 		try {
+			commonService.beginTransaction();
 			XtMkJbxx md = (XtMkJbxx) commonService.get(XtMkJbxx.class, module
 					.getId());
 			md.setMkmc(module.getMkmc());
@@ -202,8 +205,10 @@ public class FunctionManagerAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_MK_JBXX", "UPDATE",module.getId());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.success_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
+			commonService.commit();
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.faild_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
 			return null;
@@ -213,6 +218,7 @@ public class FunctionManagerAction extends BaseAction {
 	// 添加模块信息操作
 	public String addMk() {
 		try {
+			commonService.beginTransaction();
 			if(module.getPid()==null){
 				module.setPid(0l);
 			}
@@ -226,9 +232,11 @@ public class FunctionManagerAction extends BaseAction {
 			this.commonService.save(module);
 			// 将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "XT_MK_JBXX", "INSERT",module.getId());
+			commonService.commit();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.success_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.faild_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
 			return null;
@@ -238,6 +246,7 @@ public class FunctionManagerAction extends BaseAction {
 	// 注销模块信息操作
 	public String delMk() {
 		try {
+			commonService.beginTransaction();
 			XtMkJbxx md = (XtMkJbxx) commonService.get(XtMkJbxx.class, module.getId());
 			md.setZxbz("1");
 			this.commonService.update(md);
@@ -246,8 +255,10 @@ public class FunctionManagerAction extends BaseAction {
 					module.getId());
 			this.addDBOperationRpt(commonService, "XT_MK_JBXX", "INSERT",module.getId());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.success_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
+			commonService.commit();
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_FunctionManagerAction.updateMKInfo.faild_n81i');this.location='functionManager.do?action=queryMkInfo'</script>");
 			return null;

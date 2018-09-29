@@ -2,6 +2,8 @@ package nis.nms.web.actions.sysManage;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,10 +18,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Commons;
+
+import nis.nms.core.Constants;
 import nis.nms.core.Resource;
 import nis.nms.domains.GorupSystemTable;
 import nis.nms.domains.SystemTable;
 import nis.nms.domains.XtJsJbxx;
+import nis.nms.domains.XtYhJbxx;
+import nis.nms.domains.XtYhJsIndex;
 import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
 import nis.nms.util.Constant;
@@ -301,6 +308,7 @@ public class UserGroupPerssionAction extends BaseAction {
 		XtJsJbxx xtJsJbxx = new XtJsJbxx();
 		String operate="save";
 		try {
+			commonService.beginTransaction();
 			// 保存节点信息
 			xtJsJbxx.setCtime(new Date());
 			xtJsJbxx.setJsmc(JSMC);
@@ -337,7 +345,9 @@ public class UserGroupPerssionAction extends BaseAction {
 			gorupSystemTable.setSystemId(Long.parseLong(SYSTEMID));
 			gorupSystemTable.setUserGroupId(xtJsJbxx.getJsbh());
 			this.commonService.save(gorupSystemTable);
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			desc = getI18nText("i18n_UserGroupPerssionAction.downloadExample.nodeInfoImportErr_n81i");
 		}
@@ -436,6 +446,7 @@ public class UserGroupPerssionAction extends BaseAction {
 	// 新增用户组信息
 	public void addgroupInfo() {
 		try {
+			commonService.beginTransaction();
 			/*List list = this.commonService.find("from XtJsJbxx where type=1 and jsmc=?", role.getJsmc());
 			if(list!=null && list.size()>0){
 				this.outHtmlString("<script>alert('用户组已存在，请重新输入！');history.back();</script>");
@@ -458,7 +469,6 @@ public class UserGroupPerssionAction extends BaseAction {
 				}
 				this.getRequest().setAttribute("MSG", 1);
 			}
-			
 			//记录用户操作用于设置向导
 			if(fromWhere!=null && !"".equals(fromWhere)){
 				if(fromWhere.equals("formGuide")){
@@ -467,7 +477,9 @@ public class UserGroupPerssionAction extends BaseAction {
 			}else{
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_UserGroupPerssionAction.downloadExample.success_n81i');this.location='userGroupPerssion.do?action=query'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_UserGroupPerssionAction.giveGroupPerssions.faild_n81i');this.location='userGroupPerssion.do?action=query'</script>");
 			this.getRequest().setAttribute("MSG", 2);
 			e.printStackTrace();

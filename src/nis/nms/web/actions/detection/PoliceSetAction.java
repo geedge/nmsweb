@@ -228,6 +228,7 @@ public class PoliceSetAction extends BaseAction {
 	public void addPoliceSetInfo() throws Exception{
 		DetectionSetInfo dsi = null;
 		try {
+			commonService.beginTransaction();
 			String sql = "select count(*) from data_police_relation t where DETECTION_SET_INFO_ID ="
 					+ setId
 					+ " and METADATA_ID ="
@@ -247,8 +248,10 @@ public class PoliceSetAction extends BaseAction {
 			this.commonService.save(dataPoliceRelation);
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"data_police_relation", "INSERT", dataPoliceRelation.getId());
+			commonService.commit();
 		    outHtmlString("<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.success_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+"&setId="+setId+"'</script>");
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.faild_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+"&setId="+setId+"'</script>");
@@ -276,6 +279,7 @@ public class PoliceSetAction extends BaseAction {
 
 	public void doUpdatePoliceSet() throws Exception{
 		try {
+			commonService.beginTransaction();
 			List list = this.commonService
 					.find(
 							"from DataPoliceRelation where detectionSetInfo.id=? and metadata.id=? and id<>?",
@@ -309,6 +313,7 @@ public class PoliceSetAction extends BaseAction {
 			dpRelation.setMarker(dataPoliceRelation.getMarker());
 			dpRelation.setMarkerFiledId(dataPoliceRelation.getMarkerFiledId());
 			this.commonService.update(dpRelation);
+			commonService.commit();
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"data_police_relation", "UPDATE", dpRelation.getId());
 			sendSetInfo(null,ds,commonService);
@@ -316,9 +321,11 @@ public class PoliceSetAction extends BaseAction {
 			if(setId != null){
 				setIdStr = "&setId="+setId;
 			}
+			
 			String str = "<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.success_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+setIdStr+"'</script>";
 			outHtmlString(str);
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			String setIdStr = "";

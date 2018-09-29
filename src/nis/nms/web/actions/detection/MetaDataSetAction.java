@@ -278,6 +278,7 @@ public class MetaDataSetAction extends BaseAction {
 		HttpSession session =null;
 		
 		try {
+			commonService.beginTransaction();
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			dNow = new Date();
 			createDate = sdf.parse(sdf.format(dNow));			
@@ -306,8 +307,7 @@ public class MetaDataSetAction extends BaseAction {
 			this.commonService.save(metadata);
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"metadata", "INSERT", metadata.getId());
-			//与NMSServer通信
-			this.sendCheckTypeId(typeInfo.getId()+"",commonService);
+			
 			
 			//如果表已经生成，则需要修改表的结构
 			if(hasCreatedTable(typeInfo.getTableName())){
@@ -330,8 +330,11 @@ public class MetaDataSetAction extends BaseAction {
 			}else{
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.success_n81i');this.location='metaDataSet.do?action=oppAdd&typeids="+checkTypeInfo.getId()+"'</script>");
 			}
-			
+			commonService.commit();
+			//与NMSServer通信
+			this.sendCheckTypeId(typeInfo.getId()+"",commonService);
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.faild_n81i');this.location='checkTypeSet.do?action=query'</script>");
@@ -496,6 +499,7 @@ public class MetaDataSetAction extends BaseAction {
 		int max =0;
 		boolean d = false;
 		try {
+			commonService.beginTransaction();
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			dNow = new Date();
 			updateDate = sdf.parse(sdf.format(dNow));
@@ -631,9 +635,11 @@ public class MetaDataSetAction extends BaseAction {
 				this.outHtmlString("<script>alert('i18n_MetaDataSetAction.queryCheckTypeSource.updateTable_n81i');history.back();</script>");
 				return;
 			}
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.faild_n81i');this.location='metaDataSet.do?action=query&typeids="+checkTypeInfo.getId()+"'</script>");
 		}
 		this.checkTable();
@@ -674,6 +680,7 @@ public class MetaDataSetAction extends BaseAction {
 	public void doUpdateMetaDataInfoList()throws Exception{
 		if(metadataList!=null){
 			try {
+				commonService.beginTransaction();
 				Map<String,String> map = this.getAllDictionary();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date dNow = new Date();
@@ -761,9 +768,11 @@ public class MetaDataSetAction extends BaseAction {
 //						return null;
 //					}
 				}
+				commonService.commit();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getStackTrace());
+				commonService.rollback();
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.faild_n81i');this.location='metaDataSet.do?action=query&typeids="+typeids[0]+"'</script>");
 			}
 			this.checkTable();
@@ -880,6 +889,7 @@ public class MetaDataSetAction extends BaseAction {
 		String oneFiledString="";
 		StringBuffer fileds = new StringBuffer();
 		try {
+			commonService.beginTransaction();
 			if(typeids!=null && typeids.length>0){
 				String hql = "from Metadata where 1=1 and checkTypeInfo.id="+typeids[0];
 				metaList = this.commonService.find(hql);
@@ -936,10 +946,11 @@ public class MetaDataSetAction extends BaseAction {
 				}
 				
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
+			commonService.rollback();
 		}
 		return this.queryCheckTypeSource();
 	}
@@ -954,6 +965,7 @@ public class MetaDataSetAction extends BaseAction {
 		StringBuffer sql= new StringBuffer();
 		StringBuffer cIndexFileds = new StringBuffer("data_check_time:seq_id:detection_set_info_id:");
 		try {
+			commonService.beginTransaction();
 			//所有的字段名均不可为空
 			if(typeids!=null&&typeids.length>0) {
 				String isFieldNullHql = "from Metadata where checkTypeInfo.id = " + typeids[0] + " and state = '0' and  filedName is null ";
@@ -1011,10 +1023,11 @@ public class MetaDataSetAction extends BaseAction {
 				this.outHtmlString("<script>alert('i18n_MetaDataSetAction.queryCheckTypeSource.pleaseAddField_n81i');history.back();</script>");
 				return;
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.faild_n81i');this.location='metaDataSet.do?action=query&typeids="+typeids[0]+"'</script>");
 		}
 		this.checkTable();

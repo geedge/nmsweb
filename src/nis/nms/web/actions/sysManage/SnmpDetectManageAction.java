@@ -115,13 +115,16 @@ public class SnmpDetectManageAction extends BaseAction {
 	// 添加snmp监测项操作
 	public String addSnmpDetectType() {
 		try {
+			commonService.beginTransaction();
 			if(sortInfo!=null){
 				this.commonService.save(sortInfo);
 				// 将添加操作写到操作日志中
 				this.addDBOperationRpt(commonService, "SortInfo", "INSERT",sortInfo.getId());
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_SnmpDetectManageAction.addSnmpDetectType.success_n81i');this.location='snmpDetectManage.do?action=querySnmpDetectTypeInfo'</script>");
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SnmpDetectManageAction.addSnmpDetectType.faild_n81i');this.location='snmpDetectManage.do?action=querySnmpDetectTypeInfo'</script>");
 		}
@@ -147,6 +150,7 @@ public class SnmpDetectManageAction extends BaseAction {
 	// 进行修改snmp监测项操作
 	public String updateSnmpDetectType() {
 		try {
+			commonService.beginTransaction();
 			SortInfo sortForUpdate = (SortInfo) commonService.get(SortInfo.class, sortInfo.getId());
 			sortForUpdate.setSortName(sortInfo.getSortName());
 			sortForUpdate.setSortDesc(sortInfo.getSortDesc());
@@ -154,8 +158,10 @@ public class SnmpDetectManageAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "SortInfo", "UPDATE",sortForUpdate.getId());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SnmpDetectManageAction.addSnmpDetectType.success_n81i');this.location='snmpDetectManage.do?action=querySnmpDetectTypeInfo&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
+			commonService.commit();
 			return null;
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_SnmpDetectManageAction.addSnmpDetectType.faild_n81i');this.location='snmpDetectManage.do?action=querySnmpDetectTypeInfo&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
 			return null;
@@ -179,13 +185,17 @@ public class SnmpDetectManageAction extends BaseAction {
 	//删除snmp监测项
 	public String deleteSnmpDetectType()throws Exception{
 		try {
+			commonService.beginTransaction();
 			if(ids!=null&&!"".equals(ids)) {
 				String hql = "DELETE FROM SortInfo WHERE ID IN ("+ ids + ")";
 				this.commonService.delete(hql);
 			}
+			commonService.commit();
+			
 //			this.getRequest().setAttribute("MSG", 1);
 //			outHtmlString("<script type=\"text/javascript\">this.location='brandManage.do?action=queryBrandInfo'</script>");
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			//outHtmlString("<script type=\"text/javascript\">alert('操作失败');this.location='checkTypeSet.do?action=query'</script>");
 		}

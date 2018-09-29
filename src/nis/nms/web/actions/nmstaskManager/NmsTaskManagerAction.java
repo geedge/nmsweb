@@ -1386,6 +1386,7 @@ public class NmsTaskManagerAction extends BaseAction {
 	private void updateLoopMissionStateAndDescByMissId(String missionId) {
 		if (StringUtils.isNotBlank(missionId)) {
 			try {
+				commonService.beginTransaction();
 				// 第一步--更新任务的状态描述
 				/*
 				 * String selectSql =
@@ -1520,8 +1521,9 @@ public class NmsTaskManagerAction extends BaseAction {
 					// 发送邮件-------------------
 					commonService.sendEmailForMission(Long.parseLong(missionId), getI18nText("i18n_NmsTaskManagerAction.executeAction.missionExec_n81i"), getI18nText("i18n_NmsTaskManagerAction.executeAction.missionComplete_n81i"));
 				}
-
+				commonService.commit();
 			} catch (Exception e) {
+				commonService.rollback();
 				logger.error("After determining failure,the state of the current task is recounted and the status description(non cyclical) exception is described", e);
 			}
 		}
@@ -2225,6 +2227,7 @@ public class NmsTaskManagerAction extends BaseAction {
 
 	public void updateDate() {
 		try {
+			commonService.beginTransaction();
 			if (missionstatetable.getMissionType() == 1) {// 文件推送
 				MissionStateTable missionstate = (MissionStateTable) this.commonService.get(MissionStateTable.class,
 						missionstatetable.getMissionId());
@@ -2277,7 +2280,9 @@ public class NmsTaskManagerAction extends BaseAction {
 				this.addDBOperationRpt(commonService, "mission_parameter_table1", "UPDATE",
 						missionstatetable.getMissionId());
 			}
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString(
 					"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');this.location='nmsTaskManager.do?action=query'</script>");
@@ -2303,6 +2308,7 @@ public class NmsTaskManagerAction extends BaseAction {
 	 */
 	public String updateState() {
 		try {
+			commonService.beginTransaction();
 			// - 状态变更操作标识 1(已创建) <--> (准备撤销)5
 			String curstate = this.getRequest().getParameter("curstate");
 
@@ -2375,6 +2381,7 @@ public class NmsTaskManagerAction extends BaseAction {
 
 					// 将更新操作写到操作日志中
 					this.addDBOperationRpt(commonService, "mission_state_table", "UPDATE", pid[i]);
+					commonService.commit();
 					sendMissionInfoId(pid[i], 0l, commonService);
 					// sendMissionInfoId(missionstatetable.getMissionId(),1l);
 				}
@@ -2386,8 +2393,9 @@ public class NmsTaskManagerAction extends BaseAction {
 						+ "this.location='nmsTaskManager.do?action=query&pageNo=" + pageNo + "&pageSize=" + pageSize
 						+ "'</script>");
 			}
-
+			
 		} catch (Exception e) {
+			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');"
 					+ "this.location='nmsTaskManager.do?action=query&pageNo=" + pageNo + "&pageSize=" + pageSize
 					+ "'</script>");
@@ -4144,6 +4152,7 @@ public class NmsTaskManagerAction extends BaseAction {
 
 	public void saveFailedNodesTask() {
 		try {
+			commonService.beginTransaction();
 			String oldMissionIdStr = this.getRequest().getParameter("oldMissionId");
 			Long oldMissionId = Long.parseLong(oldMissionIdStr);
 			MissionStateTable missionStateTable0 = (MissionStateTable) this.commonService.get(MissionStateTable.class,
@@ -4241,8 +4250,10 @@ public class NmsTaskManagerAction extends BaseAction {
 			default:
 				break;
 			}
+			commonService.commit();
 			sendMissionInfoId(stateTable.getMissionId(), 0l, commonService);
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');window.history.go(-1);</script>");
 		}
@@ -4253,6 +4264,7 @@ public class NmsTaskManagerAction extends BaseAction {
 	@SuppressWarnings("static-access")
 	public void saveTaskbyType() {
 		try {
+			commonService.beginTransaction();
 			// -- 命令参数格式校验
 			// -- 2012-3-7 修改界面参数显示形式后不在进行格式校验，默认设置值为0
 			commandParaCheck = 0;
@@ -4690,6 +4702,7 @@ public class NmsTaskManagerAction extends BaseAction {
 						missionstatetable.getMissionId());
 				// sendInfo(missionstatetable.getMissionId(),0l,new
 				// File(fileName));
+				commonService.commit();
 				logger.debug("开始发送任务信息，任务id：" + missionstatetable.getMissionId());
 				sendMissionInfoId(missionstatetable.getMissionId(), 0l, commonService);
 			}
@@ -4704,7 +4717,9 @@ public class NmsTaskManagerAction extends BaseAction {
 				outHtmlString(
 						"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.success_n81i');this.location='nmsTaskManager.do?action=query'</script>");
 			}
+			
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString(
 					"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');this.location='nmsTaskManager.do?action=query'</script>");
@@ -4720,6 +4735,7 @@ public class NmsTaskManagerAction extends BaseAction {
 	 */
 	public void saveConverseTask() {
 		try {
+			commonService.beginTransaction();
 			// -- 2012-3-9
 			// 修改界面参数显示形式后相应参数的处理：为有文件推送的List列表的各对象设置文件名，并将各对象转换为JSon字符串？？
 
@@ -4847,8 +4863,9 @@ public class NmsTaskManagerAction extends BaseAction {
 				outHtmlString(
 						"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.success_n81i');this.location='nmsTaskManager.do?action=query'</script>");
 			}
-
+			commonService.commit();
 		} catch (Exception e) {
+			commonService.rollback();
 			e.printStackTrace();
 			outHtmlString(
 					"<script type=\"text/javascript\">alert('操作失败');this.location='nmsTaskManager.do?action=query'</script>");

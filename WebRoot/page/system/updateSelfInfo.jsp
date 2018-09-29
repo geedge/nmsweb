@@ -39,16 +39,20 @@
 			}	
 			
 			function doUpdate(yhid,yhbh){
-				if(yhForm.email.value!=""){
-					if(!checkEmail(yhForm.email.value.toLowerCase())){
-						$("#email").next().html('i18n_usi.message.email_n81i');
-						yhForm.email.focus();
-						return false;
+				var emailFlag=${session.emailFlag};
+				if(emailFlag==0){
+					if(yhForm.email.value!=""){
+						if(!checkEmail(yhForm.email.value.toLowerCase())){
+							$("#email").next().html('i18n_usi.message.email_n81i');
+							yhForm.email.focus();
+							return false;
+						}
+					}else{
+						$("#email").next().html('i18n_usi.message.emailInput_n81i');
+						return;
 					}
-				}else{
-					$("#email").next().html('i18n_usi.message.emailInput_n81i');
-					return;
 				}
+				
 				if($("#y").attr('checked')==true){
 					if($id("yhmm","","i18n_usi.text.yhmm_n81i")&&$id("confirm","","i18n_usi.text.confirm_n81i")){
 				 		var yhmm = document.getElementById("yhmm").value;

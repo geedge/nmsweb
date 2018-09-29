@@ -159,6 +159,7 @@ public class TopoManageAction extends BaseAction{
 		JSONArray fromObject = JSONArray.fromObject(parameter);
 		List<TopoManageInfo> results = (List) JSONArray.toCollection(fromObject, TopoManageInfo.class);
 		try {
+			commonService.beginTransaction();
 			TopoInfo topoInfo = (TopoInfo) this.commonService.get(TopoInfo.class, topoInfoId);
 			if(!topoInfo.getSystemId().equals(systemId)){	
 				//将之前的topotu指向业务系统设为null
@@ -179,7 +180,9 @@ public class TopoManageAction extends BaseAction{
 				topoNodeInfo.setTypeId(data.getNodeTypeId());
 				this.commonService.update(topoNodeInfo);
 			}
+			commonService.commit();
 		}catch (Exception e) {
+			commonService.rollback();
 			try {
 				this.getResponse().sendError(500);
 			} catch (IOException e1) {

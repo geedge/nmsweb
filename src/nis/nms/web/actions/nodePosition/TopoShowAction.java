@@ -157,7 +157,7 @@ public class TopoShowAction extends BaseAction
 				Object[] countObjs = (Object[]) countList.get(0);
 				BigDecimal bigDecimal = new BigDecimal(1);
 				int alramNodeSize = Integer.valueOf(countObjs[0].toString());//((BigDecimal) countObjs[0]).intValue();
-				int allNodeSize = Integer.valueOf(countObjs[0].toString());//((BigDecimal) countObjs[1]).intValue();
+				int allNodeSize = Integer.valueOf(countObjs[1].toString());//((BigDecimal) countObjs[1]).intValue();
 				if (alramNodeSize > 0)
 				{
 					nodegroupTable.setStatus(1);
