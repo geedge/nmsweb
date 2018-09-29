@@ -223,15 +223,9 @@ body {
 					 success:function (data,textStatus){
 						 if(textStatus == "success" && (data!= null && data!= "" )){
 						 	$("#nodeBoxs").html("");
-							// var t =$("#nodeBox").dialog("options").title;
+							 var t =$("#nodeBox").dialog("options").title;
 						 	/* $("#nodeBox").dialog("setTitle", params[1]);
-						 	$("#nodeBox").dialog("open");  */
-						 	window.top.layer.open({
-						 		title:params[1],
-						 		type:1,
-						 		content:$("#nodeBox"),
-						 		shade:0.3
-						 	});
+						 	$("#nodeBox").dialog("open"); 
 						 	
 						 	var length = $(data).length;
 						 	var raphaelBox = Raphael("nodeBoxs",boxWidth,boxHeight);
