@@ -296,7 +296,7 @@ function $id(tid,type,show){// id 类型  alter的消息
 			    div.insertBefore($('body table',window.document).first());		// 将div加入页面中
 			    var $divArray = $(this).closest("div");
 				var divO = $divArray[0];
-			    div.css('top','28px');
+			    div.css('top','0px');
 				div.css('display','inline');
 			}
 
@@ -361,8 +361,14 @@ function $id(tid,type,show){// id 类型  alter的消息
 				if($divArray.size()>0){
 					var divO = $divArray[0];
 					if(tableOrgPosition.top < divO.scrollTop){
-						$headerDiv.css('top','28px');
+						var preDivTop=$headerDiv.parent().prevAll("div[id='divTop']");
+						if(preDivTop.length>0){
+							$headerDiv.css('top','28px');
+						}else{
+							$headerDiv.css('top','0px');
+						}
 						$headerDiv.css('display','inline');
+						
 					}else{
 						$headerDiv.css('display','none');
 					}
