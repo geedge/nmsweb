@@ -319,37 +319,46 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 	
 	$(function(){
 		 //告警节点列表初始化
-		$("#nodeList").dialog({
+		/* $("#nodeList").dialog({
 			title:"i18n_st.nodeList.title_n81i",
 			resizable:true,
 			width:1024,
 			height:600
 		});	
-		 console.log("123213213213")
+		 console.log("123213213213") */
 	})
 
 	
-	function getDetectInfo(id,type,showStatus){
-		//根据类型的不同 判断节点或节点组的查询条件
-		var url ="<c:url value='/detection/monitorData.do?action=query&nodeType=1&requestType=newTopo&nodeGroupId="+id+"'/>";
-		var url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=1&requestType=topo&nodeGroupId="+id+"'/>";
-		if(type==2){
-			url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
-			url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
-		}
+function getDetectInfo(id,type,showStatus){
+	//根据类型的不同 判断节点或节点组的查询条件
+	var url ="<c:url value='/detection/monitorData.do?action=query&nodeType=1&requestType=newTopo&nodeGroupId="+id+"'/>";
+	var url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=1&requestType=topo&nodeGroupId="+id+"'/>";
+	if(type==2){
+		url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
+		url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
+	}
 	//异常情况，显示紧急告警列表，否则不显示
 	if(showStatus == 1){
-		$("#title").show();
-		$("#I4").show();
-		$("#hr").show();
-		$("#I4").attr("src",url2);
+		//$("#title").show();
+		top.$("#I4").show();
+		top.$("#hr").show();
+		top.$("#I4").attr("src",url2);
 	}else{
-		$("#title").hide();
-		$("#I4").hide();
-		$("#hr").hide();
+		//$("#title").hide();
+		top.$("#I4").hide();
+		top.$("#hr").hide();
 	}
 
-	$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
+	top.$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
+	parent.layer.open({
+		type: 1,
+		title: "i18n_st.text.policy_n81i",
+		area:['1024px', '600px'],
+		shade: 0.6,
+		closeBtn: 1,
+		maxmin:true,
+		content: top.$("#nodeList")
+	}); 
 	
 }
 
