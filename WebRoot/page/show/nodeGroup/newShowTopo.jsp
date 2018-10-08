@@ -46,23 +46,6 @@
 	<div>
 		<canvas  id="canvas" style="background-color:#FAFAFA; border:1px solid #444;display:block"></canvas>
 	</div>
-	<div id="nodeList" closed="true">
-		<!-- 1为禁止查询，2为可以联想查询  此开关同main.jsp-->
-		<input type="hidden" id="lianxiangStatus" value="2" />
-		<!--<span id="title" class="color_3_tip"
-			style="width: 100%;  display: none; text-align: center;"></span>-->
-		<div id="title" class="color_3_tip" style="height: 20px;text-align: center;line-height: 20px">i18n_st.text.policy_n81i</div>
-		<iframe id="I4" name="I4" height="30%" width="100%" border="0"
-			style="background: #FFFFFF; display: none;" frameborder="0" src=""
-			scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-		<hr id="hr" />
-		<iframe id="I5" name="I5" height="100%" width="100%" border="0"
-			style="background: #FFFFFF;" frameborder="0" src="" scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-	</div>
 	
 	<!-- <div id="nodeList" closed="true">
 		1为禁止查询，2为可以联想查询  此开关同main.jsp

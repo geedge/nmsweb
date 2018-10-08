@@ -38,6 +38,8 @@
 <script language="javascript" type="text/javascript" src="<c:url value="/scrollBar/scrollBar.js"/>"></script>
 <script type="text/javascript"
 	src="<c:url value='/js/jquery-easyui-1.1.2/jquery.easyui.min.js' />"></script>
+<script language="javascript" type="text/javascript"
+			src="<c:url value='/js/raphael.js'/>"></script>
 <script type="text/javascript">
 $(function(){
 	var lang=$("#languageChange").val();
@@ -627,21 +629,30 @@ html, body {
 	document.body.style.overflowX="hidden";	
 	document.body.style.overflowY="hidden";
 </script>
+<!-- 业务逻辑拓扑弹框 -->
 <div id="nodeList" style="display:none;height:100%" scrolling="no">
-		<!-- 1为禁止查询，2为可以联想查询  此开关同main.jsp-->
-		<input type="hidden" id="lianxiangStatus" value="2" />
-		<!--<span id="title" class="color_3_tip"
-			style="width: 100%;  display: none; text-align: center;"></span>-->
-		<iframe id="I4" name="I4" height="35%" width="100%" border="0"
-			style="background: #FFFFFF; display: none;" frameborder="0" src=""
-			scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-		<hr id="hr" />
-		<iframe id="I5" name="I5" height="64%" width="100%" border="0"
-			style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-	</div>
+	<!-- 1为禁止查询，2为可以联想查询  此开关同main.jsp-->
+	<input type="hidden" id="lianxiangStatus" value="2" />
+	<!--<span id="title" class="color_3_tip"
+		style="width: 100%;  display: none; text-align: center;"></span>-->
+	<iframe id="I4" name="I4" height="35%" width="100%" border="0"
+		style="background: #FFFFFF; display: none;" frameborder="0" src=""
+		scrolling="no">
+		i18n_st.message.frameInfo_n81i
+	</iframe>
+	<hr id="hr" />
+	<iframe id="I5" name="I5" height="64%" width="100%" border="0"
+		style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
+		i18n_st.message.frameInfo_n81i
+	</iframe>
+</div>
+<!-- 3D机房弹框 -->
+<div id="nodeBoxs" style="display:none;"></div>
+<div id="alarmInfo" style="display:none;">
+	<iframe id="I6" name="I6" height="525px" width="100%" border="0"
+		style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
+		i18n_snr.message.frame_n81i
+	</iframe>
+</div>
 </body>
 </html>
