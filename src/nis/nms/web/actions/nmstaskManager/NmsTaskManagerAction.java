@@ -572,7 +572,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				}
 			}
 
-			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName _n81i"), 
+			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName_n81i"), 
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionType_n81i"), 
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.isLoop_n81i"),
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionState_n81i"), 
@@ -743,7 +743,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				}
 			}
 
-			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName _n81i"), 
+			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName_n81i"), 
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionType_n81i"), 
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.isLoop_n81i"),
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionState_n81i"), 

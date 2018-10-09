@@ -164,7 +164,7 @@ body {
 		 				var position = row+""+col;
 		 				var roomColor = "#CCCCCC";
 		 				var boxBgImg = boxImg;//机柜背景图片
-		 				var boxTitle = "i18n_snr.message.boxTitle1 _n81i";
+		 				var boxTitle = "i18n_snr.message.boxTitle1_n81i";
 		 				if(nodeBoxs[position]!=undefined){
 		 					roomColor = "#A3C09F";//机柜正常常绿色
 		 					if(nodeBoxs[position].alarm){
