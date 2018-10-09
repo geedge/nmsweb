@@ -455,7 +455,8 @@ body {
 						 	window.top.layer.open({
 						 		type: 1,
 						 		title: params[1],
-						 		area:['206px', 'auto'],
+						 		area:['206px', ''],
+						 		scrollbar: true,
 						 		content: window.top.$("#nodeBoxs")
 						 	})
 						 }
@@ -470,13 +471,22 @@ body {
 			}else if(nodeType == 1){
 				var url ="<c:url value='/detection/detectionWarning.do?action=queryNE&ip="+nodeip+"&levelAlarm=1"+param+"+&type=3Droom'/>";
 			}
+			var thisheight = $(document).height()*0.9;
+			var thiswidth = $(document).width()*0.9;
 			window.top.layer.open({
 		 		type: 1,
-		 		area:['900px', '600px'],
+		 		maxmin:true,
+		 		area: [thiswidth + 'px', thisheight + 'px'],
+		 		scrollbar: true,
 		 		content: window.top.$("#alarmInfo")
 		 	})
 			window.top.$("#I6").html("");
 			window.top.$("#I6").attr("src",url);
+			window.top.$("#I6").load(function(){
+				var main = window.top.$("#I6");
+				main.height(thisheight);
+				main.width(thiswidth);
+			});
 		}
 		
 		/* function getAlarmInfo(param,nodeip,nodeType){

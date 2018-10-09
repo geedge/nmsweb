@@ -412,7 +412,6 @@ $(function(){
 			
 		}
 		
-		
 </script>
 <style type="text/css">	
 html, body {
@@ -649,8 +648,8 @@ html, body {
 <!-- 3D机房弹框 -->
 <div id="nodeBoxs" style="display:none;"></div>
 <div id="alarmInfo" style="display:none;">
-	<iframe id="I6" name="I6" height="525px" width="100%" border="0"
-		style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
+	<iframe id="I6" name="I6" border="0"
+		style="background: #FFFFFF;min-height:400px;min-width:600px" frameborder="0" src="" scrolling="no">
 		i18n_snr.message.frame_n81i
 	</iframe>
 </div>

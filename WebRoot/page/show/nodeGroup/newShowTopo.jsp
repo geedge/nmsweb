@@ -333,10 +333,13 @@ function getDetectInfo(id,type,showStatus){
 	}
 
 	top.$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
+	
+	var thisheight = $(document).height()*0.9;
+	var thiswidth = $(document).width()*0.9;
 	parent.layer.open({
 		type: 1,
 		title: "i18n_st.text.policy_n81i",
-		area:['1024px', '600px'],
+		area:[thiswidth + 'px', thisheight + 'px'],
 		shade: 0.6,
 		closeBtn: 1,
 		maxmin:true,
