@@ -477,14 +477,15 @@ body {
 		 		type: 1,
 		 		area: [thiswidth + 'px', thisheight + 'px'],
 		 		scrollbar: true,
+		 		maxmin: true,
 		 		content: window.top.$("#alarmInfo")
 		 	})
 			window.top.$("#I6").html("");
 			window.top.$("#I6").attr("src",url);
 			window.top.$("#I6").load(function(){
 				var main = window.top.$("#I6");
-				main.height(thisheight);
-				main.width(thiswidth);
+				main.height("100%");
+				main.width("100%");
 			});
 		}
 		

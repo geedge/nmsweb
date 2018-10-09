@@ -647,7 +647,7 @@ html, body {
 </div>
 <!-- 3D机房弹框 -->
 <div id="nodeBoxs" style="display:none;"></div>
-<div id="alarmInfo" style="display:none;">
+<div id="alarmInfo" style="display:none;height:100%">
 	<iframe id="I6" name="I6" border="0"
 		style="background: #FFFFFF;min-height:400px;min-width:600px" frameborder="0" src="" scrolling="no">
 		i18n_snr.message.frame_n81i
