@@ -475,7 +475,6 @@ body {
 			var thiswidth = $(document).width()*0.9;
 			window.top.layer.open({
 		 		type: 1,
-		 		maxmin:true,
 		 		area: [thiswidth + 'px', thisheight + 'px'],
 		 		scrollbar: true,
 		 		content: window.top.$("#alarmInfo")
