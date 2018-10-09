@@ -110,21 +110,24 @@ public class AutoRunForSocketServerServlet extends HttpServlet implements Servle
 			}});
 		System.out.println(port+">>SSL通讯监听 已启动");
 		
-		
-		//nms上报
-		String intervalStr = BaseAction.rb.getString("nms.report.interval");
-		//nms上报间隔
-		long interval = StringUtil.isBlank(intervalStr) ? 300000 : Long.parseLong(intervalStr)*1000;
-		//nms初次上报延时
-		long now = new Date().getTime();
-		long initInterval = 0l;
-		if(now%interval > 0) {
-			initInterval = interval-(now%interval);
+		String openStr = BaseAction.rb.getString("nms.report.open");
+		boolean open = StringUtil.isBlank(openStr) ? false : ("1".equals(openStr) ? true : false);
+		if (open) {
+			//nms上报
+			String intervalStr = BaseAction.rb.getString("nms.report.interval");
+			//nms上报间隔
+			long interval = StringUtil.isBlank(intervalStr) ? 300000 : Long.parseLong(intervalStr)*1000;
+			//nms初次上报延时
+			long now = new Date().getTime();
+			long initInterval = 0l;
+			if(now%interval > 0) {
+				initInterval = interval-(now%interval);
+			}
+			
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsStatusThread(), initInterval, interval, TimeUnit.MILLISECONDS);
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsRuleThread(), initInterval, interval, TimeUnit.MILLISECONDS);
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsPortThread(), initInterval, interval, TimeUnit.MILLISECONDS);
 		}
-		
-		ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsStatusThread(), initInterval, interval, TimeUnit.MILLISECONDS);
-		ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsRuleThread(), initInterval, interval, TimeUnit.MILLISECONDS);
-		ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsPortThread(), initInterval, interval, TimeUnit.MILLISECONDS);
 	}
 	
 }

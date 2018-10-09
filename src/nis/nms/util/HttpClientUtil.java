@@ -66,7 +66,8 @@ public class HttpClientUtil {
      */  
     public String post(String url, String json) throws ClientProtocolException, IOException{  
         //实例化httpClient  
-    	logger.info("发送post请求：" + url + ":::" + json);
+    	logger.info("发送post请求：" + url);
+    	logger.debug("发送post请求：" + url + ":::" + json);
         CloseableHttpClient httpclient = HttpClients.createDefault();  
         //实例化post方法  
         HttpPost httpPost = new HttpPost(url);   
@@ -80,7 +81,8 @@ public class HttpClientUtil {
         //执行post方法  
         response = httpclient.execute(httpPost);  
         content = EntityUtils.toString(response.getEntity(), "utf-8");
-        logger.info("post请求结束：" + response.getStatusLine().getStatusCode() + ":::" + content);
+        logger.info("post请求结束：" + response.getStatusLine().getStatusCode());
+        logger.debug("post请求结束：" + response.getStatusLine().getStatusCode() + ":::" + content);
         return content;  
     }  
 }
