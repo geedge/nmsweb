@@ -198,7 +198,10 @@ body {
 		 					//	var param = this.attr("text");
 			 					var nodeid = this.id;
 			 					var selector = "#"+nodeid;
-								var param = $(selector).val();		 						
+								var param = $(selector).val();		
+								loading = window.top.layer.load(1, {
+									shade: [0.1,'black'] //0.1透明度的白色背景
+								}); 						
 		 						getNodeBox(param);
 		 					});
 		 				}
@@ -452,6 +455,7 @@ body {
 						 			raphaelBox.text(nodeIndexs[i].x,nodeIndexs[i].y,nodeShowInd).attr({'font-size':12,fill:"#000000"});
 						 		}
 						 	}
+						 	window.top.layer.close(loading);
 						 	window.top.layer.open({
 						 		type: 1,
 						 		title: params[1],
