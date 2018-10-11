@@ -4702,7 +4702,6 @@ public class NmsTaskManagerAction extends BaseAction {
 						missionstatetable.getMissionId());
 				// sendInfo(missionstatetable.getMissionId(),0l,new
 				// File(fileName));
-				commonService.commit();
 				logger.debug("开始发送任务信息，任务id：" + missionstatetable.getMissionId());
 				sendMissionInfoId(missionstatetable.getMissionId(), 0l, commonService);
 			}
@@ -4717,7 +4716,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				outHtmlString(
 						"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.success_n81i');this.location='nmsTaskManager.do?action=query'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

@@ -260,10 +260,11 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 	 * @return
 	 */
 	public boolean getAdminMark(){
-		if(StringUtils.isNotEmpty(rb.getString("common.admin.mark")) && getUser()!=null){
-			if(rb.getString("common.admin.mark").equals(getUser().getYhbh()) 
+		XtYhJbxx user =getUser1();
+		if(StringUtils.isNotEmpty(rb.getString("common.admin.mark")) && user!=null){
+			if(rb.getString("common.admin.mark").equals(getUser1().getYhbh()) 
 					|| getSystemID().equals(-1L)
-					||"admin".equalsIgnoreCase(getUser().getYhbh())){
+					||"admin".equalsIgnoreCase(getUser1().getYhbh())){
 				return true;
 			}else return false;
 		}else
@@ -426,6 +427,11 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 	
 	
 	public XtYhJbxx getUser(){ 
+		HttpSession session = getRequest().getSession(true);
+		XtYhJbxx user = (XtYhJbxx)session.getAttribute(Constant.SESSION_CZY_NAME);
+		return user;
+	}
+	public XtYhJbxx getUser1(){ 
 		HttpSession session = getRequest().getSession(true);
 		XtYhJbxx user = (XtYhJbxx)session.getAttribute(Constant.SESSION_CZY_NAME);
 		return user;
