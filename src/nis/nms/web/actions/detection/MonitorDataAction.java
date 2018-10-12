@@ -3852,7 +3852,7 @@ public class MonitorDataAction extends BaseAction {
 					String nmsClientStr = objs[index2] == null ? "" : objs[index2].toString();
 					String state = "";
 					int initK = 1;// 默认第一个为握手监测，其它监测从1开始取
-					if (!getI18nText("i18n_MonitorDataAction.emportCurrentXlsAbnormalSet.shakehands_n81i").equals(nmsClientStr) && StringUtils.isNotBlank(ip)) {// 如果ip没有握手监测，则从数据库中进行查询
+					if (!"i18n_check_type_info.NMSClient.CHECK_TYPE_NAME1_n81i".equals(nmsClientStr) && StringUtils.isNotBlank(ip)) {// 如果ip没有握手监测，则从数据库中进行查询
 						String sql = "select din.detectioned_state" + " from DETECTION_INFO_NEW din  "
 								+ " left join DETECTION_SET_INFO dsi on din.detection_set_info_id = dsi.id"
 								+ " left join check_type_info cti on dsi.check_type_id = cti.id"

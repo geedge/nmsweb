@@ -411,7 +411,8 @@ public class TopoShowAction extends BaseAction
 							String sql = null;
 							if(this.getAdminMark()){
 								sql = "select count(diw.seq_Id) from detection_info_new diw where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0  and diw.seq_id = "
-										+ seqId;
+										+ seqId
+										+ " and diw.DETECTION_SET_INFO_ID in (select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1 ) ";
 							}else{
 								sql = "select count(diw.seq_Id) from detection_info_new diw where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0  and diw.seq_id = "
 										+ seqId
