@@ -248,6 +248,7 @@ public class PoliceSetAction extends BaseAction {
 			this.commonService.save(dataPoliceRelation);
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"data_police_relation", "INSERT", dataPoliceRelation.getId());
+			sendSetInfo(null,dsi,commonService);
 			commonService.commit();
 		    outHtmlString("<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.success_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+"&setId="+setId+"'</script>");
 		} catch (Exception e) {
@@ -256,7 +257,7 @@ public class PoliceSetAction extends BaseAction {
 			logger.error(e.getStackTrace());
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.faild_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+"&setId="+setId+"'</script>");
 		}
-		sendSetInfo(null,dsi,commonService);
+		
 	}
 
 	public String openUpdatePoliceSet() {
@@ -313,7 +314,7 @@ public class PoliceSetAction extends BaseAction {
 			dpRelation.setMarker(dataPoliceRelation.getMarker());
 			dpRelation.setMarkerFiledId(dataPoliceRelation.getMarkerFiledId());
 			this.commonService.update(dpRelation);
-			commonService.commit();
+			
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService,"data_police_relation", "UPDATE", dpRelation.getId());
 			sendSetInfo(null,ds,commonService);
@@ -324,6 +325,7 @@ public class PoliceSetAction extends BaseAction {
 			
 			String str = "<script type=\"text/javascript\">alert('i18n_PoliceSetAction.queryPoliceSetInfo.success_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+setIdStr+"'</script>";
 			outHtmlString(str);
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

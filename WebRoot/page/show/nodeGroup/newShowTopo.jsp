@@ -320,6 +320,7 @@ function getDetectInfo(id,type,showStatus){
 		url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
 		url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
 	}
+	
 	//异常情况，显示紧急告警列表，否则不显示
 	if(showStatus == 1){
 		//$("#title").show();
@@ -331,7 +332,6 @@ function getDetectInfo(id,type,showStatus){
 		top.$("#I4").hide();
 		top.$("#hr").hide();
 	}
-
 	top.$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
 	
 	var thisheight = $(document).height()*0.9;
@@ -343,7 +343,10 @@ function getDetectInfo(id,type,showStatus){
 		shade: 0.6,
 		closeBtn: 1,
 		maxmin:true,
-		content: top.$("#nodeList")
+		content: top.$("#nodeList"),
+		cancel: function(index, layero){ 
+			top.$("#I4").removeAttr("src");
+		}    
 	}); 
 	
 }

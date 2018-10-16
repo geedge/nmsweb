@@ -143,7 +143,8 @@ body {
 					var selector = "#"+nodeid;
 					var alramInfo = $(selector).val();
 					showMsg(alramInfo,event);
-				}).mouseout(function(){
+				})
+				$(node).mouseleave(function(){
 					this.animate({"fill-opacity":1},800);
 					hideMsg();
 				})
@@ -181,9 +182,9 @@ body {
 	     		var a = infos[key];
 	     		if(a.length>13){
 		     		for(var i = 0 ;i <a.length;i++){
-			     		if(i%13==0&&i!=0){
+			     		/* if(i%13==0&&i!=0){
 			     			inf = inf + "<br/>";
-			     		}
+			     		} */
 		     			inf = inf + a.charAt(i);
 		     		}
 	     		}else{
@@ -195,7 +196,7 @@ body {
 	     	}
 	     	
 	     }
-	     with (oSon){
+	    with (oSon){
 		      innerHTML = info;  
 		      style.display = "block";  
 			if(navigator.userAgent.indexOf("MSIE")>0) {  
@@ -214,7 +215,9 @@ body {
 				  style.left = x + window.document.body.scrollLeft-200 ;  
 			      style.top =  y + window.document.body.scrollTop-50;
    			}		      
-	     	}  
+	     }  
+	     	
+	    
     	} 
 		
 		function hideMsg(){

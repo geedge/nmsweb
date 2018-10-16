@@ -648,13 +648,13 @@ public class ServerManagerAction extends BaseAction {
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "Server_Table", "UPDATE", st.getId());
 						ServerTable serverTable = (ServerTable) commonService.get(ServerTable.class, ids[i]);
-						commonService.commit();
+						
 						//将DC变更发送到DC
 						this.sendDataControllerReset(ids[i], serverTable.getServerIp(), commonService);
 					}	
 				}
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -682,13 +682,13 @@ public class ServerManagerAction extends BaseAction {
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "Server_Table", "UPDATE", st.getId());
 						ServerTable serverTable = (ServerTable) commonService.get(ServerTable.class, ids[i]);
-						commonService.commit();
+						
 						//将DC变更发送到DC
 						this.sendDataControllerReset(ids[i], serverTable.getServerIp(), commonService);
 					}	
 				}
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -797,9 +797,10 @@ public class ServerManagerAction extends BaseAction {
 					}
 				}
 			}
-			commonService.commit();
+			
 			//将DC变更发送到DC
 			this.sendDataControllerReset(serverTable.getId(), serverTable.getServerIp(), commonService);
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

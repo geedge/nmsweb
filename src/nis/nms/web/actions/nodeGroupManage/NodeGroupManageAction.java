@@ -399,12 +399,12 @@ public class NodeGroupManageAction extends BaseAction {
 			
 			//将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "nodegroup_table", "INSERT", nodegroupTable.getGroupId());
-			commonService.commit();
+			
 			// 用来实现即时向客户端发送脚本文件
 			this.sendPluginFile(nodegroupTable.getGroupId(), null,commonService);
 						
 			this.sendNodeAndGroupId(nodegroupTable.getGroupId(), null,commonService);//通知NMSServer更新节点组的监控信息
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -886,7 +886,7 @@ public class NodeGroupManageAction extends BaseAction {
 			
 			//将添加操作写到操作日志中
 			this.addDBOperationRpt(commonService, "nodegroup_table", "INSERT", nodeGroup.getGroupId());
-			commonService.commit();
+			
 			// 用来实现即时向客户端发送脚本文件
 			this.sendPluginFile(nodeGroup.getGroupId(), null,commonService);
 			
@@ -900,7 +900,7 @@ public class NodeGroupManageAction extends BaseAction {
 			}else{
 				this.outHtmlString("<script>alert('i18n_NodeGroupManageAction.downloadExample.success_n81i');this.location='nodeGroupManage!execute.do?action=queryNodeGroupInfo&showStopNGroup="+showStopNGroup+"'</script>");
 			}
-			
+			commonService.commit();
 		}catch (Exception e){
 			commonService.rollback();
 			logger.error(e.getStackTrace());
@@ -975,7 +975,7 @@ public class NodeGroupManageAction extends BaseAction {
 				
 				//将更新操作写到操作日志中
 				this.addDBOperationRpt(commonService, "nodegroup_table", "UPDATE", nodeGroup.getGroupId());
-				commonService.commit();
+				
 				this.outHtmlString("<script>alert('i18n_NodeGroupManageAction.downloadExample.success_n81i');this.location='nodeGroupManage!execute.do?action=queryNodeGroupInfo&showStopNGroup="+showStopNGroup+"'</script>");
 			}
 			if(flag){
@@ -985,7 +985,7 @@ public class NodeGroupManageAction extends BaseAction {
 				this.sendNodeAndGroupId(group.getGroupId(), null,commonService);	//通知NMSServer更新节点组的监控信息
 				this.getRequest().setAttribute("MSG","2");
 			}
-			
+			commonService.commit();
 		}catch (Exception e){
 			commonService.rollback();
 			logger.error(e.getStackTrace());
@@ -1241,7 +1241,7 @@ public class NodeGroupManageAction extends BaseAction {
 				String sqlCondition = "where NODE_ID in (" + allIds + ")";
 				//将更新操作写到操作日志中
 				this.addDBOperationRpt(commonService, sqlCondition, "NODE_TABLE");
-				commonService.commit();
+				
 				//通知NMSServer更新节点组的监控信息
 				for(String str : leafNodeGroupArray){
 					// 用来实现即时向客户端发送脚本文件
@@ -1250,7 +1250,7 @@ public class NodeGroupManageAction extends BaseAction {
 					this.sendNodeAndGroupId(Long.valueOf(str), null,commonService);
 				}
 			}
-			
+			commonService.commit();
 			//this.outHtmlString("<script>alert('操作成功！');this.location='"+path+"/nodeGroupManage/nodeGroupManage.do?action=queryNodeGroupInfo'</script>");
 		} catch (Exception e) {
 			commonService.rollback();

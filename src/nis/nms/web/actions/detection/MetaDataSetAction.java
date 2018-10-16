@@ -330,9 +330,9 @@ public class MetaDataSetAction extends BaseAction {
 			}else{
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_MetaDataSetAction.queryCheckTypeSource.success_n81i');this.location='metaDataSet.do?action=oppAdd&typeids="+checkTypeInfo.getId()+"'</script>");
 			}
-			commonService.commit();
 			//与NMSServer通信
 			this.sendCheckTypeId(typeInfo.getId()+"",commonService);
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

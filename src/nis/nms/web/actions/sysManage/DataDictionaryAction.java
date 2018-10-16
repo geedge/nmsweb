@@ -328,7 +328,7 @@ public class DataDictionaryAction extends BaseAction {
 				String sql="update xt_mk_jbxx set zxbz=? where id=?";
 				this.commonService.updateBySql(sql, deptflag,Constants.DEPT_MK_ID);
 			}
-			commonService.commit();
+			
 			//改变是否显示主动告警的启用状态时，需要和各个nc通信：SHOW_AUTO_ALARM_FLAG
 			if(nbt.getTypeIdentity().toLowerCase().equals(Constants.SHOW_AUTO_ALARM_FLAG.toLowerCase())
 					&& typeTable.getTypeState()!=oldState) {
@@ -339,7 +339,7 @@ public class DataDictionaryAction extends BaseAction {
 			}
 			
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DataDictionaryAction.queryDictionary.success_n81i');this.location='dataDictionary.do?action=query&pageNo="+pageNo+"&pageSize="+pageSize+"'</script>");
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			logger.error("Update failed",e);

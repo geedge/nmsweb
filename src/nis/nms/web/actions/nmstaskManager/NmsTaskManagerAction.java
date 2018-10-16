@@ -2381,7 +2381,7 @@ public class NmsTaskManagerAction extends BaseAction {
 
 					// 将更新操作写到操作日志中
 					this.addDBOperationRpt(commonService, "mission_state_table", "UPDATE", pid[i]);
-					commonService.commit();
+					
 					sendMissionInfoId(pid[i], 0l, commonService);
 					// sendMissionInfoId(missionstatetable.getMissionId(),1l);
 				}
@@ -2393,7 +2393,7 @@ public class NmsTaskManagerAction extends BaseAction {
 						+ "this.location='nmsTaskManager.do?action=query&pageNo=" + pageNo + "&pageSize=" + pageSize
 						+ "'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');"
@@ -4250,8 +4250,8 @@ public class NmsTaskManagerAction extends BaseAction {
 			default:
 				break;
 			}
-			commonService.commit();
 			sendMissionInfoId(stateTable.getMissionId(), 0l, commonService);
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
