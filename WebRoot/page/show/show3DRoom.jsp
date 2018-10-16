@@ -180,11 +180,11 @@ body {
 	     	if(key == 0){
 	     	var inf="";
 	     		var a = infos[key];
-	     		if(a.length>13){
+	     		if(a.length>25){
 		     		for(var i = 0 ;i <a.length;i++){
-			     		/* if(i%13==0&&i!=0){
+			     		 if(i%25==0&&i!=0){
 			     			inf = inf + "<br/>";
-			     		} */
+			     		} 
 		     			inf = inf + a.charAt(i);
 		     		}
 	     		}else{
@@ -192,7 +192,19 @@ body {
 	     		}
 	     		info+="<span style='font-weight: bold;'>"+inf+"</span><br/><br/>";
 	     	}else{
-	     		info+=infos[key]+"<br/>";
+	     		var a=infos[key];
+	     		if(a.length>25){
+	     			var tem="";
+	     			for(var i =0;i<a.length;i++){
+	     				if(i%25==0&&i!=0){
+	     					tem=tem+"<br/>"
+	     				}
+	     				tem=tem+a.charAt(i);
+	     			}
+	     			info+=tem;
+	     		}else{
+		     		info+=infos[key]+"<br/>";
+	     		}
 	     	}
 	     	
 	     }
