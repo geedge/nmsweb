@@ -420,24 +420,17 @@ html, body {
 	_overflow-x:hidden;
 	_overflow-y:hidden;
 }
-.nav{
-	width:200px;
-}
-
-.nav a{
-	text-align: left;
-}
 
 .nav a span{
 	margin-left: 40px;
 }
 
 .middle_tab{
-	left: 180px;
+	left: 210px;
 }
 
 .middle_right{
-	left : 185px;
+	left : 215px;
 }
 
 
@@ -571,7 +564,7 @@ html, body {
 			<table>
 				<tr valign="buttom" id="titles">
 						<td width="100%" height="18" background="<c:url value='/images/main_58.png'/>">
-							<div align="center" style="width: 180px;background-color: #a81e32">
+							<div align="center" style="width: 210px;background-color: #a81e32">
 								<span id="show" class="STYLE1" 
 									style="color: rgb(242, 229, 229);cursor:pointer; font-weight: bold;width: 100%">▽i18n_main.text.show1_n81i▽</span>
 							</div>

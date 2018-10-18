@@ -478,6 +478,7 @@ body {
 			var thisheight = $(document).height()*0.9;
 			var thiswidth = $(document).width()*0.9;
 			window.top.layer.open({
+				title: 'i18n_main.text.show1_n81i',
 		 		type: 1,
 		 		area: [thiswidth + 'px', thisheight + 'px'],
 		 		scrollbar: true,
