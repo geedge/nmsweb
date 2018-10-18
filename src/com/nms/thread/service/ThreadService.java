@@ -1253,11 +1253,11 @@ public class ThreadService {
 				+ "performace_data  ,current_times  ,start_time  ,"
 				+ "police_level   ,data_check_time  ,data_arrive_time  ,detectioned_state  ,"
 				+ "status_change_time  ,seq_id  ,detection_info_id,data_check_time_digital,data_arrive_time_digital      ,"
-				+ "POLICE_EMERGENT  ) VALUES"
+				+ "POLICE_EMERGENT,NEXT_CHECK_TIME  ) VALUES"
 				+"(?,?,"
 				+ "?,?,?,"
 				+ "?,?,?,?,"
-				+ "?,?,?,?,?,?)";
+				+ "?,?,?,?,?,?,null)";
 		return sql;
 	}
 	
@@ -1287,6 +1287,7 @@ public class ThreadService {
            +" ,data_arrive_time_digital = ?"
 
            +" ,POLICE_EMERGENT = ?"
+           +" ,NEXT_CHECK_TIME = NULL"
 
           +"  where din.detection_set_info_id = ?"
 
