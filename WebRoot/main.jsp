@@ -38,6 +38,8 @@
 <script language="javascript" type="text/javascript" src="<c:url value="/scrollBar/scrollBar.js"/>"></script>
 <script type="text/javascript"
 	src="<c:url value='/js/jquery-easyui-1.1.2/jquery.easyui.min.js' />"></script>
+<script language="javascript" type="text/javascript"
+			src="<c:url value='/js/raphael.js'/>"></script>
 <script type="text/javascript">
 $(function(){
 	var lang=$("#languageChange").val();
@@ -220,7 +222,7 @@ $(function(){
 		   					var name=$("alarm_level",this).text();//alert("pass:name"+name);
 							var urlStr=$("url",this).text();//alert("pass:urlStr"+urlStr);
 							var count=$("count",this).text(); //alert("count："+count);
-							var msgList="<a  target='I3' title='"+name+"("+count+")"+"' href='"+urlStr+"' ><li style='margin-left: 5px;'>"+name+"<font color='red'>("+count+")</font></a>";
+							var msgList="<a onclick='warnLink(this)' target='I3' title='"+name+"("+count+")"+"' href='"+urlStr+"' ><li style='margin-left: 5px;'>"+name+"<font color='red'>("+count+")</font></a>";
 							$("#msgTable").append("<tr><td>"+msgList+"<td></tr>");
 		   				})	
 			  		}
@@ -378,6 +380,38 @@ $(function(){
 			objA.attr("href",val+"&addr="+url);
 		});
 		
+		var a_warn;
+		
+		$(function(){
+			$("li > a").click(function(){
+				var a_href=$(this).prop("href");
+				if(a_href != "javascript:;"){
+					$("li > a").removeProp("style");
+					$(this).prop("style","background-color:#F3F3F8;");
+					if(a_warn!=null&&a_warn!=undefined){
+						$(a_warn).removeProp("style");
+						var text=$(a_warn).children("font").first().html();
+						$(a_warn).html(text);
+						a_warn=null;
+						console.log(text);
+					}
+					
+					
+				}
+			});	
+			
+		});
+		
+		function warnLink(obj){
+			
+			a_warn=obj;
+			$("li > a").removeProp("style");
+			var text=$(obj).html();
+			$(obj).html("<font color='black'>"+text+"</font>");
+			$(obj).prop("style","background-color:#F3F3F8;");
+			
+		}
+		
 </script>
 <style type="text/css">	
 html, body {
@@ -450,7 +484,7 @@ html, body {
                 <li><a href="<c:url value='/login!systemSelect.do?SytemChange=yes'/>">i18n_main.text.systemSelect_n81i&nbsp;&nbsp;|</a></li>
                 <%-- <li><a href="<c:url value='/main.jsp?i18n_lang=zh_CN'/>">简体中文&nbsp;&nbsp;|</a></li> 
                 <li><a href="<c:url value='/main.jsp?i18n_lang=en_US'/>">ENGLISH&nbsp;&nbsp;|</a></li> --%>
-                <li>
+                <li <%=!"ALL".equals(systemname)?"style='display:none'":"" %>>
                 	<!-- <a href="<c:url value="/authentication/identificat.do?action=toTargetSys"/>">To Grafana &nbsp;&nbsp;|</a> -->
                 	<a href="<c:url value='/authentication/identificat.do?action=toTargetSys'/>" id="toTarget" target='_blank'>To Grafana &nbsp;&nbsp;|<a/>
                 </li>
@@ -585,29 +619,6 @@ html, body {
 		%>
 		</div>  
 	</div>
-	
-	<!-- <div id="nodeList" closed="true">
-		1为禁止查询，2为可以联想查询  此开关同main.jsp
-		<input type="hidden" id="lianxiangStatus" value="2" />
-		<span id="title" class="color_3_tip"
-			style="width: 100%;  display: none; text-align: center;"></span>
-		<div id="title" class="color_3_tip" style="height: 20px;text-align: center;line-height: 20px">i18n_st.text.policy_n81i</div>
-		<iframe id="I4" name="I4" height="30%" width="100%" border="0"
-			style="background: #FFFFFF; display: none;" frameborder="0" src=""
-			scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-		<hr id="hr" />
-		<iframe id="I5" name="I5" height="100%" width="100%" border="0"
-			style="background: #FFFFFF;" frameborder="0" src="" scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-	</div>
-	 -->
-	
-	
-	
-	
 </div>
 <!--中间部分结束-->
 <div style="clear:both;"></div>
@@ -616,62 +627,31 @@ html, body {
 	document.body.style.overflow="hidden";
 	document.body.style.overflowX="hidden";	
 	document.body.style.overflowY="hidden";
-	
-	/* //以下代码解决了easy-ui报错 can't read property msie of undefined
-	jQuery.browser={};(function(){jQuery.browser.msie=false; jQuery.browser.version=0;if(navigator.userAgent.match(/MSIE ([0-9]+)./)){ jQuery.browser.msie=true;jQuery.browser.version=RegExp.$1;}})();
-	
-	$(function(){
-		 //告警节点列表初始化
-		$("#nodeList").dialog({
-			title:"i18n_st.nodeList.title_n81i",
-			resizable:true,
-			width:1024,
-			height:600
-		});	
-		 console.log("123213213213")
-	})
-
-	
-	function getDetectInfo(id,type,showStatus){
-		//根据类型的不同 判断节点或节点组的查询条件
-		var url ="<c:url value='/detection/monitorData.do?action=query&nodeType=1&requestType=newTopo&nodeGroupId="+id+"'/>";
-		var url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=1&requestType=topo&nodeGroupId="+id+"'/>";
-		if(type==2){
-			url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
-			url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
-		}
-	//异常情况，显示紧急告警列表，否则不显示
-	if(showStatus == 1){
-		$("#title").show();
-		$("#I4").show();
-		$("#hr").show();
-		$("#I4").attr("src",url2);
-	}else{
-		$("#title").hide();
-		$("#I4").hide();
-		$("#hr").hide();
-	}
-
-	$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
-}
-
-
- function setDivTitle(groupName) {
-	if(groupName!='undefined' && groupName!=null && groupName!="") {
-		$("#nodeList").dialog({
-			title:groupName+" i18n_st.text.monitorData_n81i"
-		});	
-	}else {
-		$("#nodeList").dialog({
-			title:"i18n_st.text.monitorData_n81i"
-		});	
-	}
-	$("#nodeList").dialog("open");
-}
- 	 // iframe切换关闭拓扑图的节点数据弹出框
-	 function closeTopo(){
-		 $("#nodeList").dialog("close");
-	 } */
 </script>
+<!-- 业务逻辑拓扑弹框 -->
+<div id="nodeList" style="display:none;height:100%" scrolling="no">
+	<!-- 1为禁止查询，2为可以联想查询  此开关同main.jsp-->
+	<input type="hidden" id="lianxiangStatus" value="2" />
+	<!--<span id="title" class="color_3_tip"
+		style="width: 100%;  display: none; text-align: center;"></span>-->
+	<iframe id="I4" name="I4" height="35%" width="100%" border="0"
+		style="background: #FFFFFF; display: none;" frameborder="0" src=""
+		scrolling="no">
+		i18n_st.message.frameInfo_n81i
+	</iframe>
+	<hr id="hr" />
+	<iframe id="I5" name="I5" height="64%" width="100%" border="0"
+		style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
+		i18n_st.message.frameInfo_n81i
+	</iframe>
+</div>
+<!-- 3D机房弹框 -->
+<div id="nodeBoxs" style="display:none;"></div>
+<div id="alarmInfo" style="display:none;height:100%">
+	<iframe id="I6" name="I6" border="0"
+		style="background: #FFFFFF;min-height:400px;min-width:600px" frameborder="0" src="" scrolling="no">
+		i18n_snr.message.frame_n81i
+	</iframe>
+</div>
 </body>
 </html>

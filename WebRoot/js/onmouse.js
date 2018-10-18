@@ -254,7 +254,7 @@ function $id(tid,type,show){// id 类型  alter的消息
 			$cloneHeader.attr("id",defaults.cloneHeader);
 			//行列两层嵌套循环，对应设定克隆表列宽
 	    	//计算表头行数defaults.minRows
-	    	$cloneHeader.find("tr").each(function(row,domEle){		// 克隆表   行循环
+	    	$cloneHeader.find("tr").each(function(row,domEle){// 克隆表   行循环
 	    		if(row<defaults.minRows){
 		    		$colDataOrg = $tableOrg.find("tr").eq(row).children();		// 原数据表 取第row行数据 
 		    		$(domEle).children().each(function(col){		// 克隆表   列循环
@@ -296,8 +296,10 @@ function $id(tid,type,show){// id 类型  alter的消息
 			    div.insertBefore($('body table',window.document).first());		// 将div加入页面中
 			    var $divArray = $(this).closest("div");
 				var divO = $divArray[0];
-			    div.css('top','28px');
-				div.css('display','inline');
+				if (divO.scrollTop > 20) {
+				    div.css('top','0px');
+					div.css('display','inline');
+				}
 			}
 
 			return $("#"+defaults.headerDiv);
@@ -361,10 +363,16 @@ function $id(tid,type,show){// id 类型  alter的消息
 				if($divArray.size()>0){
 					var divO = $divArray[0];
 					if(tableOrgPosition.top < divO.scrollTop){
-						$headerDiv.css('top','28px');
-						$headerDiv.css('display','inline');
+						var preDivTop=$headerDiv.parent().prevAll("div[id='divTop']");
+						if(preDivTop.length>0){
+							$("#"+defaults.headerDiv).css('top','28px');
+						}else{
+							$("#"+defaults.headerDiv).css('top','0px');
+						}
+						$("#"+defaults.headerDiv).css('display','inline');
+						
 					}else{
-						$headerDiv.css('display','none');
+						$("#"+defaults.headerDiv).css('display','none');
 					}
 				}
 			});

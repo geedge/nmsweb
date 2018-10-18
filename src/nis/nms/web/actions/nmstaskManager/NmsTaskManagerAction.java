@@ -572,7 +572,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				}
 			}
 
-			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName _n81i"), 
+			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName_n81i"), 
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionType_n81i"), 
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.isLoop_n81i"),
 								getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionState_n81i"), 
@@ -743,7 +743,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				}
 			}
 
-			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName _n81i"), 
+			String[] title = { getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionName_n81i"), 
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionType_n81i"), 
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.isLoop_n81i"),
 					getI18nText("i18n_NmsTaskManagerAction.executeAction.title.missionState_n81i"), 
@@ -2381,7 +2381,7 @@ public class NmsTaskManagerAction extends BaseAction {
 
 					// 将更新操作写到操作日志中
 					this.addDBOperationRpt(commonService, "mission_state_table", "UPDATE", pid[i]);
-					commonService.commit();
+					
 					sendMissionInfoId(pid[i], 0l, commonService);
 					// sendMissionInfoId(missionstatetable.getMissionId(),1l);
 				}
@@ -2393,7 +2393,7 @@ public class NmsTaskManagerAction extends BaseAction {
 						+ "this.location='nmsTaskManager.do?action=query&pageNo=" + pageNo + "&pageSize=" + pageSize
 						+ "'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.faild_n81i');"
@@ -4250,8 +4250,8 @@ public class NmsTaskManagerAction extends BaseAction {
 			default:
 				break;
 			}
-			commonService.commit();
 			sendMissionInfoId(stateTable.getMissionId(), 0l, commonService);
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -4702,7 +4702,6 @@ public class NmsTaskManagerAction extends BaseAction {
 						missionstatetable.getMissionId());
 				// sendInfo(missionstatetable.getMissionId(),0l,new
 				// File(fileName));
-				commonService.commit();
 				logger.debug("开始发送任务信息，任务id：" + missionstatetable.getMissionId());
 				sendMissionInfoId(missionstatetable.getMissionId(), 0l, commonService);
 			}
@@ -4717,7 +4716,7 @@ public class NmsTaskManagerAction extends BaseAction {
 				outHtmlString(
 						"<script type=\"text/javascript\">alert('i18n_NmsTaskManagerAction.executeAction.success_n81i');this.location='nmsTaskManager.do?action=query'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

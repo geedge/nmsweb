@@ -687,10 +687,10 @@ public class CheckTypeSetAction extends BaseAction {
 				//执行添加字段
 				this.commonService.updateBatchBySql(sqlString.toString());
 			}
-			commonService.commit();
+			
 			//与NMSServer通信
 			this.sendCheckTypeId(checkTypeInfo.getId()+"",commonService);
-			
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());

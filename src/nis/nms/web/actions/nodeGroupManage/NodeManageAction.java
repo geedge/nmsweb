@@ -615,7 +615,7 @@ public class NodeManageAction extends BaseAction {
 					// 将添加操作写到操作日志中
 					this.addDBOperationRpt(commonService, "node_table",
 							"INSERT", nodeTable.getNodeId());
-					commonService.commit();
+					
 					if (new Long(1).equals(group.getIsValid())) { // 节点组有效
 						
 						// 用来实现即时向客户端发送脚本文件
@@ -643,7 +643,7 @@ public class NodeManageAction extends BaseAction {
 						.outHtmlString("<script>alert('i18n_NodeManageAction.addNodeInfo.nodeHadIp_n81i');history.back();</script>");
 				return;
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -1138,7 +1138,7 @@ public class NodeManageAction extends BaseAction {
 					// 将更新操作写到操作日志中
 					this.addDBOperationRpt(commonService, "node_table",
 							"UPDATE", nodeTable.getNodeId());
-					commonService.commit();
+					
 					if (flag) {
 						// 用来实现即时向客户端发送脚本文件
 						this.sendPluginFile(nt.getGroupId(), nt
@@ -1159,6 +1159,7 @@ public class NodeManageAction extends BaseAction {
 						.outHtmlString("<script>alert('i18n_NodeManageAction.addNodeInfo.nodeHadIp_n81i');history.back();</script>");
 				return;
 			}
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -1186,7 +1187,7 @@ public class NodeManageAction extends BaseAction {
 				// 将更新操作写到操作日志中
 				this.addDBOperationRpt(commonService, "node_table", "UPDATE",
 						nd.getNodeId());
-				commonService.commit();
+				
 				NodegroupTable group = (NodegroupTable) this.commonService.get(
 						NodegroupTable.class, nd.getGroupId());
 				if (new Long(1).equals(group.getIsValid())) { // 节点组有效
@@ -1205,7 +1206,7 @@ public class NodeManageAction extends BaseAction {
 				// this.outHtmlString("<script
 				// type=\"text/javascript\">alert('操作成功');this.location='nodeManage.do?action=query&nodeGroupId="+group.getGroupId()+"&isValid="+group.getIsValid()+"'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();
@@ -1225,7 +1226,7 @@ public class NodeManageAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "node_table", "UPDATE",
 					nodeId);
-			commonService.commit();
+			
 			NodeTable nd = (NodeTable) this.commonService.get(NodeTable.class,
 					nodeId);
 			NodegroupTable group = (NodegroupTable) this.commonService.get(
@@ -1244,7 +1245,7 @@ public class NodeManageAction extends BaseAction {
 			this
 					.outHtmlString("<script type=\"text/javascript\">alert('i18n_NodeManageAction.addNodeInfo.success_n81i');this.location='nodeManage.do?action=query&nodeGroupId="
 							+ mkid + "&isValid=" + isValid + "&showStopNGroup=" + showStopNGroup + "&nodeIpVo="+nodeIpVo+"&nodeNameVo="+nodeNameVo+ "'</script>");
-			
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			e.printStackTrace();

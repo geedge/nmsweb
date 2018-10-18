@@ -134,23 +134,23 @@ public class TopoShowAction extends BaseAction
 				if(this.getAdminMark()){
 					sql = "SELECT * from ("
 							+ "select count(distinct nt.node_id) from detection_info_new diw left join node_table nt on diw.seq_id = nt.seq_id "
-							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.DETECTION_SET_INFO_ID in "
+							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 and diw.DETECTION_SET_INFO_ID in "
 							+ "(select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1) and nt.NODE_STATE = 0 "
 							+ "and nt.node_group_id in ("+gids+")" 
 							+ ") alramNode,"
 							+ "(SELECT count(DISTINCT t.node_ip) from node_table t WHERE "
 							+ " t.node_group_id= " + nodegroupTable.getGroupId()
-							+ ") allNode";
+							+ " and node_state=0 ) allNode";
 				}else{
 					sql = "SELECT * from ("
 							+ "select count(distinct nt.node_id) from detection_info_new diw left join node_table nt on diw.seq_id = nt.seq_id "
-							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.DETECTION_SET_INFO_ID in "
+							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 and diw.DETECTION_SET_INFO_ID in "
 							+ "(select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1) and nt.NODE_STATE = 0 "
 							+ "and nt.node_group_id in ("+gids+")" 
 							+ ") alramNode,"
 							+ "(SELECT count(DISTINCT t.node_ip) from node_table t WHERE t.system_id="
 							+ getSystemID() + " AND t.node_group_id= " + nodegroupTable.getGroupId()
-							+ ")allNode";
+							+ " and node_state=0 )allNode";
 				}
 				
 				List countList = commonService.executeSQL(sql);
@@ -411,10 +411,13 @@ public class TopoShowAction extends BaseAction
 							String sql = null;
 							if(this.getAdminMark()){
 								sql = "select count(diw.seq_Id) from detection_info_new diw where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0  and diw.seq_id = "
-										+ seqId;
+										+ seqId
+										+" and diw.VALID=1 "
+										+ " and diw.DETECTION_SET_INFO_ID in (select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1 ) ";
 							}else{
 								sql = "select count(diw.seq_Id) from detection_info_new diw where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0  and diw.seq_id = "
 										+ seqId
+										+" and diw.VALID=1 "
 										+ " and diw.DETECTION_SET_INFO_ID in (select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1 "
 										+ " and ("
 										+ "dst.VIEW_LEVEL=4 "//无限制

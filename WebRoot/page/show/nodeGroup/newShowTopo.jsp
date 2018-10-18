@@ -46,23 +46,6 @@
 	<div>
 		<canvas  id="canvas" style="background-color:#FAFAFA; border:1px solid #444;display:block"></canvas>
 	</div>
-	<div id="nodeList" closed="true">
-		<!-- 1为禁止查询，2为可以联想查询  此开关同main.jsp-->
-		<input type="hidden" id="lianxiangStatus" value="2" />
-		<!--<span id="title" class="color_3_tip"
-			style="width: 100%;  display: none; text-align: center;"></span>-->
-		<div id="title" class="color_3_tip" style="height: 20px;text-align: center;line-height: 20px">i18n_st.text.policy_n81i</div>
-		<iframe id="I4" name="I4" height="30%" width="100%" border="0"
-			style="background: #FFFFFF; display: none;" frameborder="0" src=""
-			scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-		<hr id="hr" />
-		<iframe id="I5" name="I5" height="100%" width="100%" border="0"
-			style="background: #FFFFFF;" frameborder="0" src="" scrolling="no">
-			i18n_st.message.frameInfo_n81i
-		</iframe>
-	</div>
 	
 	<!-- <div id="nodeList" closed="true">
 		1为禁止查询，2为可以联想查询  此开关同main.jsp
@@ -319,37 +302,52 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 	
 	$(function(){
 		 //告警节点列表初始化
-		$("#nodeList").dialog({
+		/* $("#nodeList").dialog({
 			title:"i18n_st.nodeList.title_n81i",
 			resizable:true,
 			width:1024,
 			height:600
 		});	
-		 console.log("123213213213")
+		 console.log("123213213213") */
 	})
 
 	
-	function getDetectInfo(id,type,showStatus){
-		//根据类型的不同 判断节点或节点组的查询条件
-		var url ="<c:url value='/detection/monitorData.do?action=query&nodeType=1&requestType=newTopo&nodeGroupId="+id+"'/>";
-		var url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=1&requestType=topo&nodeGroupId="+id+"'/>";
-		if(type==2){
-			url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
-			url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
-		}
+function getDetectInfo(id,type,showStatus){
+	//根据类型的不同 判断节点或节点组的查询条件
+	var url ="<c:url value='/detection/monitorData.do?action=query&nodeType=1&requestType=newTopo&nodeGroupId="+id+"'/>";
+	var url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=1&requestType=topo&nodeGroupId="+id+"'/>";
+	if(type==2){
+		url ="<c:url value='/detection/monitorData.do?action=query&nodeType=2&requestType=newTopo&nodeId="+id+"'/>";
+		url2="<c:url value='/detection/monitorData.do?action=queryEmergentDetail&nodeType=2&requestType=topo&nodeId="+id+"'/>";
+	}
+	
 	//异常情况，显示紧急告警列表，否则不显示
 	if(showStatus == 1){
-		$("#title").show();
-		$("#I4").show();
-		$("#hr").show();
-		$("#I4").attr("src",url2);
+		//$("#title").show();
+		top.$("#I4").show();
+		top.$("#hr").show();
+		top.$("#I4").attr("src",url2);
 	}else{
-		$("#title").hide();
-		$("#I4").hide();
-		$("#hr").hide();
+		//$("#title").hide();
+		top.$("#I4").hide();
+		top.$("#hr").hide();
 	}
-
-	$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
+	top.$("#I5").attr("src",url);//由于所有数据列表不会出现隐藏的情况，所以标题的确定就有I5来负责
+	
+	var thisheight = $(document).height()*0.9;
+	var thiswidth = $(document).width()*0.9;
+	parent.layer.open({
+		type: 1,
+		title: "i18n_st.text.policy_n81i",
+		area:[thiswidth + 'px', thisheight + 'px'],
+		shade: 0.6,
+		closeBtn: 1,
+		maxmin:true,
+		content: top.$("#nodeList"),
+		cancel: function(index, layero){ 
+			top.$("#I4").removeAttr("src");
+		}    
+	}); 
 	
 }
 

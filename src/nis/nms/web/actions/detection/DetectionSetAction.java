@@ -804,9 +804,10 @@ public class DetectionSetAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "detection_Set_Info",
 					"INSERT", detectionSetInfo.getId());
-			commonService.commit();
+			
 			// 用来实现即时向客户端发送配置信息
 			sendSetInfo(null, detectionSetInfo, commonService);
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			commonService.rollback();
@@ -1249,7 +1250,6 @@ public class DetectionSetAction extends BaseAction {
 					}
 					errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.rangRepeat_n81i"));
 				}
-				
 			}
 			// 判断数据是否存在
 			list = this.commonService
@@ -1337,6 +1337,17 @@ public class DetectionSetAction extends BaseAction {
 								.getGroupId());
 				detectionSetInfo.setNodegroup(ng);
 			}
+			
+			if ((detectionSetInfo.getNodeIpsId() == null||"".equals(detectionSetInfo.getNodeGroupsId()))
+					&&(detectionSetInfo.getNodeIpsId()==null|| "".equals(detectionSetInfo.getNodeIpsId()))) {//节点组和节点都为空
+				detectionSetInfo.setNodeGroupsId(null);
+				detectionSetInfo.setNodeIpsId(null);
+			} else if ((detectionSetInfo.getNodeGroupsId() != null
+					&& !"".equals(detectionSetInfo.getNodeGroupsId()))
+					&&(detectionSetInfo.getNodeIpsId()==null|| "".equals(detectionSetInfo.getNodeIpsId()))) {//节点组不为空，节点为空
+				detectionSetInfo.setNodeIpsId(null);
+			}
+			
 			detectionSetInfo.setNodeIp(detectionSetInfo.getNodeIpsName());
 			detectionSetInfo.setDetectionSetState("1");
 			detectionSetInfo.setCreateUserId(this.getUserID());
@@ -1345,7 +1356,7 @@ public class DetectionSetAction extends BaseAction {
 			// 将更新操作写到操作日志中
 			this.addDBOperationRpt(commonService, "detection_Set_Info",
 					"INSERT", detectionSetInfo.getId());
-			commonService.commit();
+			
 			// 保存并更新上传的脚本文件
 			saveScriptFile(myFile, detectionSetInfo);
 			
@@ -1364,7 +1375,7 @@ public class DetectionSetAction extends BaseAction {
 				outHtmlString("<script type=\"text/javascript\">alert('i18n_DetectionSetAction.downloadExample.success_n81i');this.location='detectionSet.do?action=query&pageNo="
 						+ pageNo + "&pageSize=" + pageSize + "'</script>");
 			}
-			
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
@@ -1846,7 +1857,7 @@ public class DetectionSetAction extends BaseAction {
 				// 将更新操作写到操作日志中
 				this.addDBOperationRpt(commonService, "detection_Set_Info",
 						"UPDATE", setInfo.getId());
-				commonService.commit();
+				
 				// 保存并更新上传的脚本文件
 				saveScriptFile(myFile, detectionSetInfo);
 				
@@ -1859,12 +1870,14 @@ public class DetectionSetAction extends BaseAction {
 			
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DetectionSetAction.downloadExample.success_n81i');this.location='detectionSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="
 					+ pageNo + "&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getStackTrace());
 			commonService.rollback();
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DetectionSetAction.downloadExample.faild_n81i');this.location='detectionSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="
 					+ pageNo + "&pageSize=" + pageSize + "'</script>");
+			
 		}
 
 	}
@@ -2102,7 +2115,7 @@ public class DetectionSetAction extends BaseAction {
 						
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "detection_set_info", "UPDATE", ds.getId());
-						commonService.commit();
+						
 						// 用来实现即时向客户端发送配置信息
 						sendSetInfo(dsOld, ds, commonService);
 					}
@@ -2112,6 +2125,7 @@ public class DetectionSetAction extends BaseAction {
 			
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DetectionSetAction.downloadExample.success_n81i');this.location='detectionSet.do?action=query&pageNo="
 					+ pageNo + "&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			logger.error(e.getStackTrace());
@@ -2165,7 +2179,7 @@ public class DetectionSetAction extends BaseAction {
 						
 						//将更新操作写到操作日志中
 						this.addDBOperationRpt(commonService, "detection_set_info", "UPDATE", ds.getId());
-						commonService.commit();
+						
 						
 						// 用来实现即时向客户端发送脚本文件
 						sendPluginFile(dsOld, ds, myFile, commonService);
@@ -2177,6 +2191,7 @@ public class DetectionSetAction extends BaseAction {
 			
 			outHtmlString("<script type=\"text/javascript\">alert('i18n_DetectionSetAction.downloadExample.success_n81i');this.location='detectionSet.do?action=query&pageNo="
 					+ pageNo + "&pageSize=" + pageSize + "'</script>");
+			commonService.commit();
 		} catch (Exception e) {
 			commonService.rollback();
 			logger.error(e.getStackTrace());

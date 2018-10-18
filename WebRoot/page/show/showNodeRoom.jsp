@@ -25,6 +25,8 @@
 			type="text/css"></link>
 		<script type="text/javascript"
 			src="<c:url value='/js/jquery-easyui-1.1.2/jquery.easyui.min.js' />"></script>
+		<script type="text/javascript"
+			src="<c:url value='/js/jquery-easyui-1.1.2/layer.js' />"></script>
 		<style>
 body {
 	background-image: url("${pageContext.request.contextPath}/images/show/bg.jpg");
@@ -162,7 +164,7 @@ body {
 		 				var position = row+""+col;
 		 				var roomColor = "#CCCCCC";
 		 				var boxBgImg = boxImg;//机柜背景图片
-		 				var boxTitle = "i18n_snr.message.boxTitle1 _n81i";
+		 				var boxTitle = "i18n_snr.message.boxTitle1_n81i";
 		 				if(nodeBoxs[position]!=undefined){
 		 					roomColor = "#A3C09F";//机柜正常常绿色
 		 					if(nodeBoxs[position].alarm){
@@ -196,7 +198,10 @@ body {
 		 					//	var param = this.attr("text");
 			 					var nodeid = this.id;
 			 					var selector = "#"+nodeid;
-								var param = $(selector).val();		 						
+								var param = $(selector).val();		
+								loading = window.top.layer.load(1, {
+									shade: [0.1,'black'] //0.1透明度的白色背景
+								}); 						
 		 						getNodeBox(param);
 		 					});
 		 				}
@@ -212,7 +217,7 @@ body {
 			}
 		})
 		
-		function getNodeBox(param){
+		/*function getNodeBox(param){
 			var params=param.split(",");
 			$.ajax({
 					type:"post",
@@ -224,9 +229,9 @@ body {
 						 if(textStatus == "success" && (data!= null && data!= "" )){
 						 	$("#nodeBoxs").html("");
 							 var t =$("#nodeBox").dialog("options").title;
-						 	$("#nodeBox").dialog("setTitle", params[1]);
+							$("#nodeBox").dialog("setTitle", params[1]);
 						 	$("#nodeBox").dialog("open"); 
-						 	
+						 
 						 	var length = $(data).length;
 						 	var raphaelBox = Raphael("nodeBoxs",boxWidth,boxHeight);
 						 	//raphaelBox.rect(0,0,boxWidth,boxHeight).attr({'stroke-width':1,stroke: "#FFFFFF", fill: "#FBFBEA"});
@@ -334,6 +339,133 @@ body {
 						 }
 					}
 				})
+		}*/
+		function getNodeBox(param){
+			var params=param.split(",");
+			$.ajax({
+					type:"post",
+					dataType:'json',
+					url:"<c:url value='/nodePosition/topoShow.do?action=getNodeBox'/>",
+					data:params[0],
+					async:true,
+					 success:function (data,textStatus){
+					 	if(textStatus == "success" && (data!= null && data!= "" )){
+						 	window.top.$("#nodeBoxs").html("");
+						 	var length = $(data).length;
+						 	var raphaelBox = window.top.Raphael("nodeBoxs",boxWidth,boxHeight);
+						 	//raphaelBox.rect(0,0,boxWidth,boxHeight).attr({'stroke-width':1,stroke: "#FFFFFF", fill: "#FBFBEA"});
+						 	//边框设置
+						 	var subBoxStartX=20;
+						 	var subBoxStartY=10;
+						 	var footHeight = 30;
+						 	var subBoxGap = 3;
+						 	raphaelBox.image(boxTopImg,0,0,204,subBoxStartY);
+						 	raphaelBox.image(boxLeftImg,0,subBoxStartY,subBoxStartX,boxHeight);
+						 	raphaelBox.image(boxRightImg,boxWidth-20,subBoxStartY,subBoxStartX,boxHeight);
+						 	raphaelBox.image(boxFootImg,0,boxHeight-footHeight,204,footHeight);
+						 	//每个子U为的大小设置
+						 	var subHeight = (boxHeight-subBoxStartY-footHeight)/length-subBoxGap;
+						 	var subWidth = boxWidth - 2*subBoxStartX;
+						 	var index=-1;//控制占多个U位的处理；
+						 	var nodeIndex=0;//在机柜展示中显示节点机所在的序号
+						 	$(data).each(function(i,item){
+						 		if(index >= i){
+						 			return true;
+						 		}
+						 		//item.nodeposition
+						 		var subBoxY = subBoxStartY+i*(subHeight+subBoxGap);
+						 		var newHeight = subHeight;
+						 		if(item.nodeSeqId != "0" && item.nodeTable != null){
+						 			
+						 			var title="";//设置节点的提升信息
+						 			var param="";//设置单击事件的传参
+						 			if(item.nodeTable != null){
+						 				title = "i18n_snr.message.nodeTableTitle.nodeIp_n81i："+item.nodeTable.nodeIp+"\ni18n_snr.message.nodeTableTitle.nodeName_n81i："+item.nodeTable.nodeName
+						 						+"\ni18n_snr.message.nodeTableTitle.nodeU_n81i："+item.nodeTable.nodeUType+"\ni18n_snr.message.nodeTableTitle.startU_n81i："+item.nodeTable.nodeBeginUType;
+						 				param = "&seqList="+item.nodeTable.seqId;
+						 				
+						 				//占多个U位的处理
+						 				var UNum = Number(item.nodeTable.nodeUType);
+						 				if( UNum>1){
+						 					newHeight = UNum*subHeight+(UNum-1)*subBoxGap;
+						 					index = i+UNum-1;
+						 				}
+						 			}
+						 			//alert(item.nodeTable.nodeName+"------"+item.groupNode+"---"+item.nodeTable.alarm);
+						 			var subColor="#80B167";//绿色
+						 			//是本节点组的显示（红色or绿色） 非本节点组显示灰色
+						 			if(item.groupNode){
+						 				if(item.nodeTable.alarm){//节点如果异常则显示红色
+						 					subColor="#FF0000";
+						 				}
+						 			}else{
+						 				subColor="#939393";//灰色
+						 			}
+						 			
+						 			//只有告警节点才可以单击显示告警信息
+						 			if(item.groupNode &&item.nodeTable.alarm){
+						 			//节点如果异常则显示红色
+						 				var node = raphaelBox.rect(subBoxStartX,subBoxY,subWidth,newHeight).attr({stroke: "#CEDBEF",'stroke-width':0.1,title:title,text:param, fill: subColor});
+						 				node.id = "u"+i;
+						 				window.top.$("#nodeBoxs").append("<input type='hidden' id="+node.id+" value=''>");
+						 				$("input[id="+node.id+"]").val(param);
+								 			node.click(function(){
+							   				//	var param = this.attr("text");
+							   					var selector= "#"+this.id;
+							   					var param = $(selector).val();
+							   					var nodeip = item.nodeTable.nodeIp;
+							   					var nodeType = item.nodeTable.nodeType;
+							   					getAlarmInfo(param,nodeip,nodeType);
+											}).mouseover(function(){
+												this.animate({"stroke-width":2},100);
+											}).mouseout(function(){
+												this.animate({"stroke-width":0.1},100);
+											});
+						 			}else{
+						 				raphaelBox.rect(subBoxStartX,subBoxY,subWidth,newHeight).attr({stroke: "#CEDBEF",'stroke-width':0.1,title:title,text:param, fill: subColor})
+								 			.mouseover(function(){
+												this.animate({"stroke-width":2},100);
+											}).mouseout(function(){
+												this.animate({"stroke-width":0.1},100);
+											});
+						 			}
+						 			
+						 			//写节点机在机柜中的序号,放入数组中
+						 			if(item.groupNode){
+						 				nodeIndex++;
+						 				nodeIndexs[nodeIndex]={"x":subBoxStartX-5,"y":subBoxY+5};
+						 			}
+						 			
+						 		}else{
+						 			var title="i18n_snr.message.UBit_n81i"+item.nodeposition;
+						 			raphaelBox.rect(subBoxStartX,subBoxY,subWidth,newHeight).attr({stroke: "#CEDBEF",'stroke-width':0.1,title:title, fill: "#ffffff"})
+						 			.mouseover(function(){
+										this.animate({"stroke-width":2},100);
+									}).mouseout(function(){
+										this.animate({"stroke-width":0.1},100);
+									});
+						 		}
+						 	});
+						 	
+						 	//写节点机在机柜中的序号
+						 	var nodeShowInd = 0;
+						 	for(var i = 1;i<=nodeIndex;i++){
+						 		if(nodeIndexs[i] != null &&nodeIndexs[i] != ""){
+						 			nodeShowInd++;
+						 			raphaelBox.text(nodeIndexs[i].x,nodeIndexs[i].y,nodeShowInd).attr({'font-size':12,fill:"#000000"});
+						 		}
+						 	}
+						 	window.top.layer.close(loading);
+						 	window.top.layer.open({
+						 		type: 1,
+						 		title: params[1],
+						 		area:['206px', ''],
+						 		scrollbar: true,
+						 		content: window.top.$("#nodeBoxs")
+						 	})
+						 }
+					}
+				})
 		}
 		
 		
@@ -343,10 +475,34 @@ body {
 			}else if(nodeType == 1){
 				var url ="<c:url value='/detection/detectionWarning.do?action=queryNE&ip="+nodeip+"&levelAlarm=1"+param+"+&type=3Droom'/>";
 			}
+			var thisheight = $(document).height()*0.9;
+			var thiswidth = $(document).width()*0.9;
+			window.top.layer.open({
+		 		type: 1,
+		 		area: [thiswidth + 'px', thisheight + 'px'],
+		 		scrollbar: true,
+		 		maxmin: true,
+		 		content: window.top.$("#alarmInfo")
+		 	})
+			window.top.$("#I6").html("");
+			window.top.$("#I6").attr("src",url);
+			window.top.$("#I6").load(function(){
+				var main = window.top.$("#I6");
+				main.height("100%");
+				main.width("100%");
+			});
+		}
+		
+		/* function getAlarmInfo(param,nodeip,nodeType){
+			if(nodeType== 0){
+				var url ="<c:url value='/detection/detectionWarning.do?action=query&ip="+nodeip+"&levelAlarm=1"+param+"+&type=3Droom'/>";
+			}else if(nodeType == 1){
+				var url ="<c:url value='/detection/detectionWarning.do?action=queryNE&ip="+nodeip+"&levelAlarm=1"+param+"+&type=3Droom'/>";
+			}
 			$("#I3").html("");
 			$("#I3").attr("src",url);
 			$("#alarmInfo").dialog("open");
-		}
+		} */
 		</script>
 
 	</head>

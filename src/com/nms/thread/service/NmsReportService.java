@@ -41,12 +41,13 @@ public class NmsReportService {
 	}
 	
 	public ArrayList<Map<String, String>> getNmsRuleInfo(Long end, Long start) {
-		String sql = "SELECT nt.node_ip, dr.ServiceIndex, dr.ServiceCode, dr.ServiceDesc, dr.agedTime, dr.ClientNum, dr.RefluxPort, dr.RuleNumber, dr.usedRuleNum, dr.leftRuleNum, dr.HitTotalNum, dr.DETECTIONED_STATE "
+		//end=1539073880004l, start=1539073579984l
+		String sql = "SELECT dr.detection_info_id, dr.ServiceIndex, dr.ServiceCode, dr.ServiceDesc, dr.agedTime, dr.ClientNum, dr.RefluxPort, dr.RuleNumber, dr.usedRuleNum, dr.leftRuleNum, dr.HitTotalNum, dr.DETECTIONED_STATE, dr.SEQ_ID, dr.DETECTION_SET_INFO_ID, dr.data_check_time, dr.data_arrive_time, dr.data_check_time_digital, dr.data_arrive_time_digital "
 				+ "FROM di_rule dr "
 				+ "LEFT JOIN node_table nt ON nt.seq_id=dr.seq_id "
 				+ "WHERE nt.node_state=0 AND dr.data_check_time_digital<" + end + " AND dr.data_check_time_digital>=" + start;
 		ArrayList<String> fields = new ArrayList<String>();
-		fields.add("node_ip");
+		fields.add("detection_info_id");
 		fields.add("ServiceIndex");
 		fields.add("ServiceCode");
 		fields.add("ServiceDesc");
@@ -58,6 +59,12 @@ public class NmsReportService {
 		fields.add("leftRuleNum");
 		fields.add("HitTotalNum");
 		fields.add("DETECTIONED_STATE");
+		fields.add("SEQ_ID");
+		fields.add("DETECTION_SET_INFO_ID");
+		fields.add("data_check_time");
+		fields.add("data_arrive_time");
+		fields.add("data_check_time_digital");
+		fields.add("data_arrive_time_digital");
 		
 		try {
 			 ArrayList<Map<String, String>> dbSelect = dao.dbSelect(sql, fields);
@@ -69,12 +76,24 @@ public class NmsReportService {
 	}
 	
 	public ArrayList<Map<String, String>> getNmsPortInfo(Long end, Long start) {
-		String sql = "SELECT nt.node_ip, ds.* "
+		//end=1539073220004l,start=1539064699984l
+		String sql = "SELECT nt.node_ip, nt.node_name, ds.ifindex, ds.IFDESCR, ds.IFSPEED, ds.IFINOCTETS, ds.IFOUTOCTETS,ds.INOCTETSSPEED,ds.INPKTSSPEED,ds.OUTOCTETSSPEED, ds.OUTPKTSSPEED, ds.DATA_CHECK_TIME  "
 				+ "FROM di_switchport ds "
-				+ "LEFT JOIN node_table nt ON nt.seq_id=ds.seq_id"
+				+ "LEFT JOIN node_table nt ON nt.seq_id=ds.seq_id "
 				+ "WHERE nt.node_state=0 AND ds.data_check_time_digital<" + end + " AND ds.data_check_time_digital>=" + start;
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("node_ip");
+		fields.add("node_name");
+		fields.add("ifindex");
+		fields.add("IFDESCR");
+		fields.add("IFSPEED");
+		fields.add("IFINOCTETS");
+		fields.add("IFOUTOCTETS");
+		fields.add("INOCTETSSPEED");
+		fields.add("INPKTSSPEED");
+		fields.add("OUTOCTETSSPEED");
+		fields.add("OUTPKTSSPEED");
+		fields.add("DATA_CHECK_TIME");
 		
 		try {
 			ArrayList<Map<String, String>> dbSelect = dao.dbSelect(sql, fields);

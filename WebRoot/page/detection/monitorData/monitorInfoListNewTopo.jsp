@@ -168,7 +168,6 @@
 }
 </style>
 		<script type="text/javascript">	
-		 parent.setDivTitle('${nodeGroupName}');
      //页面5分钟刷新一次
 		var interval;
 		$(function(){
