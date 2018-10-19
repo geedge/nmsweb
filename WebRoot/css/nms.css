@@ -348,6 +348,7 @@ a:hover {
 	border-spacing:0.5px;	
 	background:#eee;
 	bottom:2px;
+	display:inline-block;
 }
 .templateTable1{
 	font-size:12px;

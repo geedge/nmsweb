@@ -13,7 +13,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>i18n_adi.message.title_n81i</title>
+		<title>i18n_adi.message.addDefaultInfoTitle_n81i</title>
 		<link href="<c:url value='/css/styles.css'/>" rel="stylesheet"
 			type="text/css" />
 		<link href="<c:url value='/desktop/css/index${userBgColor }.css'/>" rel="stylesheet"
