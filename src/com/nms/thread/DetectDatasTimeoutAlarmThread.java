@@ -19,6 +19,7 @@ import nis.nms.util.ConnectionOracle;
 public class DetectDatasTimeoutAlarmThread implements Runnable{
 	private Logger logger = Logger.getLogger(DetectDatasTimeoutAlarmThread.class);
 	private Date startTime = Calendar.getInstance().getTime();
+	private boolean detectDatasTimeoutOthers = false;//监测超时 是否 过滤 握手监测 节点
 	@Override
 	public void run() {
 //		Thread.currentThread().setName("监测数据超时告警线程");
@@ -35,10 +36,15 @@ public class DetectDatasTimeoutAlarmThread implements Runnable{
 			inStream = new FileInputStream(url2.getPath().replace("%20", " "));
 			properties.load(inStream);
 			String checkTypeName = properties.getProperty("detec.nmsclient.str");
+			String detectOthers = properties.getProperty("detec.datastimeout.others");//监测超时 是否 过滤 握手监测 节点
 //			String checkTypeName = Constants.NMS_CLIENT_CHECKTYPENAME;
 			if(StringUtils.isEmpty(checkTypeName)){
 				checkTypeName = "NMSClient";
-			}			
+			}
+			//过滤 握手监测 超时 告警
+			if(StringUtils.isNotBlank(detectOthers) && "1".equalsIgnoreCase(detectOthers.trim())){
+				detectDatasTimeoutOthers = true;
+			}
 			SetInfo nmsClientSet = service.getSetInfoByCheckName(1,checkTypeName);	//查询握手监测相关信息		
 			
 			List<String[]> alarm = new ArrayList<String[]>();
@@ -73,7 +79,7 @@ public class DetectDatasTimeoutAlarmThread implements Runnable{
 			
 			List<SetInfo> setInfoList = service.getAllSetInfo(1,null);	//查询有效SetInfo信息				
 			for(SetInfo setInfo : setInfoList){
-				List<String []> alarmInfoList  = service.detectDatasTimeoutCheck(setInfo,startTime,errorSeqIds);//监测当前监测是否超时无数据
+				List<String []> alarmInfoList  = service.detectDatasTimeoutCheck(setInfo,startTime,detectDatasTimeoutOthers?errorSeqIds:null);//监测当前监测是否超时无数据
 				if(alarmInfoList != null && alarmInfoList.size()>0){
 					alarm.addAll(alarmInfoList);
 					/*for(String [] datas: alarmInfoList){
