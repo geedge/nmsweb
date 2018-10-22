@@ -992,6 +992,7 @@ public class ThreadService {
 			insertNewStmt.setObject(4, null);
 			
 			insertNewStmt.addBatch();
+			insert.remove(alarm);
 		}
 		for (String[] alarm : update) {
 			
@@ -1043,6 +1044,7 @@ public class ThreadService {
 			updateNewStmt.setObject(9, detectionId);
 			
 			updateNewStmt.addBatch();
+			update.remove(alarm);
 		}
 		}catch(Exception e){
 			e.printStackTrace();
