@@ -320,7 +320,7 @@
 			<table border="0" cellpadding="0" cellspacing="0" class="table" id="info">
 				<tr>
 					<td class="color_top"> i18n_gil.text.index_n81i </td>
-				  	<td class="color_top">i18n_gil.text.userGroupDesc_n81i</td>
+				  	<td class="color_top">i18n_gil.text.userGroup_n81i</td>
 					<td class="color_top" >i18n_gil.text.userGroupDesc_n81i</td>
 					<td class="color_top">i18n_gil.text.state_n81i</td>
 					<td class="color_8" >i18n_gil.text.operation_n81i</td>

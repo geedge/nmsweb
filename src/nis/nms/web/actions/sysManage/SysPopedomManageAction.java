@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import nis.nms.core.Constants;
 import nis.nms.core.Resource;
 import nis.nms.domains.NodeTable;
 import nis.nms.domains.TableDepartment;
@@ -1194,6 +1197,16 @@ public class SysPopedomManageAction extends BaseAction
 			String sqlCondition = "where zxbz=0";// 将查询条件记录到操作日志中
 			// 将查询请求记入到操作日志表中
 			this.addDBOperationRpt(commonService, sqlCondition, "xt_js_jbxx");
+			
+			//2018-10-22 新增，region role角色只能配置预制 视图（业务系统）
+			//从配置文件获取配置的预制视图
+			String preView=Constants.PREFABRICATE_VIEW;
+			if(!StringUtil.isBlank(preView)){
+				String[] split = preView.split(",");
+				List<String> preViewIds=Arrays.asList(split);
+				this.getRequest().setAttribute("preViewIds", preViewIds);
+			}
+			
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -1299,6 +1312,15 @@ public class SysPopedomManageAction extends BaseAction
 				yhzList.add(role);
 			}
 			this.getRequest().setAttribute("yhzList", yhzList);
+			
+			//2018-10-22 新增，region role角色只能配置预制 视图（业务系统）
+			//从配置文件获取配置的预制视图
+			String preView=Constants.PREFABRICATE_VIEW;
+			if(!StringUtil.isBlank(preView)){
+				String[] split = preView.split(",");
+				List<String> preViewIds=Arrays.asList(split);
+				this.getRequest().setAttribute("preViewIds", preViewIds);
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();

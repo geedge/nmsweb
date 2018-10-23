@@ -297,6 +297,9 @@ public class MonitorDataAction extends BaseAction {
 			if (ctn != null && !"".equals(ctn)) {
 				sqlBuffer.append(" and cti.id =" + ctn);
 			}
+			if(checkType!=null&&checkType!=-1){
+				sqlBuffer.append(" and cti.id="+checkType);
+			}
 			if (!this.getAdminMark()) {
 				sqlBuffer.append(" and (((( cti.view_level=1 and cti.user_id=");
 				sqlBuffer.append(this.getUserID());
@@ -519,6 +522,9 @@ public class MonitorDataAction extends BaseAction {
 				sqlBuffer.append(" and Upper(cti.Check_Type_Name1) like '%" + ctn.toUpperCase() + "%'");
 
 			}
+			if(checkType!=null&&checkType!=-1){
+				sqlBuffer.append(" and cti.id="+checkType);
+			}
 			if (StringUtils.isNotBlank(stateInfo)) {
 				sqlBuffer.append(" and din.detection_state_info like '%" + stateInfo + "%'");
 			}
@@ -645,6 +651,9 @@ public class MonitorDataAction extends BaseAction {
 			}
 			if (cip != null && !"".equals(cip) && !"null".equals(cip)) {
 				sqlBuffer.append(" and nt.node_ip like '%" + cip.trim() + "%'");
+			}
+			if(checkType!=null&&checkType!=-1){
+				sqlBuffer.append(" and cti.id="+checkType);
 			}
 			if (nodeIpRange != null && !"".equals(nodeIpRange) && !"null".equals(nodeIpRange)) {
 				sqlBuffer.append(" and nt.node_ip like '" + nodeIpRange + "%'");

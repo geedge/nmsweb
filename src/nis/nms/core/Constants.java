@@ -234,7 +234,15 @@ public class Constants {
 	public static final String NATION_ROLE;
 	
 	public static final String DEPT_MK_ID;
+	
+	public static final String PREFABRICATE_VIEW;
 	static {
+		if(rb.containsKey("prefabricate.view")){
+			PREFABRICATE_VIEW=rb.getString("prefabricate.view");
+		}else{
+			PREFABRICATE_VIEW="";
+		}
+		
 		if(rb.containsKey("dept.mk.id")){
 			DEPT_MK_ID=rb.getString("dept.mk.id");
 		}else{

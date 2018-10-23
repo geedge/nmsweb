@@ -107,6 +107,7 @@
 			
 			$(function(){
 				var nationRole=${session.nationRole};//配置文件中获取
+				var preView=${preViewIds};
 				if(nationRole==null||nationRole=="-1"){
 					$("input[type='button']").attr("disabled","disabled");
 					alert("please add or modify 'myconfig.properties' ,there need a parameter 'nation.role.jsbh'");
@@ -127,6 +128,7 @@
 						});
 					}
 				}
+				preViewCheck(preView);
 				$(urole).click(function(){
 					var uroleVal=this.value;
 					if(uroleVal!=null&&uroleVal!=""&&uroleVal==nationRole){//角色选择为 nation role ，选择所有用户组，不允许修改
@@ -135,6 +137,7 @@
 					}else{
 						$(group).removeAttr("disabled");
 						$(group).removeAttr("checked");
+						preViewCheck(preView);
 						$(group).click(function(){
 							if(this.checked||this.checked=="checked"){
 								$(group).removeAttr("checked");
@@ -146,6 +149,27 @@
 				
 				
 			});
+			function preViewCheck(preView){
+				if(preView!=null&&preView!=""&&preView!=undefined){
+					var objGroup=$("input[name='group']");
+					var flag=false;
+					for(var i=0;i<objGroup.length;i++){
+						var value=$(objGroup[i]).val();
+						for(var j=0;j<preView.length;j++){
+							console.log(preView[j]+"-->"+$(objGroup[i]).val());
+							var preValue=preView[j];
+							
+							if(value==preValue){
+								flag=true;
+							}
+						}
+						if(!flag){
+							$(objGroup[i]).attr("disabled","disabled");
+						}
+						flag=false;
+					}
+				}
+			}
 		</script>
 	</head>
 	<body>
