@@ -11,6 +11,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
+import nis.nms.core.Constants;
 import nis.nms.domains.XtYhJbxx;
 import nis.nms.service.CommonService;
 import nis.nms.util.Common;
@@ -39,6 +40,8 @@ public class QueryMenuTreeAction {
 	public List<Map<String, Object>> queryMenuTree(String yhmc,String yhbh) {
 		// 查询用户下的所以功能节点 
 		List<Map<String, Object>> userfunctionList = null;
+		String regionRoleId=Constants.REGION_ROLE;
+		
 		try {
 			StringBuffer hql = new StringBuffer();
 			if (yhmc != null
@@ -47,7 +50,9 @@ public class QueryMenuTreeAction {
 						.append("select n.Id,n.ZXBZ,n.PID,n.HANDLER,n.MKURL,"
 								+ "n.MKMC,n.MKTYPE from xt_mk_jbxx n where ZXBZ=0");
 				
-			} else {
+			}else if(StringUtils.isNotBlank(regionRoleId)&&!regionRoleId.equals("-1")){
+				hql.append("SELECT n.id	,n.ZXBZ,n.PID,n. HANDLER,n.MKURL,n.MKMC,n.MKTYPE FROM xt_mk_jbxx n WHERE ZXBZ = 0 AND n.id IN( SELECT r.MKBH FROM xt_js_mk_index r WHERE r.JSBH ="+regionRoleId+")");
+			}else {
 				if (yhbh != null) {  
 					if(Constant.F_BUTTON_AUTHER){
 						hql

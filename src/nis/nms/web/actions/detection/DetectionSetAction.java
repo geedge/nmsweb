@@ -30,6 +30,7 @@ import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
 import nis.nms.util.ExportUtils;
 import nis.nms.util.Page;
+import nis.nms.util.StringUtil;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
@@ -1803,19 +1804,36 @@ public class DetectionSetAction extends BaseAction {
 				// }
 				setInfo2.setId(setInfo.getId());
 				// setInfo2.setNodegroup(setInfo.getNodegroup());
-				setInfo2.setNodeGroupsId(setInfo.getNodeGroupsId());// 设置节点组id（多个用逗号连接）
+				if(StringUtils.isBlank(setInfo.getNodeGroupsId())){
+					setInfo2.setNodeGroupsId(null);
+				}else{
+					setInfo2.setNodeGroupsId(setInfo.getNodeGroupsId());// 设置节点组id（多个用逗号连接）
+				}
 				setInfo2.setCheckTypeInfo(typeInfo);
 				setInfo2.setProcessIden(setInfo.getProcessIden());
 				// setInfo2.setNodeIp(setInfo.getNodeIp());
-				setInfo2.setNodeIpsId(setInfo.getNodeIpsId());// 设置节点id（多个逗号连接）
+				if(StringUtils.isBlank(setInfo.getNodeIpsId())){
+					setInfo2.setNodeIpsId(setInfo.getNodeIpsId());
+				}else{
+					setInfo2.setNodeIpsId(setInfo.getNodeIpsId());// 设置节点id（多个逗号连接）
+				}
 				setInfo2.setCheckWay(setInfo.getCheckWay());
 				setInfo2.setDetectionSetState(setInfo.getDetectionSetState());
 				setInfo2.setCheckTypeInfo(typeInfo);
 
 				setInfo.setCheckTypeInfo(typeInfo);
 				setInfo.setNodeIp(detectionSetInfo.getNodeIpsName());
-				setInfo.setNodeIpsId(detectionSetInfo.getNodeIpsId());// 设置节点id
-				setInfo.setNodeGroupsId(detectionSetInfo.getNodeGroupsId());// 设置节点组id，之前没有设置此信息
+				if(StringUtils.isBlank(detectionSetInfo.getNodeIpsId())){
+					setInfo.setNodeIpsId(null);// 设置节点id
+				}else{
+					setInfo.setNodeIpsId(detectionSetInfo.getNodeIpsId());
+				}
+				
+				if(StringUtils.isBlank(detectionSetInfo.getNodeGroupsId())){
+					setInfo.setNodeGroupsId(null);// 设置节点组id，之前没有设置此信息
+				}else{
+					setInfo.setNodeGroupsId(detectionSetInfo.getNodeGroupsId());// 设置节点组id，之前没有设置此信息
+				}
 				setInfo.setDetectionSetState(detectionSetInfo
 						.getDetectionSetState());
 				setInfo.setCheckWay(detectionSetInfo.getCheckWay());
