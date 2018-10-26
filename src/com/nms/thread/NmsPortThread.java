@@ -34,7 +34,7 @@ public class NmsPortThread implements Runnable {
 		try {
 			connection = ConnectionOracle.getConnection();
 			NmsReportService service = new NmsReportService(connection);
-			ArrayList<Map<String, String>> nmsPortInfo = service.getNmsPortInfo(nowLong, nowLong-interval);
+			ArrayList<Map<String, String>> nmsPortInfo = service.getNmsPortInfo(nowLong, nowLong-interval*1000);
 			if (nmsPortInfo != null && nmsPortInfo.size() > 0) {
 				
 				Map<String, List<Map<String, String>>> data = new HashMap<String, List<Map<String, String>>>();
@@ -42,18 +42,18 @@ public class NmsPortThread implements Runnable {
 				
 				for (Map<String, String> info : nmsPortInfo) {
 					Map<String, String> result = new HashMap<String, String>();
-					result.put("port", info.get("ifindex"));
-					result.put("nodeName", info.get("node_name"));
-					result.put("nodeIp", info.get("node_ip"));
-					result.put("portDesc", info.get("IFDESCR"));
-					result.put("bandwidth", info.get("IFSPEED"));
-					result.put("inoctets", info.get("IFINOCTETS"));
-					result.put("outoctets", info.get("IFOUTOCTETS"));
-					result.put("inoctetsSpeed", info.get("INOCTETSSPEED"));
-					result.put("outoctetsSpeed", info.get("OUTOCTETSSPEED"));
-					result.put("inpktsSpeed", info.get("INPKTSSPEED"));
-					result.put("outpktsSpeed", info.get("OUTPKTSSPEED"));
-					result.put("recvTime", info.get("DATA_CHECK_TIME"));
+					result.put("port", info.get("ifindex") == null ? "" : info.get("ifindex"));
+					result.put("nodeName", info.get("node_name") == null ? "" : info.get("node_name"));
+					result.put("nodeIp", info.get("node_ip") == null ? "" : info.get("node_ip"));
+					result.put("portDesc", info.get("IFDESCR") == null ? "" : info.get("IFDESCR"));
+					result.put("bandwidth", info.get("IFSPEED") == null ? "" : info.get("IFSPEED"));
+					result.put("inoctets", info.get("IFINOCTETS") == null ? "" : info.get("IFINOCTETS"));
+					result.put("outoctets", info.get("IFOUTOCTETS") == null ? "" : info.get("IFOUTOCTETS"));
+					result.put("inoctetsSpeed", info.get("INOCTETSSPEED") == null ? "" : info.get("INOCTETSSPEED"));
+					result.put("outoctetsSpeed", info.get("OUTOCTETSSPEED") == null ? "" : info.get("OUTOCTETSSPEED"));
+					result.put("inpktsSpeed", info.get("INPKTSSPEED") == null ? "" : info.get("INPKTSSPEED"));
+					result.put("outpktsSpeed", info.get("OUTPKTSSPEED") == null ? "" : info.get("OUTPKTSSPEED"));
+					result.put("recvTime", info.get("DATA_CHECK_TIME") == null ? "" : info.get("DATA_CHECK_TIME"));
 					results.add(result);
 				}
 				data.put("trafficNetflowPortInfoList", results);
@@ -61,6 +61,9 @@ public class NmsPortThread implements Runnable {
 				JSONObject fromObject = JSONObject.fromObject(data);
 				
 				httpUtil.post(BaseAction.rb.getString("nms.port.url"), fromObject.toString());
+				logger.info("port上报完毕");
+			} else {
+				logger.info("暂无可上报的port数据");
 			}
 		} catch (Exception e) {
 			logger.error(e);

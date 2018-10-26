@@ -70,8 +70,8 @@ public class NmsStatusThread implements Runnable {
 							normal++;
 						} else {
 							Map<String, String> abnormal = new HashMap<String, String>();
-							abnormal.put("hostName", m.get("host_name"));
-							abnormal.put("ip", m.get("node_ip"));
+							abnormal.put("hostName", m.get("host_name") == null ? "" : m.get("host_name"));
+							abnormal.put("ip", m.get("node_ip") == null ? "" : m.get("node_ip"));
 							abnormalList.add(abnormal);
 						}
 					}
@@ -90,7 +90,9 @@ public class NmsStatusThread implements Runnable {
 			HttpClientUtil httpUtil = new HttpClientUtil();
 			JSONObject fromObject = JSONObject.fromObject(map);
 			
+			logger.info(BaseAction.rb.getString("nms.status.url"));
 			httpUtil.post(BaseAction.rb.getString("nms.status.url"), fromObject.toString());
+			logger.info("status上报完毕");
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {

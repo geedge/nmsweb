@@ -35,7 +35,7 @@ public class NmsRuleThread implements Runnable {
 		try {
 			connection = ConnectionOracle.getConnection();
 			NmsReportService service = new NmsReportService(connection);
-			ArrayList<Map<String, String>> nmsRuleInfo = service.getNmsRuleInfo(nowLong, nowLong-interval);
+			ArrayList<Map<String, String>> nmsRuleInfo = service.getNmsRuleInfo(nowLong, nowLong-interval*1000);
 			if (nmsRuleInfo != null && nmsRuleInfo.size() > 0) {
 				
 				Map<String, List<Map<String, String>>> data = new HashMap<String, List<Map<String, String>>>();
@@ -43,31 +43,35 @@ public class NmsRuleThread implements Runnable {
 				
 				for (Map<String, String> info : nmsRuleInfo) {
 					Map<String, String> result = new HashMap<String, String>();
-					result.put("detectionInfoId", info.get("detection_info_id"));
-					result.put("serviceIndex", info.get("ServiceIndex"));
-					result.put("serviceCode", info.get("ServiceCode"));
-					result.put("serviceDesc", info.get("ServiceDesc"));
-					result.put("agedTime", info.get("agedTime"));
-					result.put("clientNum", info.get("ClientNum"));
-					result.put("refluxPort", info.get("RefluxPort"));
-					result.put("ruleNumber", info.get("RuleNumber"));
-					result.put("usedRuleNum", info.get("usedRuleNum"));
-					result.put("leftRuleNum", info.get("leftRuleNum"));
-					result.put("hitTotalNum", info.get("HitTotalNum"));
-					result.put("detectionedState", info.get("DETECTIONED_STATE"));
-					result.put("seqId", info.get("SEQ_ID"));
-					result.put("detectionSetInfoId", info.get("DETECTION_SET_INFO_ID"));
-					result.put("dataCheckTime", info.get("data_check_time"));
-					result.put("dataArriveTime", info.get("data_arrive_time"));
-					result.put("dataCheckTimeDigital", info.get("data_check_time_digital"));
-					result.put("dataArriveTimeDigital", info.get("data_arrive_time_digital"));
+					result.put("detectionInfoId", info.get("detection_info_id") == null ? "" : info.get("detection_info_id"));
+					result.put("serviceIndex", info.get("ServiceIndex") == null ? "" : info.get("ServiceIndex"));
+					result.put("serviceCode", info.get("ServiceCode") == null ? "" : info.get("ServiceCode"));
+					result.put("serviceDesc", info.get("ServiceDesc") == null ? "" : info.get("ServiceDesc"));
+					result.put("agedTime", info.get("agedTime") == null ? "" : info.get("agedTime"));
+					result.put("clientNum", info.get("ClientNum") == null ? "" : info.get("ClientNum"));
+					result.put("refluxPort", info.get("RefluxPort") == null ? "" : info.get("RefluxPort"));
+					result.put("ruleNumber", info.get("RuleNumber") == null ? "" : info.get("RuleNumber"));
+					result.put("usedRuleNum", info.get("usedRuleNum") == null ? "" : info.get("usedRuleNum"));
+					result.put("leftRuleNum", info.get("leftRuleNum") == null ? "" : info.get("leftRuleNum"));
+					result.put("hitTotalNum", info.get("HitTotalNum") == null ? "" : info.get("HitTotalNum"));
+					result.put("detectionedState", info.get("DETECTIONED_STATE") == null ? "" : info.get("DETECTIONED_STATE"));
+					result.put("seqId", info.get("SEQ_ID") == null ? "" : info.get("SEQ_ID"));
+					result.put("detectionSetInfoId", info.get("DETECTION_SET_INFO_ID") == null ? "" : info.get("DETECTION_SET_INFO_ID"));
+					result.put("dataCheckTime", info.get("data_check_time") == null ? "" : info.get("data_check_time"));
+					result.put("dataArriveTime", info.get("data_arrive_time") == null ? "" : info.get("data_arrive_time"));
+					result.put("dataCheckTimeDigital", info.get("data_check_time_digital") == null ? "" : info.get("data_check_time_digital"));
+					result.put("dataArriveTimeDigital", info.get("data_arrive_time_digital") == null ? "" : info.get("data_arrive_time_digital"));
 					results.add(result);
 				}
 				data.put("nmsDiRuleList", results);
 				HttpClientUtil httpUtil = new HttpClientUtil();
 				JSONObject fromObject = JSONObject.fromObject(data);
 				
+				logger.info(BaseAction.rb.getString("nms.rule.url"));
 				httpUtil.post(BaseAction.rb.getString("nms.rule.url"), fromObject.toString());
+				logger.info("rule上报完毕");
+			} else {
+				logger.info("暂无可上报的rule数据");
 			}
 		} catch (Exception e) {
 			logger.error(e);
