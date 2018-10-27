@@ -28,6 +28,7 @@ import nis.nms.bean.EmailInfo;
 import nis.nms.bean.SetInfo;
 import nis.nms.core.Constants;
 import nis.nms.util.ConnectionOracle;
+import nis.nms.util.Constant;
 
 public class ThreadService {
 	Logger logger = Logger.getLogger(ThreadService.class);
@@ -301,9 +302,10 @@ public class ThreadService {
 		int periodTimes = ThreadPoolConfig.DETEC_TIMEOUT_ALARM_PERIOD_TIMES;	
 //		periodTimes = 1;	
 		//节点
+		String systemidSql = "-1".equals(Constant.CURRENT_SYSTEM_ID) ? "" : ("and nt.system_id=" + Constant.CURRENT_SYSTEM_ID);
 		if(StringUtils.isNotBlank(setInfo.getNodeIpsId())){
 			sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
-			"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_id in (-9999,"+setInfo.getNodeIpsId()+", -9999) and nt.node_state = 0) nt0" +
+			"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_id in (-9999,"+setInfo.getNodeIpsId()+", -9999) and nt.node_state = 0 " + systemidSql + ") nt0" +
 			" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
 			" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate  - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+5)+"/24/60 ))";
 //			 sql = "select din.seq_id from detection_info_new din where " +
@@ -322,7 +324,7 @@ public class ThreadService {
 					e.printStackTrace();
 				}
 				sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
-				"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_group_id in ("+ids+") and nt.node_state = 0) nt0" +
+				"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_group_id in ("+ids+") and nt.node_state = 0 " + systemidSql + ") nt0" +
 				" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
 				" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+5)+"/24/60 ))";
 /*				sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
@@ -336,7 +338,7 @@ public class ThreadService {
 				//全局
 				if(StringUtils.isBlank(setInfo.getNodeGroupsId())){
 					sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
-					"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_state = 0 ) nt0" +
+					"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_state = 0 " + systemidSql + ") nt0" +
 					" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
 					" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and din.DATA_CHECK_TIME < sysdate  - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+5)+"/24/60))";
 					

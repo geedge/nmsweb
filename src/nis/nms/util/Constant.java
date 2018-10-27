@@ -161,6 +161,8 @@ public class Constant {
 	public static final String ROLE_XML_FILE_NODE_MENU = "menuId";
 	// =============权限树xml的节点======结束===========================
 	
+	public static final String CURRENT_SYSTEM_ID = rb.getString("system.id");//当前业务系统id，-1时为国家中心
+	
 	public static final String PACKAGE_NAME  = rb.getString("packName").trim();//生成的javaBean的package
 	public static final String JAVABEAN_PATH = rb.getString("toPath").trim();	//生成的javaBean存放路径
 	public static final String COMMON_DATE_FORMAT = rb.getString("common.date.format").trim();	//公用日期格式化标准格式DEFAULT_DATE_FORMAT
