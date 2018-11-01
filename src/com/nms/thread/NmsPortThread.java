@@ -21,11 +21,13 @@ public class NmsPortThread implements Runnable {
 
 	@Override
 	public void run() {
+		Thread currentThread = Thread.currentThread();
+		currentThread.setName("Port Report Thread");
 		Date now = new Date();
 		Long nowLong = now.getTime();
 		Integer interval = null;
 		try {
-			interval = Integer.parseInt(BaseAction.rb.getString("nms.report.interval"));
+			interval = Integer.parseInt(BaseAction.rb.getString("nms.report.port.interval"));
 		} catch (Exception e) {
 			interval = 300;
 		}

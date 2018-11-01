@@ -114,19 +114,23 @@ public class AutoRunForSocketServerServlet extends HttpServlet implements Servle
 		boolean open = StringUtil.isBlank(openStr) ? false : ("1".equals(openStr) ? true : false);
 		if (open) {
 			//nms上报
-			String intervalStr = BaseAction.rb.getString("nms.report.interval");
+			String sintervalStr = BaseAction.rb.getString("nms.report.status.interval");
+			String rintervalStr = BaseAction.rb.getString("nms.report.rule.interval");
+			String pintervalStr = BaseAction.rb.getString("nms.report.port.interval");
 			//nms上报间隔
-			long interval = StringUtil.isBlank(intervalStr) ? 300000 : Long.parseLong(intervalStr)*1000;
+			long statusInterval = StringUtil.isBlank(sintervalStr) ? 300000 : Long.parseLong(sintervalStr)*1000;
+			long ruleInterval = StringUtil.isBlank(rintervalStr) ? 900000 : Long.parseLong(rintervalStr)*1000;
+			long portInterval = StringUtil.isBlank(pintervalStr) ? 300000 : Long.parseLong(pintervalStr)*1000;
 			//nms初次上报延时
 			long now = new Date().getTime();
 			long initInterval = 0l;
-			if(now%interval > 0) {
-				initInterval = interval-(now%interval);
+			if(now%statusInterval > 0) {
+				initInterval = statusInterval-(now%statusInterval);
 			}
 			
-			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsStatusThread(), initInterval, interval, TimeUnit.MILLISECONDS);
-			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsRuleThread(), initInterval, interval, TimeUnit.MILLISECONDS);
-			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsPortThread(), initInterval, interval, TimeUnit.MILLISECONDS);
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsStatusThread(), initInterval, statusInterval, TimeUnit.MILLISECONDS);
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsRuleThread(), initInterval, ruleInterval, TimeUnit.MILLISECONDS);
+			ThreadPoolCommon.scheduled.scheduleAtFixedRate(new NmsPortThread(), initInterval, portInterval, TimeUnit.MILLISECONDS);
 		}
 	}
 	

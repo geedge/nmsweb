@@ -22,11 +22,13 @@ public class NmsRuleThread implements Runnable {
 
 	@Override
 	public void run() {
+		Thread currentThread = Thread.currentThread();
+		currentThread.setName("Rule Report Thread");
 		Date now = new Date();
 		Long nowLong = now.getTime();
 		Integer interval = null;
 		try {
-			interval = Integer.parseInt(BaseAction.rb.getString("nms.report.interval"));
+			interval = Integer.parseInt(BaseAction.rb.getString("nms.report.rule.interval"));
 		} catch (Exception e) {
 			interval = 300;
 		}
@@ -67,7 +69,6 @@ public class NmsRuleThread implements Runnable {
 				HttpClientUtil httpUtil = new HttpClientUtil();
 				JSONObject fromObject = JSONObject.fromObject(data);
 				
-				logger.info(BaseAction.rb.getString("nms.rule.url"));
 				httpUtil.post(BaseAction.rb.getString("nms.rule.url"), fromObject.toString());
 				logger.info("rule上报完毕");
 			} else {

@@ -989,8 +989,8 @@
 								
 								<tr>
 									<td colspan="4" align="left" >
-										<iframe id="Ich" name="Ich" height="300" width="100%" marginwidth="0" marginheight="0" align="top" style="background:#FFFFFF;"	
-											frameborder="0" src="<c:url value='/nodeGroupManage/nodeManage.do?action=queryChild'/>" scrolling="no">
+										<iframe id="Ich" name="Ich" style="min-height:500px" width="100%" marginwidth="0" marginheight="0" align="top" style="background:#FFFFFF;"	
+											frameborder="0" src="<c:url value='/nodeGroupManage/nodeManage.do?action=queryChild'/>" scrolling="auto">
 											i18n_nginfo.message.brower_n81i
 										</iframe>
 									</td>

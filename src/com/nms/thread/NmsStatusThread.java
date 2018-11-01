@@ -23,6 +23,9 @@ public class NmsStatusThread implements Runnable {
 	
 	@Override
 	public void run() {
+		Thread currentThread = Thread.currentThread();
+		currentThread.setName("Status Report Thread");
+		
 		String now = DateUtil.format.format(new Date());
 		List<Map> results = new ArrayList<Map>();
 		String setId = null;
