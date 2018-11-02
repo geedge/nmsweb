@@ -87,7 +87,7 @@ table{
 	 --%>
 
 	 var missionid = ${missionstatetable.missionId}; <%-- 任务ID --%>
-	 var currMissionid = new Array();	currMissionid.push(${currMissionId}); <%-- 周期任务最近ID --%>
+	 var currMissionid = new Array();	currMissionid.push('${currMissionId}'); <%-- 周期任务最近ID --%>
 	
 	<%-- 非周期任务执行结果比例/周期任务最近周期执行结果比例 --%>
 	var column = ${columnData};
