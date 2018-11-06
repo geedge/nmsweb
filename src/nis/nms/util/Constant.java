@@ -118,6 +118,8 @@ public class Constant {
 	 * */
 	public static final String EMAIL_FLAG="emailFlag";
 	
+	public static final boolean DC_NOTICE = "1".equals(rb.getString("dc.notice")) ? true : false;
+	
 	/**
 	 * 用户部门功能
 	 * */

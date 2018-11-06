@@ -555,6 +555,7 @@
 							<c:set var="tdClass" value="color_3" />
 							<c:set var="tdClassR" value="color_6" />
 						</c:if>
+					<c:if test="${missionstatetable.missionState ne -1}">
 					<tr>
 						<td class="${tdClass }" nowrap="nowrap" >
 							<input type="hidden" id="yxbz${missionstatetable.missionId }" name="yxbz${missionstatetable.missionId }"	value="${missionstatetable.missionState}" />
@@ -634,6 +635,7 @@
 						<td class="${tdClass }" nowrap="nowrap">${missionstatetable.userIdName}</td>
 						<td class="${tdClassR }" nowrap="nowrap"><fmt:formatDate value="${missionstatetable.createTime}" type="both" /></td>
 				        </tr>
+				    </c:if>
 						<c:set var="index" value="${index + 1}" />
 					</c:forEach>
 					</c:when>

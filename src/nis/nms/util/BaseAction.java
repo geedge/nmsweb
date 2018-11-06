@@ -53,6 +53,13 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.nms.thread.socket.SocketClientServeice;
 import com.opensymphony.xwork2.ActionSupport;
@@ -1109,10 +1116,35 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 
 								@Override
 								public void run() {
-									
-									try {
-										new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_SET_INFO_ALERT,jObject.toString());
-									} catch (Exception e) {
+									if (Constant.DC_NOTICE) {
+										try {
+											new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_SET_INFO_ALERT,jObject.toString());
+										} catch (Exception e) {
+											e.printStackTrace();
+											
+											SessionFactory sessionFactory = commonService.getSessionFactory();
+											boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+											
+											EventRecordLibrary library = new EventRecordLibrary();
+											library.setRecordCommand(WEB_NOTICE_SET_INFO_ALERT);
+											library.setRecordContent(jObject.toString());
+											library.setRecordType("W2S");
+											library.setState(1l);
+											library.setNmsserverId(st.getId());
+											library.setCreateTime(new Date());
+											try {
+												commonService.save(library, sessionFactory);
+											} catch (Exception e1) {
+												e1.printStackTrace();
+											} finally {
+												HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+											}
+											logger.error("Monitoring setting to change communication anomalies: " + e.getMessage());
+										}
+									} else {
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
 										EventRecordLibrary library = new EventRecordLibrary();
 										library.setRecordCommand(WEB_NOTICE_SET_INFO_ALERT);
 										library.setRecordContent(jObject.toString());
@@ -1121,11 +1153,12 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setNmsserverId(st.getId());
 										library.setCreateTime(new Date());
 										try {
-											commonService.save(library);
+											commonService.save(library, sessionFactory);
 										} catch (Exception e1) {
 											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 										}
-										logger.error("Monitoring setting to change communication anomalies: " + e.getMessage());
 									}
 								}
 								
@@ -1237,12 +1270,41 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								try {
-									new SocketClientServeice(st.getServerIp()).
-											sendFilesToServer(SEND_PLUGIN_SCRIPT_FILE, pluginFiles);
-								} catch (Exception e) {
-									logger.error("Script send failure, " + e.getMessage());
-									
+								if (Constant.DC_NOTICE) {
+									try {
+										new SocketClientServeice(st.getServerIp()).
+												sendFilesToServer(SEND_PLUGIN_SCRIPT_FILE, pluginFiles);
+									} catch (Exception e) {
+										logger.error("Script send failure, " + e.getMessage());
+										
+										Map<String, String> recordContent = new HashMap<String, String>();
+										HashSet<String> pluginFileNames = new HashSet<String>();
+										for (File pluginFile : pluginFiles) {
+											pluginFileNames.add(pluginFile.getName());
+										}
+										String content = StringUtils.join(pluginFileNames.iterator(), "，");
+										recordContent.put("scriptNames", content);
+										
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
+										EventRecordLibrary library = new EventRecordLibrary();
+										library.setRecordType("W2S");
+										library.setRecordCommand(SEND_PLUGIN_SCRIPT_FILE);
+										library.setRecordContent(JSONObject.fromObject(recordContent).toString());
+										library.setState(1L);
+										library.setNmsserverId(st.getId());
+										library.setCreateTime(new Date());
+										try {
+											commonService.save(library, sessionFactory);
+										} catch (Exception e1) {
+											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+										}
+										
+									}
+								} else {
 									Map<String, String> recordContent = new HashMap<String, String>();
 									HashSet<String> pluginFileNames = new HashSet<String>();
 									for (File pluginFile : pluginFiles) {
@@ -1250,6 +1312,10 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 									}
 									String content = StringUtils.join(pluginFileNames.iterator(), "，");
 									recordContent.put("scriptNames", content);
+									
+									SessionFactory sessionFactory = commonService.getSessionFactory();
+									boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+									
 									EventRecordLibrary library = new EventRecordLibrary();
 									library.setRecordType("W2S");
 									library.setRecordCommand(SEND_PLUGIN_SCRIPT_FILE);
@@ -1258,11 +1324,12 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 									library.setNmsserverId(st.getId());
 									library.setCreateTime(new Date());
 									try {
-										commonService.save(library);
+										commonService.save(library, sessionFactory);
 									} catch (Exception e1) {
 										e1.printStackTrace();
+									} finally {
+										HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 									}
-									
 								}
 							}
 						}).start();
@@ -1290,7 +1357,7 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 					+ " on ('0,' || dsi.node_groups_id || ',0' like '%,' || ngt.group_id || ',%')"
 				+ " left join node_table nt"
 					+ " on ('0,' || dsi.node_ips_id || ',0' like '%,' || nt.node_id || ',%')"
-				+ " where and dsi.detection_set_state = 1 and dsi.is_control_start = 2"
+				+ " where dsi.detection_set_state = 1 and dsi.is_control_start = 2"
 				+ ")t"
 			+ " where 1<>1";
 			if(nodeId!=null) {
@@ -1298,12 +1365,12 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 			}
 			//@2018-3-9 fang 修改 首先查询符合条件的id，在拼接sql，适配mysql
 			String groupIdSql = "select group_id from nodegroup_table t where 1=1 ";
-			String ids = this.commonService.getGroupIdStartWith(groupIdSql, "t.group_id = " +nodeGroupId);
+			String ids = commonService.getGroupIdStartWith(groupIdSql, "t.group_id = " +nodeGroupId);
 			/*sql += " or(t.node_ips_id is null and t.node_group_id in(select group_id"
 					+ " from nodegroup_table t"
 					+ " start with t.group_id = " +nodeGroupId+ " connect by prior t.group_id = parent_group_id))"*/
 			sql += " or ( t.node_ips_id is null and t.node_group_id in("+ids+")"
-			+ " or(t.node_ips_id is null and t.node_groups_id is null)"
+			+ " or(t.node_ips_id is null and t.node_groups_id is null))"
 			;
 		
 			List<?> SetInfoIdList = commonService.executeSQL(sql);
@@ -1322,12 +1389,41 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								try {
-									new SocketClientServeice(st.getServerIp()).
-											sendFilesToServer(SEND_PLUGIN_SCRIPT_FILE, pluginFiles);
-								} catch (Exception e) {
-									logger.error("Script send failure, " + e.getMessage());
-									
+								if (Constant.DC_NOTICE) {
+									try {
+										new SocketClientServeice(st.getServerIp()).
+												sendFilesToServer(SEND_PLUGIN_SCRIPT_FILE, pluginFiles);
+									} catch (Exception e) {
+										logger.error("Script send failure, " + e.getMessage());
+										
+										Map<String, String> recordContent = new HashMap<String, String>();
+										HashSet<String> pluginFileNames = new HashSet<String>();
+										for (File pluginFile : pluginFiles) {
+											pluginFileNames.add(pluginFile.getName());
+										}
+										String content = StringUtils.join(pluginFileNames.iterator(), "，");
+										recordContent.put("scriptNames", content);
+										
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
+										EventRecordLibrary library = new EventRecordLibrary();
+										library.setRecordType("W2S");
+										library.setRecordCommand(SEND_PLUGIN_SCRIPT_FILE);
+										library.setRecordContent(JSONArray.fromObject(recordContent).toString());
+										library.setState(1L);
+										library.setNmsserverId(st.getId());
+										library.setCreateTime(new Date());
+										try {
+											commonService.save(library, sessionFactory);
+										} catch (Exception e1) {
+											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+										}
+										
+									}
+								} else {
 									Map<String, String> recordContent = new HashMap<String, String>();
 									HashSet<String> pluginFileNames = new HashSet<String>();
 									for (File pluginFile : pluginFiles) {
@@ -1335,6 +1431,9 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 									}
 									String content = StringUtils.join(pluginFileNames.iterator(), "，");
 									recordContent.put("scriptNames", content);
+									
+									SessionFactory sessionFactory = commonService.getSessionFactory();
+									boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
 									
 									EventRecordLibrary library = new EventRecordLibrary();
 									library.setRecordType("W2S");
@@ -1344,11 +1443,12 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 									library.setNmsserverId(st.getId());
 									library.setCreateTime(new Date());
 									try {
-										commonService.save(library);
+										commonService.save(library, sessionFactory);
 									} catch (Exception e1) {
 										e1.printStackTrace();
+									} finally {
+										HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 									}
-									
 								}
 							}
 						}).start();
@@ -1390,10 +1490,35 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 
 								@Override
 								public void run() {
-									try {
-									new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_NODE_AND_GROUP_STATE_ALERT,str);
-									} catch (Exception e) {
-										e.printStackTrace();
+									if (Constant.DC_NOTICE) {
+										try {
+											new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_NODE_AND_GROUP_STATE_ALERT,str);
+										} catch (Exception e) {
+											e.printStackTrace();
+											
+											SessionFactory sessionFactory = commonService.getSessionFactory();
+											boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+											
+											EventRecordLibrary library = new EventRecordLibrary();
+											library.setRecordCommand(WEB_NOTICE_NODE_AND_GROUP_STATE_ALERT);
+											library.setRecordContent(str);
+											library.setRecordType("W2S");
+											library.setState(1l);
+											library.setNmsserverId(st.getId());
+											library.setCreateTime(new Date());
+											
+											try {
+												commonService.save(library, sessionFactory);
+											} catch (Exception e1) {
+												e1.printStackTrace();
+											} finally {
+												HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+											}
+										}
+									} else {
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
 										EventRecordLibrary library = new EventRecordLibrary();
 										library.setRecordCommand(WEB_NOTICE_NODE_AND_GROUP_STATE_ALERT);
 										library.setRecordContent(str);
@@ -1401,10 +1526,13 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setState(1l);
 										library.setNmsserverId(st.getId());
 										library.setCreateTime(new Date());
+										
 										try {
-											commonService.save(library);
+											commonService.save(library, sessionFactory);
 										} catch (Exception e1) {
 											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 										}
 									}
 								}
@@ -1443,10 +1571,48 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 						
 						@Override
 						public void run() {
-							try {
-								new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_ACTIVE_ALARM_START_ALERT,jObject.toString());
-							} catch (Exception e) {
-								e.printStackTrace();
+							if (Constant.DC_NOTICE) {
+								try {
+									new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_ACTIVE_ALARM_START_ALERT,jObject.toString());
+								} catch (Exception e) {
+									e.printStackTrace();
+									
+									SessionFactory sessionFactory = commonService.getSessionFactory();
+									boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+									
+									try {
+										List list = commonService.find("from EventRecordLibrary where recordType='W2S' and recordCommand='"+WEB_NOTICE_ACTIVE_ALARM_START_ALERT+"' and nmsserverId="+st.getId());
+										EventRecordLibrary library = new EventRecordLibrary();
+										if (list != null && list.size() > 0) {
+											library = (EventRecordLibrary)list.get(0);
+											
+											library.setRecordCommand(WEB_NOTICE_ACTIVE_ALARM_START_ALERT);
+											library.setRecordContent(jObject.toString());
+											library.setRecordType("W2S");
+											library.setState(1l);
+											library.setNmsserverId(st.getId());
+											library.setCreateTime(new Date());
+											
+											commonService.update(library, sessionFactory);
+										}else {										
+											library.setRecordCommand(WEB_NOTICE_ACTIVE_ALARM_START_ALERT);
+											library.setRecordContent(jObject.toString());
+											library.setRecordType("W2S");
+											library.setState(1l);
+											library.setNmsserverId(st.getId());
+											library.setCreateTime(new Date());
+											commonService.save(library, sessionFactory);
+										}
+										
+									} catch (Exception e1) {
+										e1.printStackTrace();
+									} finally {
+										HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+									}
+								}
+							} else {
+								SessionFactory sessionFactory = commonService.getSessionFactory();
+								boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
 								
 								try {
 									List list = commonService.find("from EventRecordLibrary where recordType='W2S' and recordCommand='"+WEB_NOTICE_ACTIVE_ALARM_START_ALERT+"' and nmsserverId="+st.getId());
@@ -1461,7 +1627,7 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setNmsserverId(st.getId());
 										library.setCreateTime(new Date());
 										
-										commonService.update(library);
+										commonService.update(library, sessionFactory);
 									}else {										
 										library.setRecordCommand(WEB_NOTICE_ACTIVE_ALARM_START_ALERT);
 										library.setRecordContent(jObject.toString());
@@ -1469,11 +1635,13 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setState(1l);
 										library.setNmsserverId(st.getId());
 										library.setCreateTime(new Date());
-										commonService.save(library);
+										commonService.save(library, sessionFactory);
 									}
 									
 								} catch (Exception e1) {
 									e1.printStackTrace();
+								} finally {
+									HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 								}
 							}
 						}
@@ -1502,14 +1670,19 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 				List<ServerTable> stList = getALlNMSServerList(commonService);
 				if(stList!= null && stList.size()>0){
 					for(final ServerTable st : stList){
-							new Thread(new Runnable(){
+						new Thread(new Runnable(){
 
-								@Override
-								public void run() {
+							@Override
+							public void run() {
+								if (Constant.DC_NOTICE) {
 									try {
 										new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_CHECK_TYPE_ALERT,checkTypeId);
 									} catch (Exception e) {
 										e.printStackTrace();
+										
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
 										EventRecordLibrary library = new EventRecordLibrary();
 										library.setRecordCommand(WEB_NOTICE_CHECK_TYPE_ALERT);
 										library.setRecordContent(checkTypeId);
@@ -1518,15 +1691,36 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setCreateTime(new Date());
 										library.setNmsserverId(st.getId());
 										try {
-											commonService.save(library);
+											commonService.save(library, sessionFactory);
 										} catch (Exception e1) {
 											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 										}
 									}
+								} else {
+									SessionFactory sessionFactory = commonService.getSessionFactory();
+									boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
 									
+									EventRecordLibrary library = new EventRecordLibrary();
+									library.setRecordCommand(WEB_NOTICE_CHECK_TYPE_ALERT);
+									library.setRecordContent(checkTypeId);
+									library.setRecordType("W2S");
+									library.setState(1l);
+									library.setCreateTime(new Date());
+									library.setNmsserverId(st.getId());
+									try {
+										commonService.save(library, sessionFactory);
+									} catch (Exception e1) {
+										e1.printStackTrace();
+									} finally {
+										HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+									}
 								}
 								
-							}).start();
+							}
+							
+						}).start();
 					}
 				}
 		} catch (Exception e) {
@@ -1552,10 +1746,34 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 							new Thread(new Runnable(){
 								@Override
 								public void run() {
-									try {
-										new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_MISSION_INFO_ALERT,str);
-									} catch (Exception e) {
-										e.printStackTrace();
+									if (Constant.DC_NOTICE) {
+										try {
+											new SocketClientServeice(st.getServerIp()).sendInfoToServer(WEB_NOTICE_MISSION_INFO_ALERT,str);
+										} catch (Exception e) {
+											e.printStackTrace();
+											
+											SessionFactory sessionFactory = commonService.getSessionFactory();
+											boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+											
+											EventRecordLibrary library = new EventRecordLibrary();
+											library.setRecordCommand(WEB_NOTICE_MISSION_INFO_ALERT);
+											library.setRecordContent(str);
+											library.setRecordType("W2S");
+											library.setState(1l);
+											library.setCreateTime(new Date());
+											library.setNmsserverId(st.getId());
+											try {
+												commonService.save(library, sessionFactory);
+											} catch (Exception e1) {
+												e1.printStackTrace();
+											} finally {
+												HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+											}
+										}
+									} else {
+										SessionFactory sessionFactory = commonService.getSessionFactory();
+										boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+										
 										EventRecordLibrary library = new EventRecordLibrary();
 										library.setRecordCommand(WEB_NOTICE_MISSION_INFO_ALERT);
 										library.setRecordContent(str);
@@ -1564,9 +1782,11 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 										library.setCreateTime(new Date());
 										library.setNmsserverId(st.getId());
 										try {
-											commonService.save(library);
+											commonService.save(library, sessionFactory);
 										} catch (Exception e1) {
 											e1.printStackTrace();
+										} finally {
+											HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 										}
 									}
 								}
@@ -1601,10 +1821,34 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 					@Override
 					public void run() {
 						String content =  "1";
-						try {
-							new SocketClientServeice(ip).sendInfoToServer(WEB_NOTICE_DATACONTROLLER,content);
-						} catch (Exception e) {
-							e.printStackTrace();
+						if (Constant.DC_NOTICE) {
+							try {
+								new SocketClientServeice(ip).sendInfoToServer(WEB_NOTICE_DATACONTROLLER,content);
+							} catch (Exception e) {
+								e.printStackTrace();
+								
+								SessionFactory sessionFactory = commonService.getSessionFactory();
+								boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+								
+								EventRecordLibrary library = new EventRecordLibrary();
+								library.setRecordCommand(WEB_NOTICE_DATACONTROLLER);
+								library.setRecordContent(content);
+								library.setRecordType("W2S");
+								library.setState(1l);
+								library.setCreateTime(new Date());
+								library.setNmsserverId(dcId);
+								try {
+									commonService.save(library, sessionFactory);
+								} catch (Exception e1) {
+									e1.printStackTrace();
+								} finally {
+									HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
+								}
+							}
+						} else {
+							SessionFactory sessionFactory = commonService.getSessionFactory();
+							boolean participate = HibernateUtil.bindHibernateSessionToThread(sessionFactory);
+							
 							EventRecordLibrary library = new EventRecordLibrary();
 							library.setRecordCommand(WEB_NOTICE_DATACONTROLLER);
 							library.setRecordContent(content);
@@ -1613,9 +1857,11 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 							library.setCreateTime(new Date());
 							library.setNmsserverId(dcId);
 							try {
-								commonService.save(library);
+								commonService.save(library, sessionFactory);
 							} catch (Exception e1) {
 								e1.printStackTrace();
+							} finally {
+								HibernateUtil.closeHibernateSessionFromThread(participate, sessionFactory);
 							}
 						}
 					}
@@ -1673,4 +1919,6 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 	public void setThisPageUrl(String thisPageUrl) {
 		this.thisPageUrl = thisPageUrl;
 	}
+	
 }
+	

@@ -1,6 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@include file="/common/taglib.jsp"%>
-
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -8,7 +7,6 @@
 			+ path + "/";
 	request.setAttribute("vEnter","\n");
 %>
-</script>
 <c:set var="index" value="${1}" />
 <c:choose>
 	<c:when test="${fn:length(detecWarningList) > 0}">
@@ -92,7 +90,6 @@ $(function(){
 					$(".popover").remove();
 	  	 			var x = event.clientX;//鼠标位置
 					var y = event.clientY; 
-					//alert(tx + "," + ty + "," + x + "," + y);
 					if (y < ty/2) {
 						var placement = "bottom";
 					} else {						

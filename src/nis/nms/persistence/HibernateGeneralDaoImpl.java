@@ -20,6 +20,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
@@ -36,6 +37,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
+import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
 import nis.nms.util.BeanUtils;
 import nis.nms.util.GenericUtils;
@@ -127,6 +129,12 @@ public class HibernateGeneralDaoImpl<T> extends HibernateDaoSupport implements H
 		}
 	}
 	
+	public void save(Object entity, SessionFactory sessionFactory) throws Exception {
+		CommonService<T> c = new CommonService<T>();
+		c.setSessionFactory(sessionFactory);
+		c.save(entity);
+	}
+	
 	@Override
 	public void save(Object entity) throws Exception {
 		if(txFlag){
@@ -176,6 +184,12 @@ public class HibernateGeneralDaoImpl<T> extends HibernateDaoSupport implements H
 				} catch (Exception e2) {}
 			}
 		}
+	}
+	
+	public void update(Object entity, SessionFactory sessionFactory) throws Exception {
+		CommonService<T> c = new CommonService<T>();
+		c.setSessionFactory(sessionFactory);
+		update(entity);
 	}
 	
 	@Override
