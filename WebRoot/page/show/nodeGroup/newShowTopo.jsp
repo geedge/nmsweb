@@ -208,33 +208,40 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 	    	     
 		//遍历创建连线 连接节点
 		<c:forEach items="${requestScope.topoLineInfos}" var="item">
-			<c:choose>
-				<c:when test="${not empty item.topoLineInfoClass}">
-					var link${item.id};
-					var classJson=${item.topoLineInfoClass};
-					for(var i=0;i<classJson.length;i++){
-						for(var key in classJson[i]){
-							if(key=='newLineMethod'){
-								if(classJson[i][key]=='FoldLink'){
-									link${item.id}=newFoldLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
-								}else if(classJson[i][key]=='FlexionalLink'){
-									link${item.id}=newFlexionalLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
-								}
-							}else if(key=='offsetGap'){
-								link${item.id}.offsetGap=classJson[i][key];
-							}else if(key=='direction'){
-								link${item.id}.direction=classJson[i][key];
-							}else if(key=='nodeIndex'){
-								link${item.id}.nodeIndex=classJson[i][key];
+		<c:choose>
+			<c:when test="${not empty item.topoLineInfoClass}">
+				var link${item.id};
+				var classJson=${item.topoLineInfoClass};
+				for(var i=0;i<classJson.length;i++){
+					for(var key in classJson[i]){
+						if(key=='newLineMethod'){
+							if(classJson[i][key]=='FoldLink'){
+								link${item.id}=newFoldLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
+							}else if(classJson[i][key]=='FlexionalLink'){
+								link${item.id}=newFlexionalLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
+							}else{
+								var link${item.id} = newLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
 							}
+						}else if(key=='offsetGap'){
+							link${item.id}.offsetGap=classJson[i][key];
+						}else if(key=='direction'){
+							link${item.id}.direction=classJson[i][key];
+						}else if(key=='nodeIndex'){
+							link${item.id}.nodeIndex=classJson[i][key];
+						}else if(key=='strokeColor'){
+							link${item.id}.strokeColor=classJson[i][key];
+						}else if(key=='lineWidth'){
+							link${item.id}.lineWidth=classJson[i][key];
 						}
 					}
-				</c:when>
-				<c:otherwise>
-					var link${item.id} = newLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
-				</c:otherwise>
-			</c:choose>
-		</c:forEach>
+				}
+			</c:when>
+			<c:otherwise>
+				var link${item.id} = newLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
+			</c:otherwise>
+		</c:choose>
+	</c:forEach>
+
 
 		//缩放并居中显示
 		stage.centerAndZoom();
