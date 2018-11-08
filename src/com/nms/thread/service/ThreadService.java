@@ -942,111 +942,116 @@ public class ThreadService {
 		try{
 		List<String[]> insert = split.get("insert");
 		List<String[]> update = split.get("update");
-		for (String[] alarm : insert) {
-			//seq_Id
-			String seqId= alarm[1];
-			insertNewStmt.setObject(11, seqId);
-			//detection_set_info_id
-			String setInfoId=alarm[0];
-			insertNewStmt.setObject(1, setInfoId);
-			// 监测服务启动时间，
-			String startTime =format.format(new Date(Long.parseLong(alarm[4])));
-			insertNewStmt.setObject(5, startTime);
-			// 本次检测时间，
-			String checkTime =format.format(new Date(Long.parseLong(alarm[5])));
-			insertNewStmt.setObject(7, checkTime);
-			// 告警级别
-			String pLevel = alarm[6];
-			String state = alarm[7];
-			if(StringUtils.isEmpty(pLevel)){
-				if("-2".equals(state)){
-					pLevel = "1";
-				}else if("2".equals(state)){
-					pLevel = "99";
+		if(null!=insert&&insert.size()>0) {
+			for (int i=insert.size()-1;i>=0;i--) {
+				String[] alarm=	insert.get(i);
+				//seq_Id
+				String seqId= alarm[1];
+				insertNewStmt.setObject(11, seqId);
+				//detection_set_info_id
+				String setInfoId=alarm[0];
+				insertNewStmt.setObject(1, setInfoId);
+				// 监测服务启动时间，
+				String startTime =format.format(new Date(Long.parseLong(alarm[4])));
+				insertNewStmt.setObject(5, startTime);
+				// 本次检测时间，
+				String checkTime =format.format(new Date(Long.parseLong(alarm[5])));
+				insertNewStmt.setObject(7, checkTime);
+				// 告警级别
+				String pLevel = alarm[6];
+				String state = alarm[7];
+				if(StringUtils.isEmpty(pLevel)){
+					if("-2".equals(state)){
+						pLevel = "1";
+					}else if("2".equals(state)){
+						pLevel = "99";
+					}
 				}
+				insertNewStmt.setObject(6, pLevel);
+				// 执行状态是否成功，记录的状态是否正常（用于报警 -2主动告警 -1执行失败 0不正常，1正常），
+				insertNewStmt.setObject(9, state);
+				// 状态信息（描述信息），
+				String stateInfo=alarm[8];
+				insertNewStmt.setObject(2, stateInfo);
+				//性能数据，
+				String performaceData=alarm[8];
+				insertNewStmt.setObject(3, performaceData);
+				//DATA_ARRIVE_TIME
+				insertNewStmt.setObject(8, arriveTimeStr);
+				//STATUS_CHANGE_TIME
+				insertNewStmt.setObject(10, checkTime);
+				//data_check_time_digital
+				String checkTimeDigtal=alarm[5];
+				insertNewStmt.setObject(13, checkTimeDigtal);
+				//data_arrive_time_digital
+				String arriveTimeDigital=arriveTime.getTimeInMillis()+"";
+				insertNewStmt.setObject(14, arriveTimeDigital);
+				//POLICE_EMERGENT
+				String policeEmergent=alarm[10];
+				insertNewStmt.setObject(15, policeEmergent);
+				//detection_info_id
+				String detectionId=computeId(alarm[5],seqId,setInfoId);
+				insertNewStmt.setObject(12, detectionId);
+				//currentTimes
+				insertNewStmt.setObject(4, null);
+				
+				insertNewStmt.addBatch();
+				insert.remove(i);
 			}
-			insertNewStmt.setObject(6, pLevel);
-			// 执行状态是否成功，记录的状态是否正常（用于报警 -2主动告警 -1执行失败 0不正常，1正常），
-			insertNewStmt.setObject(9, state);
-			// 状态信息（描述信息），
-			String stateInfo=alarm[8];
-			insertNewStmt.setObject(2, stateInfo);
-			//性能数据，
-			String performaceData=alarm[8];
-			insertNewStmt.setObject(3, performaceData);
-			//DATA_ARRIVE_TIME
-			insertNewStmt.setObject(8, arriveTimeStr);
-			//STATUS_CHANGE_TIME
-			insertNewStmt.setObject(10, checkTime);
-			//data_check_time_digital
-			String checkTimeDigtal=alarm[5];
-			insertNewStmt.setObject(13, checkTimeDigtal);
-			//data_arrive_time_digital
-			String arriveTimeDigital=arriveTime.getTimeInMillis()+"";
-			insertNewStmt.setObject(14, arriveTimeDigital);
-			//POLICE_EMERGENT
-			String policeEmergent=alarm[10];
-			insertNewStmt.setObject(15, policeEmergent);
-			//detection_info_id
-			String detectionId=computeId(alarm[5],seqId,setInfoId);
-			insertNewStmt.setObject(12, detectionId);
-			//currentTimes
-			insertNewStmt.setObject(4, null);
-			
-			insertNewStmt.addBatch();
-			insert.remove(alarm);
 		}
-		for (String[] alarm : update) {
-			
-			String seqId= alarm[1];
-			updateNewStmt.setObject(14, seqId);
-			//detection_set_info_id
-			String setInfoId=alarm[0];
-			updateNewStmt.setObject(13, setInfoId);
-			// 监测服务启动时间，
-			String startTime =format.format(new Date(Long.parseLong(alarm[4])));
-			updateNewStmt.setObject(3, startTime);
-			// 本次检测时间，
-			String checkTime =format.format(new Date(Long.parseLong(alarm[5])));
-			updateNewStmt.setObject(5, checkTime);
-			// 告警级别
-			String pLevel = alarm[6];
-			String state = alarm[7];
-			if(StringUtils.isEmpty(pLevel)){
-				if("-2".equals(state)){
-					pLevel = "1";
-				}else if("2".equals(state)){
-					pLevel = "99";
+		if(null!=update&&update.size()>0) {
+			for (int i=update.size()-1;i>=0;i--) {
+				String[] alarm=	update.get(i);
+				String seqId= alarm[1];
+				updateNewStmt.setObject(14, seqId);
+				//detection_set_info_id
+				String setInfoId=alarm[0];
+				updateNewStmt.setObject(13, setInfoId);
+				// 监测服务启动时间，
+				String startTime =format.format(new Date(Long.parseLong(alarm[4])));
+				updateNewStmt.setObject(3, startTime);
+				// 本次检测时间，
+				String checkTime =format.format(new Date(Long.parseLong(alarm[5])));
+				updateNewStmt.setObject(5, checkTime);
+				// 告警级别
+				String pLevel = alarm[6];
+				String state = alarm[7];
+				if(StringUtils.isEmpty(pLevel)){
+					if("-2".equals(state)){
+						pLevel = "1";
+					}else if("2".equals(state)){
+						pLevel = "99";
+					}
 				}
+				updateNewStmt.setObject(4, pLevel);
+				// 执行状态是否成功，记录的状态是否正常（用于报警 -2主动告警 -1执行失败 0不正常，1正常），
+				updateNewStmt.setObject(7, state);
+				// 状态信息（描述信息），
+				String stateInfo=alarm[8];
+				updateNewStmt.setObject(1, stateInfo);
+				//性能数据，
+				String performaceData=alarm[8];
+				updateNewStmt.setObject(2, performaceData);
+				//DATA_ARRIVE_TIME
+				updateNewStmt.setObject(6, arriveTimeStr);
+				//STATUS_CHANGE_TIME
+				updateNewStmt.setObject(8, alarm[alarm.length-1]);
+				//data_check_time_digital
+				String checkTimeDigtal=alarm[5];
+				updateNewStmt.setObject(10, checkTimeDigtal);
+				//data_arrive_time_digital
+				String arriveTimeDigital=arriveTime.getTimeInMillis()+"";
+				updateNewStmt.setObject(11, arriveTimeDigital);
+				//POLICE_EMERGENT
+				String policeEmergent=alarm[10];
+				updateNewStmt.setObject(12, policeEmergent);
+				//detection_info_id
+				String detectionId=computeId(alarm[5],seqId,setInfoId);
+				updateNewStmt.setObject(9, detectionId);
+				
+				updateNewStmt.addBatch();
+				update.remove(i);
 			}
-			updateNewStmt.setObject(4, pLevel);
-			// 执行状态是否成功，记录的状态是否正常（用于报警 -2主动告警 -1执行失败 0不正常，1正常），
-			updateNewStmt.setObject(7, state);
-			// 状态信息（描述信息），
-			String stateInfo=alarm[8];
-			updateNewStmt.setObject(1, stateInfo);
-			//性能数据，
-			String performaceData=alarm[8];
-			updateNewStmt.setObject(2, performaceData);
-			//DATA_ARRIVE_TIME
-			updateNewStmt.setObject(6, arriveTimeStr);
-			//STATUS_CHANGE_TIME
-			updateNewStmt.setObject(8, alarm[alarm.length-1]);
-			//data_check_time_digital
-			String checkTimeDigtal=alarm[5];
-			updateNewStmt.setObject(10, checkTimeDigtal);
-			//data_arrive_time_digital
-			String arriveTimeDigital=arriveTime.getTimeInMillis()+"";
-			updateNewStmt.setObject(11, arriveTimeDigital);
-			//POLICE_EMERGENT
-			String policeEmergent=alarm[10];
-			updateNewStmt.setObject(12, policeEmergent);
-			//detection_info_id
-			String detectionId=computeId(alarm[5],seqId,setInfoId);
-			updateNewStmt.setObject(9, detectionId);
-			
-			updateNewStmt.addBatch();
-			update.remove(alarm);
 		}
 		}catch(Exception e){
 			e.printStackTrace();
