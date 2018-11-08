@@ -864,6 +864,7 @@
 													<td class="color_3" align="left" >
 														<a href="#tab-outpktsspeed" onclick="javascript:getPicScorce('outpktsspeed',1,'i18n_sdigp.text.outpktsspeed_n81i','pps',0,'outpktsspeed');" id="outpktsspeed">
 															<c:if test="${switchPortInfo.outpktsspeed ne null && switchPortInfo.outpktsspeed!=''}"> <%=new BigDecimal(switchPortInfo.getOutpktsspeed())%>pps </c:if>
+															<c:if test="${switchPortInfo.outpktsspeed eq null || switchPortInfo.outpktsspeed==''}"> 0 pps </c:if>
 														</a>
 													</td>
 													<td class="color_1" align="right">
@@ -872,6 +873,7 @@
 													<td class="color_3" align="left">
 														<a href="#tab-inpktsspeed" onclick="javascript:getPicScorce('inpktsspeed',1,'i18n_sdigp.text.inpktsspeed_n81i','pps',0,'inpktsspeed');" id="inpktsspeed">
 													    	<c:if test="${switchPortInfo.inpktsspeed ne null && switchPortInfo.inpktsspeed!=''}"> <%=new BigDecimal(switchPortInfo.getInpktsspeed()) %>pps </c:if>
+													    	<c:if test="${switchPortInfo.inpktsspeed eq null || switchPortInfo.inpktsspeed==''}"> 0 pps </c:if>
 													    </a>
 													</td>
 												</tr>
