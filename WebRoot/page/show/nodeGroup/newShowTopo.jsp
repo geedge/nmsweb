@@ -80,6 +80,7 @@ function newNode(x, y, w, h, text,img){
     node.setSize(w, h);
     node.fillColor='255,128,0';
     node.fontColor='0,0,0';
+    node.font='15px 微软雅黑';
     node.addEventListener("click",function(node){
     	console.log('x  ----- '+node.target.x+'     y ------ '+node.target.y+' ----  '+node.target.text);
     })
@@ -107,7 +108,7 @@ function newLink(nodeA, nodeZ, text, dashedPattern,arrowsRadius){
 function newFoldLink(nodeA, nodeZ, text, direction, dashedPattern){
     var link = new JTopo.FoldLink(nodeA, nodeZ, text);
     link.direction = direction || 'horizontal';
-//    link.arrowsRadius = 15; //箭头大小
+    link.arrowsRadius = 15; //箭头大小
     link.lineWidth = 2; // 线宽
     link.bundleOffset = 40; // 折线拐角处的长度
     link.bundleGap = 20; // 线条之间的间隔
@@ -157,8 +158,8 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 	    
 	    //遍历创建节点对象
 	    <c:forEach items="${requestScope.topoNodeInfos}" var="item">
-	    /* 	var node${item.id} = newNode(${item.x},${item.y},${item.width},${item.height},'${item.text}${item.id}','${item.topoImg.name}'); */
-			var node${item.id} = newNode(${item.x},${item.y},${item.width},${item.height},'${item.text}','${item.topoImg.name}');
+	    /*		var node${item.id} = newNode(${item.x},${item.y},${item.width},${item.height},'${item.text}${item.id}','${item.topoImg.name}'); */
+	     	var node${item.id} = newNode(${item.x},${item.y},${item.width},${item.height},'${item.text}','${item.topoImg.name}');
 			node${item.id}.status=${item.status};
 			node${item.id}.serializedProperties.push('status');
 			
@@ -232,6 +233,8 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 							link${item.id}.strokeColor=classJson[i][key];
 						}else if(key=='lineWidth'){
 							link${item.id}.lineWidth=classJson[i][key];
+						}else if(key='arrowsRadius'){
+							link${item.id}.arrowsRadius=classJson[i][key];
 						}
 					}
 				}
