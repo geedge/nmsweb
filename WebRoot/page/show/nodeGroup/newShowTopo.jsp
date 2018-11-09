@@ -196,9 +196,7 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 				var classJson=${item.topoNodeInfoClass};
 				for(var i=0;i<classJson.length;i++){
 					for(var key in classJson[i]){
-						if(key=='textPosition'){
-							node${item.id}.textPosition=classJson[i][key];
-						}
+						node${item.id}[key]=classJson[i][key];
 					}
 				}
 			</c:if>
@@ -223,7 +221,10 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 							}else{
 								var link${item.id} = newLink(node${item.topoNodeInfo1.id},node${item.topoNodeInfo2.id},'${item.text}');
 							}
-						}else if(key=='offsetGap'){
+						}else{
+							link${item.id}[key]=classJson[i][key];
+						}
+						/* else if(key=='offsetGap'){
 							link${item.id}.offsetGap=classJson[i][key];
 						}else if(key=='direction'){
 							link${item.id}.direction=classJson[i][key];
@@ -235,7 +236,7 @@ function newFlexionalLink(nodeA, nodeZ, text, dashedPattern,direction){
 							link${item.id}.lineWidth=classJson[i][key];
 						}else if(key='arrowsRadius'){
 							link${item.id}.arrowsRadius=classJson[i][key];
-						}
+						} */
 					}
 				}
 			</c:when>
