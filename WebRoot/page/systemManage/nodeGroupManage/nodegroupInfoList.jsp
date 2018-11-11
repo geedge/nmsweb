@@ -365,6 +365,7 @@
 			function commitAdd(){
 				if(checkForm()) {
 					$("input[id='isValid']").removeAttr('disabled');
+					$("#nodeGroupForm select").removeAttr('disabled');
 					document.nodeGroupForm.action="<%=path%>/nodeGroupManage/nodeGroupManage!execute.do?action=addNodeGroup";
 					document.nodeGroupForm.submit();	
 				}

@@ -25,7 +25,9 @@ html, body {;
 .login{font-size:14px;
      margin-left:10px;
 	 width:200px;
-	 height:155px;}
+	 height:155px;
+	 margin-top:25px;
+	 }
 	 
 
 </style>
@@ -80,7 +82,7 @@ $(function(){
 									<div class="login" id="login">
 										<table width="215"  height="100" cellpadding="0" cellspacing="0" >
 											<tr>
-												<td style="float:left;" colspan="2"><img src="<c:url value='/images/login_08.jpg'/>" width="212"  /></td>
+												<td style="float:left;font-size:20px;font-weight:bold;" colspan="2"><font>Please select a view</font><%-- <img src="<c:url value='/images/login_08.jpg'/>" width="212"  /> --%></td>
 											</tr>
 											<tr>
 												<td height="25" colspan="2" style="font-family: '微软雅黑';font-size: 15px;" align="middle">i18n_systemSelect.message.loginSuccess_n81i！</td>

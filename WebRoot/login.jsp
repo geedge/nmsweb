@@ -17,6 +17,7 @@ html, body {;
 
 .login{font-size:14px;
      margin-left:10px;
+     margin-top:65px;
 	 width:200px;
 	 height:155px;}
 .loginInput{
@@ -94,9 +95,7 @@ html, body {;
 								<td width="43%">
 									<div class="login">
 										<table width="215"  height="100" cellpadding="0" cellspacing="0" >
-											<tr>
-												<td style="float:left;" colspan="2"><img src="images/login_07.jpg" width="212"  /></td>
-											</tr>
+											<tr></tr>
 											<tr>
 												<td height="25" colspan="2" ><div class="loginInput"><img  src="images/user.png"  /><input type="text" name="logInInfo.yhmc" title="i18n_login.message.yhmc_n81i" id="yhmc" value="" onkeyDown="enterkey();" style="width:150px;" /></div></td>
 											</tr>
