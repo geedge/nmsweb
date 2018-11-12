@@ -65,34 +65,34 @@ public class DetectDatasTimeoutAlarmThread implements Runnable{
 				}
 			}else {
 				logger.info("当前时间 所有节点握手监测均正常");
-			}
-//			//握手监测正常,查询握手最新时间的监测是否有异常的
-			List<String> seqIds = new ArrayList<String>();
-			seqIds = service.searchTimeoutNmsClient(nmsClientSet);				
-			for(String seqId:seqIds) {
-				if(StringUtils.isNotBlank(seqId) && !(","+errorSeqIds+",").contains((","+seqId+","))) {
-					errorSeqIds = errorSeqIds + "," + seqId;
+			
+				//握手监测正常,查询握手最新时间的监测是否有异常的
+				List<String> seqIds = new ArrayList<String>();
+				seqIds = service.searchTimeoutNmsClient(nmsClientSet);				
+				for(String seqId:seqIds) {
+					if(StringUtils.isNotBlank(seqId) && !(","+errorSeqIds+",").contains((","+seqId+","))) {
+						errorSeqIds = errorSeqIds + "," + seqId;
+					}
 				}
+				
+				logger.info("超时无握手监测信息节点的seqId："+errorSeqIds);
+				
+				List<SetInfo> setInfoList = service.getAllSetInfo(1,null);	//查询有效SetInfo信息				
+				for(SetInfo setInfo : setInfoList){
+					List<String []> alarmInfoList  = service.detectDatasTimeoutCheck(setInfo,startTime,detectDatasTimeoutOthers?errorSeqIds:null);//监测当前监测是否超时无数据
+					if(alarmInfoList != null && alarmInfoList.size()>0){
+						alarm.addAll(alarmInfoList);
+						/*for(String [] datas: alarmInfoList){
+							try {
+	//						System.out.println("--"+JSONArray.fromObject(datas));
+								service.resoveAlarms(datas);
+							} catch (Exception e) {
+								logger.error("Parsing the abnormity of the timeout anomaly information of the monitoring data", e);
+							}
+						}*/
+					}
+				}		
 			}
-			
-			logger.info("超时无握手监测信息节点的seqId："+errorSeqIds);
-			
-			List<SetInfo> setInfoList = service.getAllSetInfo(1,null);	//查询有效SetInfo信息				
-			for(SetInfo setInfo : setInfoList){
-				List<String []> alarmInfoList  = service.detectDatasTimeoutCheck(setInfo,startTime,detectDatasTimeoutOthers?errorSeqIds:null);//监测当前监测是否超时无数据
-				if(alarmInfoList != null && alarmInfoList.size()>0){
-					alarm.addAll(alarmInfoList);
-					/*for(String [] datas: alarmInfoList){
-						try {
-//						System.out.println("--"+JSONArray.fromObject(datas));
-							service.resoveAlarms(datas);
-						} catch (Exception e) {
-							logger.error("Parsing the abnormity of the timeout anomaly information of the monitoring data", e);
-						}
-					}*/
-				}
-			}		
-			
 			int size = alarm.size();
 			logger.debug("监测超时告警：共 " + size +" 条，开始批量入库");
 			boolean r = service.resoveAlarmsBatch(alarm);
