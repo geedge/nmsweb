@@ -746,13 +746,12 @@
 			<div id="maindiv" style="clear:both;">
 				<table border="0" cellpadding="0" cellspacing="0" class="table" id="info" style="">
 					<tr>
-						<td class="color_8">i18n_nginfo.text.nodeGroup_n81i
-							<span>
-								<label>(</label>
-								<input type="checkbox" id="chkShowStopNGroup" onclick="query()" />
-								<label for="chkShowStopNGroup">i18n_nginfo.text.ShowStopNGroup_n81i</label>
-								<label>)</label>
-							</span>
+						<td class="color_8">
+							<span>i18n_nginfo.text.nodeGroup_n81i</span><br/>
+							<span>(</span>
+							<span><input type="checkbox" id="chkShowStopNGroup" onclick="query()" /></span>
+							<span><label for="chkShowStopNGroup">i18n_nginfo.text.ShowStopNGroup_n81i</label></span>
+							<span>)</span>
 						</td>
 						<td class="color_8">i18n_nginfo.text.nodeGroupInfo_n81i</td>
 					</tr>
