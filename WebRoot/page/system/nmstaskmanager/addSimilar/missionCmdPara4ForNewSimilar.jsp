@@ -85,7 +85,7 @@
 						i18n_mcpfns4.text.startFileOrexecCmd_n81i：
 					</td>
 					<td width="25%">
-						<input type="text" name="paramM4[${index.count-1}].execCmd" id="execCmd" value="${paramMiss4.execCmd}" /><font color="red"> * </font>
+						<input type="text" name="paramM4[${index.count-1}].execCmd" id="execCmd" value="${fn:escapeXml(paramMiss4.execCmd)}" /><font color="red"> * </font>
 					</td>
 					<td width="13%" align="right">
 						i18n_mcpfns4.text.forceExec_n81i：
