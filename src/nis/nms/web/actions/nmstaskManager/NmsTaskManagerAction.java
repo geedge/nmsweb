@@ -4062,6 +4062,7 @@ public class NmsTaskManagerAction extends BaseAction {
 						+ this.getUserID() + "')= 0 "
 						+ " and instr(t.lookUserIds,to_char(t.userId))= 0) or (t.isLook ='0' and t.lookUserIds is null))";
 			}
+			hql += " and t.missionState!=-1";
 			hql += " order by t.createTime desc";
 			page = this.commonService.findByPage(hql, pageNo, this.getPageSize());
 			missionstateTableList = (List<MissionStateTable>) page.getResult();
