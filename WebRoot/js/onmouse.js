@@ -604,3 +604,26 @@ function removeObj(){//点击标题栏触发的事件
 		$("#"+showContentSpanId).hide();
 	}
 	
+	/*
+	 * 删除 调用 putty 远程连接
+	 */
+	function removeRemoteConn(){
+		$("a[onclick^='remoteConn']").each(function(i,n){
+			var $this = $(n);
+			var content = $this.html();
+			var parent = $this.parent();
+			parent.html(content);
+			$this.remove();
+		});
+	}
+	
+	$(function(){
+		//删除 调用 putty 远程连接
+		removeRemoteConn();
+		//修改ajax全局配置，ajax执行完成后调用，清除动态加载内容的 远程连接
+		$.ajaxSetup({
+		  	complete:function (XMLHttpRequest, textStatus) {
+			    removeRemoteConn();
+			}
+		});
+	});
