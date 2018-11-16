@@ -26,6 +26,17 @@
 							<c:set var="charStateNum" value="${rowData[14] }" />
 							<c:set var="nodeType" value="${rowData[15] }" />
 							<c:set var="status" value="${rowData[4] }" />
+							
+							<c:if test="${ctiId == 7}">
+								<c:set var="isHandShake" value="1"/>
+							</c:if>
+							<c:if test="${ctiId != 7}">
+								<c:set var="isHandShake" value="0"/>
+							</c:if>
+							
+							<!-- 特种设备特殊标记 -->
+							<c:set var="specialServer" value="${rowData[18] }" />
+												
 							<c:choose>
 								<c:when test="${ind.index eq 1}">
 									<td class="color_1_1" rowspan="${fn:length(detecInfoList)}"
@@ -34,6 +45,7 @@
 										<a href="javascript:void(0);" name="${cellData}"
 										   onclick="remoteConn('${nodeSysType }','${cellData}','${nodeType }', this)">
 										   <c:out value="${cellData}" default="" />
+										   <c:if test="${not empty specialServer}"><span style="color:red">*</span></c:if>
 										</a>
 									</td>
 								</c:when>
@@ -151,7 +163,7 @@
 								</c:when>
 								<c:when test="${ind.index eq 4}">
 									<td class="color_1_1">
-										<c:if test="${!handshakeEr}">
+										<c:if test="${isHandShake == 0 || !handshakeEr}">
 											<c:if test="${fn:trim(cellData)=='1'}">
 												<img src="<c:url value='/images/yes.gif'/>" border="0"
 													align="middle" />
@@ -171,7 +183,7 @@
 								</c:when>
 								<c:when test="${ind.index eq 6}">
 									<td class="color_1_1" nowrap="nowrap">
-										<c:if test="${!handshakeEr && status !='3'}">
+										<c:if test="${isHandShake == 0 || (!handshakeEr && status !='3')}">
 											<c:out value="${cellData}" default="" />
 										</c:if>
 									</td>

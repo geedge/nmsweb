@@ -32,6 +32,9 @@
 								<c:set var="isHandShake" value="0"/>
 							</c:if>
 							
+							<!-- 特种设备特殊标记 -->
+							<c:set var="specialServer" value="${rowData[18] }" />
+							
 							<c:choose>
 								<c:when test="${ind.index eq 1}">
 									<td class="color_1_1" rowspan="${fn:length(detecInfoList)}"
@@ -40,7 +43,7 @@
 										<a
 											href="javascript:void(0);"
 											onclick="remoteConn('${nodeSysType }','${cellData}','${nodeType }', this)"><c:out
-												value="${cellData}" default="" /> </a>
+												value="${cellData}" default="" /> <c:if test="${not empty specialServer}"><span style="color:red">*</span></c:if></a>
 									</td>
 								</c:when>
 								<c:when test="${ind.index eq 2}">

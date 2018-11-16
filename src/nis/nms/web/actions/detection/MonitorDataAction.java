@@ -1909,7 +1909,7 @@ public class MonitorDataAction extends BaseAction {
 			sqlBuffer.append(" left join check_type_info cti");
 			sqlBuffer.append(" on dsi.check_type_id = cti.id");
 			sqlBuffer.append(
-					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn,special_server_type from  NODE_TABLE ");
+					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn,special_server_type,brand_id from  NODE_TABLE ");
 			if (nodeGroupStr != null && !"".equals(nodeGroupStr) && !"null".equals(nodeGroupStr)) {
 				// 节点组模糊名称不为空，则根据节点组名称，模糊查询所有节点组，再依次查找其下面的节点，得到节点id
 				// @2018-3-9 fang 修改 首先查询符合条件的id，在拼接sql，适配mysql
@@ -1993,7 +1993,7 @@ public class MonitorDataAction extends BaseAction {
 				sqlBuffer.append(" or (dsi.view_level=4 )");
 				sqlBuffer.append(") and dsi.detection_set_state=1 and cti.crete_state=0  ");
 			}
-			sqlBuffer.append(" order by ipn ASC,ctiId1 ASC, dsi.id ASC");
+			sqlBuffer.append(" order by nt.brand_id ASC,ipn ASC,ctiId1 ASC, dsi.id ASC");
 			System.out.println("sqlBuffer:" + sqlBuffer.toString());
 			page = this.commonService.findByPageForSql(sqlBuffer.toString(), pageNo, pageSize, null);
 			List<Object[]> detectionInfoList; // 最新状态信息集合
@@ -2079,7 +2079,7 @@ public class MonitorDataAction extends BaseAction {
 			sqlBuffer.append(" left join check_type_info cti");
 			sqlBuffer.append(" on dsi.check_type_id = cti.id");
 			sqlBuffer.append(
-					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn from  NODE_TABLE ");
+					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn, brand_id from  NODE_TABLE ");
 			if (nodeGroupStr != null && !"".equals(nodeGroupStr) && !"null".equals(nodeGroupStr)) {
 				// 节点组模糊名称不为空，则根据节点组名称，模糊查询所有节点组，再依次查找其下面的节点，得到节点id
 				// @2018-3-9 fang 修改 首先查询符合条件的id，在拼接sql，适配mysql
@@ -2147,7 +2147,7 @@ public class MonitorDataAction extends BaseAction {
 				sqlBuffer.append(" or (dsi.view_level=4 )");
 				sqlBuffer.append(") and dsi.detection_set_state=1 and cti.crete_state=0  ");
 			}
-			sqlBuffer.append("  order by ipn ASC,ctiId1 ASC, dsi.id ASC");
+			sqlBuffer.append("  order by nt.brand_id,ipn ASC,ctiId1 ASC, dsi.id ASC");
 			System.out.println("sqlBuffer:" + sqlBuffer.toString());
 			page = this.commonService.findByPageForSql(sqlBuffer.toString(), pageNo, pageSize, null);
 			List<Object[]> detectionInfoList; // 最新状态信息集合
