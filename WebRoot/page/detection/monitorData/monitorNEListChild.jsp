@@ -128,6 +128,14 @@
 							<c:set var="sqId" value="${rowData[12] }" />
 							<c:set var="charStateNum" value="${rowData[14] }" />
 							<c:set var="status" value="${rowData[4] }" />
+							
+							<c:if test="${ctiId == 7}">
+								<c:set var="isHandShake" value="1"/>
+							</c:if>
+							<c:if test="${ctiId != 7}">
+								<c:set var="isHandShake" value="0"/>
+							</c:if>
+							
 							<c:choose>
 								<c:when test="${ind.index eq 1}">
 								</c:when>
