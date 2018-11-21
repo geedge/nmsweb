@@ -47,10 +47,8 @@
 	    var type = $("#checkTypeId").find("option:selected").val();
 		var startType = $("input[id='isControlStart']:checked").val();
 		var userViewLevel = $("input[type=radio][name='detectionSetInfo.viewLevel']:checked").val();
+		var emailFlag=${session.emailFlag==0 };
 		var checkedSize = $("#userEmail input[name=userEmailIds]:checked").size();
-		//alert($("#usergroupid").val());
-		//alert("权限："+userViewLevel);
-		//alert("选中个数"+checkedSize);
 		
 		//节点组可以为空，为空表示选择所有的节点组,但是如果选择了节点组，而节点组内无有效的节点，需要提示
 		var nodeGroupsId = jQuery("#groupId").val();//选中节点组
@@ -121,9 +119,8 @@
 		
 		
 		/* TODO */
-		
    		if($("#checkGap").val() >=5){
-   			if(userViewLevel!=4 && userViewLevel!=1){//不是自己和无限制
+   			if(userViewLevel!=4 && userViewLevel!=1 && emailFlag){//不是自己和无限制
     			if(checkedSize>0){//有选中
 	    			document.Mkform.action="<%=path%>/detection/detectionSet.do?action=doAdd";
 					document.Mkform.submit();		
