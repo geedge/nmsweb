@@ -48,6 +48,8 @@
 		<script language="javascript" type="text/javascript"
 			src="<c:url value='/js/jquery1.11.3.js'/>"></script>
 		<script language="javascript" type="text/javascript"
+			src="<c:url value='/js/jquery-migrate-1.4.1.js'/>"></script>
+		<script language="javascript" type="text/javascript"
 			src="<c:url value='/js/onmouse.js'/>"></script>
 		<script language="javascript" type="text/javascript"
 			src="<c:url value='/js/jquery.tools.js'/>"></script>
@@ -137,13 +139,13 @@
 	});
 
 	function ieBrowser(){
-		/* if($.browser.msie){
+		if($.browser.msie){
 			if($.browser.version.split('.')[0]<=7){
 				return false;
 			}else{
 				return true;//ie8+
 			}
-		} */
+		}
 	}
 	window.onresize = function(){
 		$("#info").floatHeader();//用于浏览器调整大小后 列表表头自动适应

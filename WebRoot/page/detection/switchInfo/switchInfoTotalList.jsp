@@ -158,13 +158,13 @@
 		document.form3.submit();
 	 }
 	 function ieBrowser(){
-		/* if($.browser.msie){
+		if($.browser.msie){
 			if($.browser.version.split('.')[0]<=7){
 				return false;
 			}else{
 				return true;//ie8+
 			}
-		} */
+		}
 	}
 
 	//程辉 2013-5-8 新增 导出当前页
