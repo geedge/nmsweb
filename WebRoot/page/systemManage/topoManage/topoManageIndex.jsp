@@ -66,6 +66,13 @@
 		})
 	
 		function selectNodeAndNodeGroup(index) {
+			$('#chooseIndex').val(index);
+			var nodeType = $('input[name="topoNodeType'+index+'"]:checked').val();
+			if(nodeType==1){
+				$("#chooseType").val(1);
+			}else{
+				$("#chooseType").val(0);
+			}
 			var groupId = $('#nodeGroupId'+index).val();//选中节点组
 			var nodeId = $('#nodeId'+index).val();//选中ip	
 			var url = "<%=path%>/nodeGroupManage/nodeGroupManage!executeAction.do?action=toSelectNodeAndNodeGroup&type=topoManage&groupId="+groupId+"&nodeId="+nodeId; //转向网页的地址;
