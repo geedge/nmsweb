@@ -100,7 +100,7 @@ public class TopoManageAction extends BaseAction{
 						for (TopoNodeInfo topoInfo : topoNodeList) {
 							topoManageInfo=new TopoManageInfo();
 							topoManageInfo.setTopoNodeInfo(topoInfo);
-							if(topoInfo.getType()==1L){
+							if(topoInfo.getType()==2L){
 								List nodeTables = this.commonService.find("from NodeTable where 1=1 and id=?",topoInfo.getTypeId());
 								nodeTable = (NodeTable)nodeTables.get(0);
 								List find = this.commonService.find("from NodegroupTable where 1=1 and id=?",nodeTable.getGroupId());
@@ -109,7 +109,7 @@ public class TopoManageAction extends BaseAction{
 								topoManageInfo.setNodeGroupId(nodeTable.getGroupId());
 								topoManageInfo.setNodeId(nodeTable.getNodeId());
 								topoManageInfo.setNodeName(nodeTable.getNodeIp());
-							}else if(topoInfo.getType()==2L){
+							}else if(topoInfo.getType()==1L){
 								List find = this.commonService.find("from NodegroupTable where 1=1 and id=?",topoInfo.getTypeId());
 								nodegroupTable = (NodegroupTable) find.get(0);
 								topoManageInfo.setNodeGroupName(nodegroupTable.getGroupName());

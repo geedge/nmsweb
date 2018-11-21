@@ -30,17 +30,18 @@
 	
 	<script type="text/javascript">
 		//页面初始化 回显节点对应信息
+		// type 1 为节点组  2 为节点 3为 空  4为 topo图
 		$(function(){
 			$("input[name^='topoNodeType']:checked").each(function(index,data){
 				var radioValue=$(data).val();
-				if(radioValue==1){
+				if(radioValue==2){
 					$("#topoInfo"+index).hide();
 					$("#chooseGroupNode"+index).show();
 					$("#topoNodeOne"+index).show();
 					$("#topoNodeTwo"+index).show();
 					$("#chooseType").val(1);
 					$('#chooseIndex').val(index);
-				}else if(radioValue==2){
+				}else if(radioValue==1){
 					$("#topoInfo"+index).hide();
 					$("#chooseGroupNode"+index).show();
 					$("#topoNodeOne"+index).hide();
@@ -66,6 +67,13 @@
 		})
 	
 		function selectNodeAndNodeGroup(index) {
+			$('#chooseIndex').val(index);
+			var nodeType = $('input[name="topoNodeType'+index+'"]:checked').val();
+			if(nodeType==2){
+				$("#chooseType").val(1);
+			}else{
+				$("#chooseType").val(0);
+			}
 			var groupId = $('#nodeGroupId'+index).val();//选中节点组
 			var nodeId = $('#nodeId'+index).val();//选中ip	
 			var url = "<%=path%>/nodeGroupManage/nodeGroupManage!executeAction.do?action=toSelectNodeAndNodeGroup&type=topoManage&groupId="+groupId+"&nodeId="+nodeId; //转向网页的地址;
@@ -109,7 +117,7 @@
 				$("#topoNodeTwo"+index).hide();
 				$("#chooseType").val(0);
 				$('#chooseIndex').val(index);
-			}else if(value==2){
+			}else if(value==1){
 				$("#topoInfo"+index).hide();
 				$("#chooseGroupNode"+index).show();
 				$("#topoNodeOne"+index).hide();
@@ -140,7 +148,7 @@
 				var data={};
 				topoManageInfo.nodeId=$('#topoNodeInfoId'+index).val();
 				topoManageInfo.nodeType=radioValue;
-				if(radioValue==1){
+				if(radioValue==2){
 					if(nodeIds==null||nodeIds==undefined||nodeIds==''){
 						alert("i18n_topoManage.topoNodeError1_n81i");
 						flag=false;
@@ -151,7 +159,7 @@
 						return;
 					}
 					topoManageInfo.nodeTypeId=nodeIds;
-				}else if(radioValue==2){
+				}else if(radioValue==1){
 					if(groupIds==null||groupIds==undefined||groupIds==''){
 						alert("i18n_topoManage.topoNodeGroupError1_n81i");
 						flag=false;
@@ -299,10 +307,10 @@
 												<c:forEach items="${typeList}" var="type">
 													<c:choose>
 														<c:when test='${type==topoManageInfo.topoNodeInfo.type}'>
-															<input type='radio' status='${status.index}' value='${type}' name='topoNodeType${status.index}' checked='checked'  onchange="chooseTopoNodeType(this)"/><c:if test='${type==1}'>i18n_topoManage.topoNode_n81i</c:if><c:if test='${type==2}'>i18n_topoManage.topoNodeGroup_n81i</c:if><c:if test='${type==3}'>i18n_topoManage.topoNone_n81i</c:if><c:if test='${type==4}'>i18n_topoManage.topoPicture_n81i</c:if>
+															<input type='radio' status='${status.index}' value='${type}' name='topoNodeType${status.index}' checked='checked'  onchange="chooseTopoNodeType(this)"/><c:if test='${type==2}'>i18n_topoManage.topoNode_n81i</c:if><c:if test='${type==1}'>i18n_topoManage.topoNodeGroup_n81i</c:if><c:if test='${type==3}'>i18n_topoManage.topoNone_n81i</c:if><c:if test='${type==4}'>i18n_topoManage.topoPicture_n81i</c:if>
 														</c:when>
 														<c:otherwise>
-															<input type='radio' status='${status.index}' name='topoNodeType${status.index}' value='${type}' onchange="chooseTopoNodeType(this)"/><c:if test='${type==1}'>i18n_topoManage.topoNode_n81i</c:if><c:if test='${type==2}'>i18n_topoManage.topoNodeGroup_n81i</c:if><c:if test='${type==3}'>i18n_topoManage.topoNone_n81i</c:if><c:if test='${type==4}'>i18n_topoManage.topoPicture_n81i</c:if>
+															<input type='radio' status='${status.index}' name='topoNodeType${status.index}' value='${type}' onchange="chooseTopoNodeType(this)"/><c:if test='${type==2}'>i18n_topoManage.topoNode_n81i</c:if><c:if test='${type==1}'>i18n_topoManage.topoNodeGroup_n81i</c:if><c:if test='${type==3}'>i18n_topoManage.topoNone_n81i</c:if><c:if test='${type==4}'>i18n_topoManage.topoPicture_n81i</c:if>
 														</c:otherwise>
 													</c:choose>
 												</c:forEach>
