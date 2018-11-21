@@ -28,7 +28,7 @@
 	<script language="javascript" type="text/javascript">
 	//---------2012-7-2 用于远程连接时，若没有指定操作系统弹出选择框
 	$(function() {
-		$( "#dialog:ui-dialog" ).dialog( "destroy" );
+ 		$( "#dialog:ui-dialog" ).dialog( "destroy" );
 		var	tips = $( ".validateTips" );
 	
 		function updateTips( t ) {
@@ -75,14 +75,20 @@
 	
 	function remoteConn(nodeSysType,ip,nodeType, btn){//nodeSysType 操作系统类型   ip 远程连接的节点IP nodeType 节点类型
 		assistEl = btn;
+		if(nodeSysType == null || nodeSysType == ""){
+			nodeSysType="1";
+		}
+		
 		triggerEl = document.getElementById('trigger_protocol_ifrm');
 		
 		if(nodeType != null && nodeType != "" && nodeType != "0"){// 节点类型不是服务器，即是交换机，则默认使用Telnet连接
 			runRemoteConn('3', ip)
-		} else if (nodeSysType == null || nodeSysType == "") {// 节点类型是服务器，则判断系统类型
+		} 
+		/* else if (nodeSysType == null || nodeSysType == "") {// 节点类型是服务器，则判断系统类型
 			$("#ip").val(ip);
 			$("#dialog").dialog("open");
-		} else {
+		}  */
+		else {
 			runRemoteConn(nodeSysType, ip);
 		}
 	}
