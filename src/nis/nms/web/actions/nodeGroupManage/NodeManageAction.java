@@ -1557,7 +1557,7 @@ public class NodeManageAction extends BaseAction {
 					}
 
 					// 当节点类型=1 即网元时 网元类型为必填项
-					if (nodeVo.getNodeType().equals("1")) {
+					if (nodeVo.getNodeType()!=null&&nodeVo.getNodeType().equals("1")) {
 						if (StringUtil.isBlank(nodeVo.getNetworElementType())) {
 							errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo12_n81i",i+"");
 						}
@@ -1657,26 +1657,29 @@ public class NodeManageAction extends BaseAction {
 					}
 
 					// SNMP版本
-					if (null == cell_snmpVersion
-							|| cell_snmpVersion.getCellType() == Cell.CELL_TYPE_BLANK) {
-						errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo20_n81i",i+"");
-					} else {
-						if (cell_snmpVersion.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-							int snmpVersion = (int) cell_snmpVersion
-									.getNumericCellValue();
-							nodeVo.setSnmpVersion(Long.parseLong(snmpVersion
-									+ ""));
-							if (snmpVersion != 1 && snmpVersion != 3) {
-								errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo21_n81i",i+"");
-							}
-						} else if (cell_snmpVersion.getCellType() == Cell.CELL_TYPE_STRING) {// ^[0-9]*$
-							String snmpVersion = cell_snmpVersion
-									.getStringCellValue().trim();
-							nodeVo.setSnmpVersion(Long.parseLong(snmpVersion
-									+ ""));
-							if (!snmpVersion.equals("1")
-									&& !snmpVersion.equals("3")) {
-								errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo21_n81i",i+"");
+					if(nodeVo.getNodeType()!=null&&nodeVo.getNodeType().equals("1")){
+						
+						if (null == cell_snmpVersion
+								|| cell_snmpVersion.getCellType() == Cell.CELL_TYPE_BLANK) {
+							errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo20_n81i",i+"");
+						} else {
+							if (cell_snmpVersion.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+								int snmpVersion = (int) cell_snmpVersion
+										.getNumericCellValue();
+								nodeVo.setSnmpVersion(Long.parseLong(snmpVersion
+										+ ""));
+								if (snmpVersion != 1 && snmpVersion != 3) {
+									errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo21_n81i",i+"");
+								}
+							} else if (cell_snmpVersion.getCellType() == Cell.CELL_TYPE_STRING) {// ^[0-9]*$
+								String snmpVersion = cell_snmpVersion
+										.getStringCellValue().trim();
+								nodeVo.setSnmpVersion(Long.parseLong(snmpVersion
+										+ ""));
+								if (!snmpVersion.equals("1")
+										&& !snmpVersion.equals("3")) {
+									errorInfo +=  getI18nText("i18n_NodeManageAction.addNodeInfo.errorInfo21_n81i",i+"");
+								}
 							}
 						}
 					}
@@ -1791,22 +1794,22 @@ public class NodeManageAction extends BaseAction {
 					nodeT.setNodeIp(vo.getNodeIp());
 					nodeT.setNodeMac(vo.getNodeMac());
 					nodeT.setNodeName(vo.getNodeName());
-					if (!vo.getNodeType().equals("")) {
+					if (vo.getNodeType()!=null&&!vo.getNodeType().equals("")) {
 						nodeT.setNodeType(new Long(vo.getNodeType()));
 					}
-					if (!vo.getNodeUType().equals("")) {
+					if (vo.getNodeUType()!=null&&!vo.getNodeUType().equals("")) {
 						nodeT.setNodeUType(new Long(vo.getNodeUType()));// 节点U位
 					}
 					nodeT.setNodeBoxIspn(vo.getNodeBoxIspn());// 机柜编号
-					if (!vo.getNodeBeginUType().equals("")) {
+					if (vo.getNodeBeginUType()!=null&&!vo.getNodeBeginUType().equals("")) {
 						nodeT
 								.setNodeBeginUType(new Long(vo
 										.getNodeBeginUType()));// 起始U位
 					}
-					if (!vo.getSnmpVersion().equals("")) {
+					if (vo.getSnmpVersion()!=null&&!vo.getSnmpVersion().equals("")) {
 						nodeT.setSnmpVersion(new Long(vo.getSnmpVersion()));
 					}
-					if (!vo.getNodeState().equals("")) {
+					if (vo.getNodeState()!=null&&!vo.getNodeState().equals("")) {
 						nodeT.setNodeState(new Long(vo.getNodeState()));
 					}
 					nodeT.setNodeIpInfo(vo.getNodeIpInfo());
@@ -1820,7 +1823,7 @@ public class NodeManageAction extends BaseAction {
 							.getSeqId()));
 					nodeT.setGroupId(group.getGroupId());
 					nodeT.setNodeUserName(vo.getNodeUserName());
-					if (!vo.getNetworElementType().equals("")) {
+					if (vo.getNetworElementType()!=null&&!vo.getNetworElementType().equals("")) {
 						nodeT.setNetworElementType(new Long(vo
 								.getNetworElementType()));
 					}
