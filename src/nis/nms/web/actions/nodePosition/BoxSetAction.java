@@ -484,11 +484,11 @@ public class BoxSetAction extends BaseAction {
 		try {
 			Page p = this.commonService.findByPage("from NodeBoxTable", 1, 3);
 			List<NodeTable> st = (List<NodeTable>) p.getResult();
-			String[] title = { getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i"), 
-								getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i"),
-								getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i"),
-								getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i"),
-								getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i"),
+			String[] title = { getI18nText("i18n_BoxSetAction.queryBoxInfo.index_n81i"), 
+								getI18nText("i18n_BoxSetAction.queryBoxInfo.u_n81i"),
+								getI18nText("i18n_BoxSetAction.queryBoxInfo.boxNo_n81i"),
+								getI18nText("i18n_BoxSetAction.queryBoxInfo.boxRow_n81i"),
+								getI18nText("i18n_BoxSetAction.queryBoxInfo.boxCol_n81i"),
 								getI18nText("i18n_BoxSetAction.queryBoxInfo.title_n81i")};
 			
 			String[] colu = { "ispn", "boxUType","roomIspn", "roomRowPosition",
