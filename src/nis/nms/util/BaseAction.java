@@ -249,7 +249,7 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 //	private CommonService commonService;
 	private static final long serialVersionUID = 7414962517552053966L;
 
-	public static ResourceBundle rb = ResourceBundle.getBundle("myconfig");
+	public static ResourceBundleWrapper rb = new ResourceBundleWrapper(ResourceBundle.getBundle("myconfig"));
 	
 	private String downLoadPath;//下载文件路径
 
@@ -1897,11 +1897,11 @@ public abstract  class  BaseAction extends ActionSupport implements Serializable
 	public void setDownLoadPath(String downLoadPath) {
 		this.downLoadPath = downLoadPath;
 	}
-	public static ResourceBundle getRb() {
+	public static ResourceBundleWrapper getRb() {
 		return rb;
 	}
 	public static void setRb(ResourceBundle rb) {
-		BaseAction.rb = rb;
+		BaseAction.rb = new ResourceBundleWrapper(rb);
 	}
 
 	public String getPrevPageUrl() {

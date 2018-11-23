@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 
 import nis.nms.util.BaseAction;
 import nis.nms.util.ConnectionOracle;
+import nis.nms.util.ResourceBundleWrapper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -44,7 +45,7 @@ public class MailingManagerThread implements Runnable{
 				}
 			}		
 			
-			ResourceBundle rb = BaseAction.rb;			
+			ResourceBundleWrapper rb = BaseAction.rb;			
 			String address = rb.getString("email.address");
 			String userName = rb.getString("email.userName");
 			String password = rb.getString("email.password");
