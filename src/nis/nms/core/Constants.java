@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringUtils;
 
 import nis.nms.util.BaseAction;
+import nis.nms.util.ResourceBundleWrapper;
   
 public class Constants {
 	/**
@@ -211,7 +212,7 @@ public class Constants {
 	public static final String DETEC_TIMEOUT_POLICE_LEVEL;
 	
 	
-	public static ResourceBundle rb = ResourceBundle.getBundle("myconfig");
+	public static ResourceBundleWrapper rb = BaseAction.rb;
 	// #---Email-------
 	public static final String EMAIL_ADDRESS ;
 	public static final String EMAIL_USERNAME ;
@@ -346,6 +347,11 @@ public class Constants {
 	}
 	
 	public static String DETECT_TIMEOUT_ALARMINFO = "i18n_Constants.xmlFile.monitorInfo1_n81i"+" %d "+"i18n_Constants.xmlFile.monitorInfo2_n81i";
+
+	public static void main(String[] args) {
+		System.out.println(Constants.NATION_ROLE);
+	}
+
 }
 
 
