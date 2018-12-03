@@ -49,7 +49,10 @@ public class I18n {
 					}
 				}
 			}
-			System.out.println(" replace : "+ group +" --> " + replacement);
+//			System.out.println(" replace : "+ group +" --> " + replacement);
+			if(replacement != null) {
+				replacement = Matcher.quoteReplacement(replacement);
+			}
 			matcher.appendReplacement(sb, replacement== null ? group : replacement);
 		}
 		matcher.appendTail(sb);
@@ -88,7 +91,10 @@ public class I18n {
 					}
 				}
 			}
-			System.out.println(" replace : "+ group +" --> " + replacement);
+//			System.out.println(" replace : "+ group +" --> " + replacement);
+			if(replacement != null) {
+				replacement = Matcher.quoteReplacement(replacement);
+			}
 			matcher.appendReplacement(sb, replacement== null ? group : replacement);
 		}
 		matcher.appendTail(sb);
