@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 
 import com.nis.util.StringUtil;
 import com.nms.thread.service.NmsReportService;
 
-import net.sf.json.JSONObject;
 import nis.nms.util.BaseAction;
 import nis.nms.util.ConnectionOracle;
 import nis.nms.util.DateUtil;
@@ -19,7 +20,7 @@ import nis.nms.util.HttpClientUtil;
 
 public class NmsStatusThread implements Runnable {
 
-	private Logger logger = Logger.getLogger(NmsStatusThread.class);
+	private static Logger logger = Logger.getLogger(NmsStatusThread.class);
 	
 	@Override
 	public void run() {
@@ -38,8 +39,8 @@ public class NmsStatusThread implements Runnable {
 		try {
 			connection = ConnectionOracle.getConnection();
 			NmsReportService service = new NmsReportService(connection);
-			
 			ArrayList<Map<String, String>> nmsReportInfo = service.getNmsStatusInfo(setId);
+			logger.debug(String.format("查询设备数量：%s", nmsReportInfo == null ? 0 : nmsReportInfo.size()));
 			Map<String, List<Map<String, String>>> tmp = new HashMap<String, List<Map<String, String>>>();
 			tmp.put("unknown", new ArrayList<Map<String, String>>());
 			for (Map<String, String> info : nmsReportInfo) {
@@ -91,10 +92,9 @@ public class NmsStatusThread implements Runnable {
 			Map<String, List<Map>> map = new HashMap<String, List<Map>>();
 			map.put("trafficNmsServerList", results);
 			HttpClientUtil httpUtil = new HttpClientUtil();
-			JSONObject fromObject = JSONObject.fromObject(map);
-			
-			logger.info(BaseAction.rb.getString("nms.status.url"));
-			httpUtil.post(BaseAction.rb.getString("nms.status.url"), fromObject.toString());
+			String data = Json.toJson(map,JsonFormat.tidy());
+			logger.debug("url:" +BaseAction.rb.getString("nms.status.url") + ",data :" + data);
+			httpUtil.post(BaseAction.rb.getString("nms.status.url"), data);
 			logger.info("status上报完毕");
 		} catch (Exception e) {
 			logger.error(e);

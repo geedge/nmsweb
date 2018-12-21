@@ -636,7 +636,7 @@
 			null != n.wheelZoom && (a.preventDefault ? a.preventDefault() : (a = a || window.event, a.returnValue = !1), 1 == n.eagleEye.visible && n.eagleEye.update())
 		}
 		function m(b) {
-			a.util.isIE || !window.addEventListener ? (b.onmouseout = f, b.onmouseover = e, b.onmousedown = g, b.onmouseup = h, b.onmousemove = i, b.onclick = j, b.ondblclick = k, b.onmousewheel = l, b.touchstart = g, b.touchmove = i, b.touchend = h) : (b.addEventListener("mouseout", f), b.addEventListener("mouseover", e), b.addEventListener("mousedown", g), b.addEventListener("mouseup", h), b.addEventListener("mousemove", i), b.addEventListener("click", j), b.addEventListener("dblclick", k), a.util.isFirefox ? b.addEventListener("DOMMouseScroll", l) : b.addEventListener("mousewheel", l)),
+			a.util.isIE || !window.addEventListener ? (b.onmouseout = f, b.onmouseover = e, b.onmousedown = g, b.onmouseup = h, b.onmousemove = i, b.onclick = j, b.ondblclick = k, b.onmousewheel = l, b.touchstart = g, b.touchmove = i, b.touchend = h) : (b.addEventListener("mouseout", f), b.addEventListener("mouseover", e), b.addEventListener("mousedown", g), b.addEventListener("mouseup", h), b.addEventListener("mousemove", i), b.addEventListener("click", j), b.addEventListener("dblclick", k), a.util.isFirefox ? b.addEventListener("DOMMouseScroll", l) : b.addEventListener("mousewheel", l))/*,
 			window.addEventListener && (window.addEventListener("keydown", function (b) {
 					n.dispatchEventToScenes("keydown", a.util.cloneEvent(b));
 					var c = b.keyCode;
@@ -645,7 +645,7 @@
 					n.dispatchEventToScenes("keyup", a.util.cloneEvent(b));
 					var c = b.keyCode;
 					(37 == c || 38 == c || 39 == c || 40 == c) && (b.preventDefault ? b.preventDefault() : (b = b || window.event, b.returnValue = !1))
-				}, !0))
+				}, !0))*/
 		}
 		a.stage = this;
 		var n = this;
@@ -1335,7 +1335,7 @@
 			this.rotate = 0,
 			this.scaleX = 1,
 			this.scaleY = 1,
-			this.strokeColor = "22,124,255",
+			this.strokeColor = "0,0,0",
 			this.borderColor = "22,124,255",
 			this.fillColor = "22,124,255",
 			this.shadow = !1,

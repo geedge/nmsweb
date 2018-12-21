@@ -309,18 +309,23 @@ public class LoginAction extends BaseAction {
 					this.getRequest().getSession().setAttribute(Constant.SESSION_SYSTEM_LOGIN_NAME, "ALL");
 					return "ok";
 				} else {
-
+					String systemId = Constant.CURRENT_SYSTEM_ID;
+					//国家中心
+					
 					stList = this.commonService.executeSQL(
 							"select DISTINCT(st.system_Id),st.system_Name,st.is_master " + "from system_table st "
 									+ "left join Gorup_System_Table gst on gst.system_Id = st.system_Id "
 									+ "left join Xt_Yh_Js_Index xyji on xyji.jsbh = gst.user_Group_Id "
 									+ "left join XT_JS_JBXX xjj on xjj.jsbh = xyji.jsbh " + "where xyji.yhbh='"
-									+ yhbh.trim() + "' and st.system_state = 0 and xyji.type=1 and xjj.zxbz=0 " + // 业务系统启用+角色类型为用户组+用户组有效
-									"order by st.system_Id");
+									+ yhbh.trim() + "' and st.system_state = 0 and xyji.type=1 and xjj.zxbz=0 "  // 业务系统启用+角色类型为用户组+用户组有效
+									+ (StringUtils.isNotBlank(systemId)&& "-1".equals(systemId.trim()) ? "" : " and st.system_Id = "+ systemId)
+									+ " order by st.system_Id");
+					
+					
 					// 国家中心人员具有 查看所有业务系统 数据的权限
 					List<String> list = this.commonService.executeSQL("SELECT jsbh FROM xt_yh_js_index where yhbh = ?",
 							yhbh.trim());
-					if (list != null && list.size() > 0) {
+					if (list != null && list.size() > 0 && StringUtils.isNotBlank(systemId) && "-1".equals(systemId.trim())) {
 						for (String obj : list) {
 							if (StringUtils.isNotBlank(obj)) {
 								if ((Constants.NATION_ROLE.trim()).equals(obj.trim())) {
@@ -517,7 +522,7 @@ public class LoginAction extends BaseAction {
 		try {
 			String sql = "";
 			String regionRoleId = Constants.REGION_ROLE;
-			if (!"admin".equals(yhbh)&&StringUtils.isNotBlank(regionRoleId) && !regionRoleId.equals("-1")) {
+			if (StringUtils.isNotBlank(regionRoleId) && !regionRoleId.equals("-1")) {
 				sql = "SELECT pid,id,mkmc,mkms,mkurl,mktb,iconimage,mktype FROM XtMkJbxx WHERE id IN(SELECT mkbh FROM XtJsMkIndex WHERE jsbh = "
 						+ regionRoleId + ")";
 			} else {

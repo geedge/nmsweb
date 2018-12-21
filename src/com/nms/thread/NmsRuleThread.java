@@ -6,19 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-import nis.nms.util.BaseAction;
-import nis.nms.util.ConnectionOracle;
-import nis.nms.util.DateUtil;
-import nis.nms.util.HttpClientUtil;
-
 import org.apache.log4j.Logger;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 
 import com.nms.thread.service.NmsReportService;
 
+import nis.nms.util.BaseAction;
+import nis.nms.util.ConnectionOracle;
+import nis.nms.util.HttpClientUtil;
+
 public class NmsRuleThread implements Runnable {
 
-	private Logger logger = Logger.getLogger(NmsRuleThread.class);
+	private static Logger logger = Logger.getLogger(NmsRuleThread.class);
 
 	@Override
 	public void run() {
@@ -39,7 +39,7 @@ public class NmsRuleThread implements Runnable {
 			NmsReportService service = new NmsReportService(connection);
 			ArrayList<Map<String, String>> nmsRuleInfo = service.getNmsRuleInfo(nowLong, nowLong-interval*1000);
 			if (nmsRuleInfo != null && nmsRuleInfo.size() > 0) {
-				
+				logger.debug(String.format("查询数量：%s", nmsRuleInfo.size()));
 				Map<String, List<Map<String, String>>> data = new HashMap<String, List<Map<String, String>>>();
 				List<Map<String, String>> results = new ArrayList<Map<String, String>>();
 				
@@ -67,9 +67,9 @@ public class NmsRuleThread implements Runnable {
 				}
 				data.put("nmsDiRuleList", results);
 				HttpClientUtil httpUtil = new HttpClientUtil();
-				JSONObject fromObject = JSONObject.fromObject(data);
-				
-				httpUtil.post(BaseAction.rb.getString("nms.rule.url"), fromObject.toString());
+				String dataStr = Json.toJson(data,JsonFormat.tidy());
+				logger.debug("url:" +BaseAction.rb.getString("nms.rule.url") + ",data :" + dataStr);
+				httpUtil.post(BaseAction.rb.getString("nms.rule.url"), dataStr);
 				logger.info("rule上报完毕");
 			} else {
 				logger.info("暂无可上报的rule数据");

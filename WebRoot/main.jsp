@@ -633,7 +633,7 @@ html, body {
 		i18n_st.message.frameInfo_n81i
 	</iframe>
 	<hr id="hr" />
-	<iframe id="I5" name="I5" height="64%" width="100%" border="0"
+	<iframe id="I5" name="I5" height="100%" width="100%" border="0"
 		style="background: #FFFFFF;" frameborder="0" src="" scrolling="auto">
 		i18n_st.message.frameInfo_n81i
 	</iframe>

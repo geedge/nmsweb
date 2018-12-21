@@ -389,6 +389,11 @@
 			 jQuery("#portInfoPicXt").show();
 		}
 	  
+	    Highcharts.setOptions( {
+			global : {
+				useUTC : false
+			}
+		});
 		function createChart(policeNum,dto,numberFormat,unit,tab) {
 		            if(numberFormat==undefined||numberFormat==null) {
 		            	numberFormat=0;//数字保留几位小数
@@ -586,11 +591,7 @@
 							text: 'i18n_sdigp.message.updateTheMarker_n81i'
 						}
 					});
-					Highcharts.setOptions( {
-						global : {
-							useUTC : false
-						}
-					});
+					
 		}
 		
 		function doSvgFun(){

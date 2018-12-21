@@ -259,6 +259,10 @@ public class OracleToMysql {
 			m.appendReplacement(sb, temp.toString());
 		}
 		m.appendTail(sb);
+//		if(Constant.USE_MYCAT) {
+//			sb.insert(0, "/*#mycat:db_type=master*/");
+//			logger.debug(String.format("改写mycat强制走主库,sql -> %s", sb.toString()));
+//		}
 		return sb.toString();
 	}
 	
@@ -285,6 +289,10 @@ public class OracleToMysql {
 			m.appendReplacement(sb, temp.toString());
 		}
 		m.appendTail(sb);
+//		if(Constant.USE_MYCAT) {
+//			sb.insert(0, "/*#mycat:db_type=master*/");
+//			logger.debug(String.format("改写mycat强制走主库,sql -> %s", sb.toString()));
+//		}
 		return sb.toString();
 	}
 	

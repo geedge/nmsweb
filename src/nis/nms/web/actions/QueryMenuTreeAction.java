@@ -44,14 +44,14 @@ public class QueryMenuTreeAction {
 		
 		try {
 			StringBuffer hql = new StringBuffer();
-			if (yhmc != null
+			if(StringUtils.isNotBlank(regionRoleId)&&!regionRoleId.equals("-1")){
+				hql.append("SELECT n.id	,n.ZXBZ,n.PID,n. HANDLER,n.MKURL,n.MKMC,n.MKTYPE FROM xt_mk_jbxx n WHERE ZXBZ = 0 AND n.id IN( SELECT r.MKBH FROM xt_js_mk_index r WHERE r.JSBH ="+regionRoleId+")");
+			}else if (yhmc != null
 					&& "admin".equals(yhmc.trim())) {
 				hql
 						.append("select n.Id,n.ZXBZ,n.PID,n.HANDLER,n.MKURL,"
 								+ "n.MKMC,n.MKTYPE from xt_mk_jbxx n where ZXBZ=0");
 				
-			}else if(StringUtils.isNotBlank(regionRoleId)&&!regionRoleId.equals("-1")){
-				hql.append("SELECT n.id	,n.ZXBZ,n.PID,n. HANDLER,n.MKURL,n.MKMC,n.MKTYPE FROM xt_mk_jbxx n WHERE ZXBZ = 0 AND n.id IN( SELECT r.MKBH FROM xt_js_mk_index r WHERE r.JSBH ="+regionRoleId+")");
 			}else {
 				if (yhbh != null) {  
 					if(Constant.F_BUTTON_AUTHER){

@@ -173,6 +173,9 @@ public class MonitorDataAction extends BaseAction {
 			if (!StringUtil.isBlank(requestType) && requestType.equals("topo")) {
 				queryMonitorDataInfoNewForTopo();
 				resultpage = "queryMonitorDataInfoChild";
+			} else if(!StringUtil.isBlank(requestType) && requestType.equals("newTopo")){
+				queryMonitorDataInfoNewForTopoDetail();
+				resultpage = "queryMonitorDataInfoNewTopo";
 			} else {
 				this.queryServerMonitorDataInfoNew();// 服务器监测-自动加载
 				resultpage = "queryServerMonitorDataInfoChild";
@@ -1007,7 +1010,7 @@ public class MonitorDataAction extends BaseAction {
 		try {
 			String[] linStrings = lines.split(",");// 选择的端口，可能是多个
 			String temp = "";
-			String source = "select max(to_char(data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
+			/*String source = "select max(to_char(data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
 					+ " from " + checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null"
 					// +" and t.data_check_time >= trunc(sysdate-30)"
 					+ " and t.detection_info_id in "
@@ -1031,13 +1034,44 @@ public class MonitorDataAction extends BaseAction {
 				temp = temp.substring(0, temp.length() - 1);
 				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
 						+ " order by maxTime desc";
+			}*/
+			/*String source = "select max(to_char(t.data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
+					+ " from " + checkTypeInfo.getTableName() + " t,detection_info d where " + metadata.getFiledName() + " is not null"
+					// +" and t.data_check_time >= trunc(sysdate-30)"
+					+ " and t.detection_info_id =d.id "
+					+ " and d.detection_set_info_id=" + dsiId + " and d.seq_id = "
+					+ seqId;*/
+			/**
+			 * 2018年12月6日17:50:54 fang 在 astana 优化
+			 */
+			String source = "select max(to_char(t.data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
+					+ " from " + checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null "
+					// +" and t.data_check_time >= trunc(sysdate-30)"
+					+ " and t.detection_set_info_id=" + dsiId + " and t.seq_id = "
+					+ seqId;
+			if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
+				source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
+						+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
+			} else {
+				source += " and t.data_check_time >= trunc(sysdate-1) ";
 			}
-
+			if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
+				temp = lines.substring(0, lines.length() - 1);
+				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
+						+ " order by maxTime desc";
+			} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
+				for (int i = 0; i < linStrings.length; i++) {
+					temp += "'" + linStrings[i] + "',";
+				}
+				temp = temp.substring(0, temp.length() - 1);
+				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
+						+ " order by maxTime desc";
+			}
 			List lastList = this.commonService.executeSQL(source);
 			// ------------------以上确定最后一个数据点----------------------------
 			if (lastList != null && lastList.size() > 0) {
 				Object[] row = (Object[]) lastList.get(0);
-				String lastSource = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi'),"
+				/*String lastSource = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi'),"
 						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 						+ metadata.getFiledName() + " is not null"
 						// +" and t.data_check_time >= trunc(sysdate-30)"
@@ -1055,6 +1089,32 @@ public class MonitorDataAction extends BaseAction {
 					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by data_check_time desc) ttt ";
 				} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
 					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by data_check_time desc) ttt ";
+				}*/
+				/*String lastSource = "select to_char(t.data_check_time,'yyyy-mm-dd HH24:mi'),"
+						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t,detection_info d where "
+						+ metadata.getFiledName() + " is not null"
+						// +" and t.data_check_time >= trunc(sysdate-30)"
+						+ " and t.detection_info_id = d.id "
+						+ "and d.detection_set_info_id=" + dsiId
+						+ " and d.seq_id = " + seqId;*/
+				/**
+				 * 2018年12月6日17:52:54 fang 在 astana 优化
+				 */
+				String lastSource = "select to_char(t.data_check_time,'yyyy-mm-dd HH24:mi'),"
+						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
+						+ metadata.getFiledName() + " is not null "
+						+ "and t.detection_set_info_id=" + dsiId
+						+ " and t.seq_id = " + seqId;
+				if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
+					lastSource += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
+							+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
+				} else {
+					lastSource += " and t.data_check_time >= trunc(sysdate-1) ";
+				}
+				if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
+					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by t.data_check_time desc ";
+				} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
+					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by t.data_check_time desc ";
 				}
 				/* lastSource += " where rownum < 21"; */
 
@@ -1173,20 +1233,21 @@ public class MonitorDataAction extends BaseAction {
 						String[] cbStrings = checkLins(metadata, checkTypeInfo, sortFiledType, dsiId, seqId, linStrings[i]);
 						String source = "";
 						if (linStrings[i].equals(cbStrings[0])) {// 这是最后的那个
-							source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+							/*source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 									+ metadata.getFiledName() + " is not null"
-									// +
-									// " and t.data_check_time >=
-									// to_date(to_char((sysdate-4),'yyyy-mm-dd'),'yyyy-mm-dd
-									// hh24:mi')"+
-									// +" and t.data_check_time >=
-									// trunc(sysdate-30)"
-									// + " and rownum <= 20"
 									+ " and t.detection_info_id in "
 									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-									+ " and d.seq_id = " + seqId + ")";
-
+									+ " and d.seq_id = " + seqId + ")";*/
+							/**
+							 * 2018年12月6日18:22:39 fang 在astana 优化
+							 */
+							source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
+									+ metadata.getFiledName() + " is not null "
+									+ " and t.detection_set_info_id=" + dsiId
+									+ " and t.seq_id = " + seqId;
+									
 							if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 								source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 										+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
@@ -1209,15 +1270,17 @@ public class MonitorDataAction extends BaseAction {
 //								source += " where rownum < 21 ";
 //							}
 						} else {
+							/*source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
+									+ metadata.getFiledName() + " is not null"
+									+ " and t.detection_info_id in "
+									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
+									+ " and d.seq_id = " + seqId + ")";*/
 							source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 									+ metadata.getFiledName() + " is not null"
-									// +" and t.data_check_time >=
-									// trunc(sysdate-30)"
-									+ " and t.detection_info_id in "
-									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-									+ " and d.seq_id = " + seqId + ")";
-
+									+ " and t.detection_set_info_id=" + dsiId
+									+ " and t.seq_id = " + seqId;
 							if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 								source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 										+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
@@ -1300,14 +1363,19 @@ public class MonitorDataAction extends BaseAction {
 							+ " is not null and seq_id=" + seqId + " and DETECTION_SET_INFO_ID= "+dsiId+" order by " + sortFiledType[0].toString();
 					dataList = this.commonService.executeSQL(getAllSort);
 					if (dataList != null && dataList.size() > 0) {
-						String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+						/*String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 								+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 								+ metadata.getFiledName() + " is not null"
 								// + " and t.data_check_time >=
 								// trunc(sysdate-30)"
 								+ " and t.detection_info_id in "
 								+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-								+ " and d.seq_id = " + seqId + ")";
+								+ " and d.seq_id = " + seqId + ")";*/
+						String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+								+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
+								+ metadata.getFiledName() + " is not null"
+								+ " and t.detection_set_info_id=" + dsiId
+								+ " and t.seq_id = " + seqId;
 
 						if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 							source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
@@ -2867,7 +2935,7 @@ public class MonitorDataAction extends BaseAction {
 						String linesLink = linkToString(linStrings, ",", "'");// lines要在checkLins方法后再做加单引号的处理，因为checkLins方法里单个处理了
 						// for (int i = 0; i < linStrings.length; i++) {
 						String source = "";
-						source = "select * from ( select data_check_time_digital ," + specialColumn + " from "
+						source = "select data_check_time_digital ," + specialColumn + " from "
 								+ checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null"
 								+ " and t.detection_set_info_id=" + dsiId + " and t.seq_id = " + seqId + " ";
 
@@ -2898,7 +2966,7 @@ public class MonitorDataAction extends BaseAction {
 						 * " order by data_check_time_digital desc) where rownum < 21 order by data_check_time_digital asc"
 						 * ;
 						 */
-						source += " order by data_check_time_digital desc) tttt   ";
+						//source += " order by data_check_time_digital asc ";
 
 						// @2018年4月10日18:45:00 fang 修改rownum 适配 mysql
 						if (Constant.IS_MYSQL) {

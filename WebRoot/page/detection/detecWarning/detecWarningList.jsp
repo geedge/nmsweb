@@ -604,6 +604,12 @@
 							    </c:if>
 							    
 						    </c:forEach>
+						    <c:if test="${empty nodeType }">
+						    	<c:forEach items="${allCheckTypeInfo }" var="checkTypeInfo">
+									<option value="${checkTypeInfo.id }" <c:if test="${checkTypeInfo.id eq checkType}">selected ="selected"</c:if>>${checkTypeInfo.checkTypeName1 }</option>
+						    	</c:forEach>
+						    </c:if>
+						    
 						</select>
 					</label>
 					 <label class="divTopText"><font class="selectText">i18n_dwl.text.checkTypeName_n81i</font>

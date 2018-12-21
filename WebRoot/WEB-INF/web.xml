@@ -231,16 +231,16 @@
 		<load-on-startup>5</load-on-startup>
 	</servlet>
 	 -->
-	 <listener>
+	 <!-- <listener>
 		 <listener-class>
 			 com.nms.servlet.auto.run.AutoRunForSocketServerServlet
 		 </listener-class>
-	 </listener>
+	 </listener> -->
 	 <!-- <listener>
 		 <listener-class>
 			 com.nms.servlet.auto.run.AutoRegisterForNMSWeb
 		 </listener-class>
-	 </listener> -->
+	 </listener>
 	 <listener>
 		 <listener-class>
 			 com.nms.servlet.auto.run.AutoGetTroubleCode
@@ -255,7 +255,7 @@
 		<servlet-name>ThreadServiceInit</servlet-name>
 		<servlet-class>nis.nms.util.service.ThreadServiceInit</servlet-class>
 		<load-on-startup>2</load-on-startup>
-	</servlet>
+	</servlet> -->
 	 
 	 <!-- flex 配置  begin -->
 	<context-param>

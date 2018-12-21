@@ -6,10 +6,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +47,7 @@ public class ConnectionOracle {
 	private  String dbType;
 	public static void main(String []aregs) {
 		ConnectionOracle oracle = new ConnectionOracle();
+		
 	}
 	public static ConnectionOracle getConnection() throws Exception {
 		return new ConnectionOracle();
@@ -111,12 +116,28 @@ public class ConnectionOracle {
 		}
 		selectSql = OracleToMysql.trans(selectSql);
 		dbResultSet = sta.executeQuery(selectSql);
+		ResultSetMetaData metaData = dbResultSet.getMetaData();
+		Map<String,Integer> colType = new HashMap<String,Integer>();
+		for(int i = 0;i<metaData.getColumnCount();i++) {
+			colType.put(metaData.getColumnLabel(i+1), metaData.getColumnType(i+1));
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// 循环取值
 		while (dbResultSet.next()) {
 			recordInfo = new HashMap<String, String>();
-			for (int i = 0; i < fields.size(); ++i)
-				recordInfo.put((String) fields.get(i), dbResultSet
-						.getString(fields.get(i)));
+			for (int i = 0; i < fields.size(); ++i) {
+				Integer type = colType.get(fields.get(i));
+				if(type == 93) {
+					Timestamp timestamp = dbResultSet.getTimestamp((String) fields.get(i));
+					if(timestamp != null) {
+						recordInfo.put((String) fields.get(i), sdf.format(new Date(timestamp.getTime())));
+					}else {
+						recordInfo.put((String) fields.get(i), null);
+					}
+				}else {
+					recordInfo.put((String) fields.get(i), dbResultSet.getString(fields.get(i)));
+				}
+			}
 			selectResult.add(recordInfo);
 		}
 		dbResultSet.close(); // 断开结果集
@@ -150,12 +171,28 @@ public class ConnectionOracle {
 			}
 		}
 		dbResultSet = ps.executeQuery();
+		ResultSetMetaData metaData = dbResultSet.getMetaData();
+		Map<String,Integer> colType = new HashMap<String,Integer>();
+		for(int i = 0;i<metaData.getColumnCount();i++) {
+			colType.put(metaData.getColumnLabel(i+1), metaData.getColumnType(i+1));
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// 循环取值
 		while (dbResultSet.next()) {
 			recordInfo = new HashMap<String, String>();
-			for (int i = 0; i < fields.size(); ++i)
-				recordInfo.put((String) fields.get(i), dbResultSet
-						.getString(fields.get(i)));
+			for (int i = 0; i < fields.size(); ++i) {
+				Integer type = colType.get(fields.get(i));
+				if(type == 93) {
+					Timestamp timestamp = dbResultSet.getTimestamp((String) fields.get(i));
+					if(timestamp != null) {
+						recordInfo.put((String) fields.get(i), sdf.format(new Date(timestamp.getTime())));
+					}else {
+						recordInfo.put((String) fields.get(i), null);
+					}
+				}else {
+					recordInfo.put((String) fields.get(i), dbResultSet.getString(fields.get(i)));
+				}
+			}
 			selectResult.add(recordInfo);
 		}
 		dbResultSet.close(); // 断开结果集
@@ -189,6 +226,10 @@ public class ConnectionOracle {
 		dbResultSet = ps.executeQuery();
 		// 循环取值
 		while (dbResultSet.next()) {
+			
+			
+			
+			
 			selectResult.add(dbResultSet.getString(1));
 		}
 		dbResultSet.close(); // 断开结果集

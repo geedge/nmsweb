@@ -1173,7 +1173,7 @@ public class HibernateGeneralDaoImpl<T> extends HibernateDaoSupport implements H
 		boolean resu = true;
 		try {
 			con.setAutoCommit(false);
-			cs = con.prepareCall("{call "+proName+"(?,?,?)}");
+			cs = con.prepareCall("/*#mycat:db_type=master*/{call "+proName+"(?,?,?)}");
 			cs.setString(1,tableName);
 			cs.setString(2,filedAndType);
 			cs.setString(3, fileds);
@@ -1201,7 +1201,7 @@ public class HibernateGeneralDaoImpl<T> extends HibernateDaoSupport implements H
 		boolean resu = true;
 		try {
 			con.setAutoCommit(false);
-			cs = con.prepareCall("{call "+proName+"(?,?,?)}");
+			cs = con.prepareCall("/*#mycat:db_type=master*/{call "+proName+"(?,?,?)}");
 			cs.setString(1,tableName);
 			cs.setString(2, fileds);
 			cs.execute();

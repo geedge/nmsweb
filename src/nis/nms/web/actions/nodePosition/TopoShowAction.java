@@ -134,8 +134,10 @@ public class TopoShowAction extends BaseAction
 				if(this.getAdminMark()){
 					sql = "SELECT * from ("
 							+ "select count(distinct nt.node_id) from detection_info_new diw left join node_table nt on diw.seq_id = nt.seq_id "
-							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 and diw.DETECTION_SET_INFO_ID in "
-							+ "(select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1) and nt.NODE_STATE = 0 "
+							+ "left join detection_set_info dsi on diw.detection_set_info_id=dsi.id "
+							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 "
+							+ "and nt.NODE_STATE = 0 "
+							+ "and dsi.detection_set_state=1 "
 							+ "and nt.node_group_id in ("+gids+")" 
 							+ ") alramNode,"
 							+ "(SELECT count(DISTINCT t.node_ip) from node_table t WHERE "
@@ -144,8 +146,10 @@ public class TopoShowAction extends BaseAction
 				}else{
 					sql = "SELECT * from ("
 							+ "select count(distinct nt.node_id) from detection_info_new diw left join node_table nt on diw.seq_id = nt.seq_id "
-							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 and diw.DETECTION_SET_INFO_ID in "
-							+ "(select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1) and nt.NODE_STATE = 0 "
+							+ "left join detection_set_info dsi on diw.detection_set_info_id=dsi.id "
+							+ "where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 and diw.VALID=1 "
+							+ "and nt.NODE_STATE = 0 "
+							+ "and dsi.detection_set_state=1 "
 							+ "and nt.node_group_id in ("+gids+")" 
 							+ ") alramNode,"
 							+ "(SELECT count(DISTINCT t.node_ip) from node_table t WHERE t.system_id="
@@ -280,26 +284,26 @@ public class TopoShowAction extends BaseAction
 			nibSql = " select count(distinct diw.seq_id)"
 					+ " from detection_info_new diw"
 					+ " left join node_table nt on nt.seq_id = diw.seq_id "
+					+ " LEFT JOIN DETECTION_SET_INFO dst ON dst.id=diw.DETECTION_SET_INFO_ID "
+					+ " LEFT JOIN node_lattice_table nlt ON nlt.node_seq=nt.seq_id "
 					+ " where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 "
-					+ " and diw.DETECTION_SET_INFO_ID in (select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1)"
 					+ " and nt.node_state = 0"
+					+ " AND dst.DETECTION_SET_STATE=1 AND nlt.node_seq IS NOT NULL AND nlt.node_box_id = " + boxId
 					+ " and nt.node_group_id ="
-					+ groupId
-					+ " and nt.seq_id in (select distinct nlt.node_seq from node_lattice_table nlt where nlt.node_seq is not null and nlt.node_box_id = "
-					+ boxId + ")";
+					+ groupId;
 		}else{
 			nibSql = " select count(distinct diw.seq_id)"
 					+ " from detection_info_new diw"
 					+ " left join node_table nt on nt.seq_id = diw.seq_id "
+					+ " LEFT JOIN DETECTION_SET_INFO dst ON dst.id=diw.DETECTION_SET_INFO_ID "
+					+ " LEFT JOIN node_lattice_table nlt ON nlt.node_seq=nt.seq_id "
 					+ " where diw.DETECTIONED_STATE<>1 AND diw.police_emergent=0 "
-					+ " and diw.DETECTION_SET_INFO_ID in (select dst.ID from DETECTION_SET_INFO dst where dst.DETECTION_SET_STATE=1)"
 					+ " and nt.node_state = 0"
+					+ " AND dst.DETECTION_SET_STATE=1 AND nlt.node_seq IS NOT NULL AND nlt.node_box_id = " + boxId
 					+ " and nt.system_id="
 					+ getSystemID()
 					+ " and nt.node_group_id ="
-					+ groupId
-					+ " and nt.seq_id in (select distinct nlt.node_seq from node_lattice_table nlt where nlt.node_seq is not null and nlt.node_box_id = "
-					+ boxId + ")";
+					+ groupId;
 		}
 		
 		try
@@ -333,15 +337,17 @@ public class TopoShowAction extends BaseAction
 		{
 			String sql = null;
 			if(this.getAdminMark()){
-				sql = "SELECT distinct nl.node_seq  from node_lattice_table nl WHERE nl.node_box_id="
+				sql = "SELECT distinct nl.node_seq  from node_lattice_table nl "
+						+ "LEFT JOIN node_table nt ON nl.node_seq=nt.seq_id "
+						+ "WHERE nl.node_box_id="
 						+ nodeBoxId
-						+ " AND nl.node_seq IN (SELECT DISTINCT nt.seq_id from node_table nt WHERE nt.node_state=0  "
-						+ " AND nt.node_group_id=" + groupId + ")";
+						+ " AND nt.node_state=0 AND nt.node_group_id=" + groupId;
 			}else{
-				sql = "SELECT distinct nl.node_seq  from node_lattice_table nl WHERE nl.node_box_id="
+				sql = "SELECT distinct nl.node_seq  from node_lattice_table nl "
+						+ "LEFT JOIN node_table nt ON nl.node_seq=nt.seq_id "
+						+ "WHERE nl.node_box_id="
 						+ nodeBoxId
-						+ " AND nl.node_seq IN (SELECT DISTINCT nt.seq_id from node_table nt WHERE nt.node_state=0 AND nt.system_id="
-						+ getSystemID() + " AND nt.node_group_id=" + groupId + ")";
+						+ " AND nt.node_state=0 AND nt.node_group_id=" + groupId + " and nt.system_id=" + getSystemID();
 			}
 			List list = commonService.executeSQL(sql);
 			if (list.size() > 0)

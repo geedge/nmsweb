@@ -199,5 +199,9 @@ public class Constant {
 	public static final String NEXTVAL_FUNCTION_NAME = StringUtils.isNotBlank(rb.getString("nextval_function_name"))?rb.getString("nextval_function_name"):"nextval";
 	public static final String CURRVAL_FUNCTION_NAME = StringUtils.isNotBlank(rb.getString("currval_function_name"))?rb.getString("currval_function_name"):"currval";
 	
-	
+	/**
+	 * 是否启用 mycat ，nextval,currval 需要改写 sql
+	 */
+	public static final boolean USE_MYCAT = StringUtils.isNotBlank(rb.getString("use_mycat"))?Boolean.valueOf(rb.getString("use_mycat")):true;
+
 }

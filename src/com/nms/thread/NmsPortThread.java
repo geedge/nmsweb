@@ -12,12 +12,14 @@ import nis.nms.util.ConnectionOracle;
 import nis.nms.util.HttpClientUtil;
 
 import org.apache.log4j.Logger;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 
 import com.nms.thread.service.NmsReportService;
 
 public class NmsPortThread implements Runnable {
 
-	private Logger logger = Logger.getLogger(NmsPortThread.class);
+	private static Logger logger = Logger.getLogger(NmsPortThread.class);
 
 	@Override
 	public void run() {
@@ -38,7 +40,7 @@ public class NmsPortThread implements Runnable {
 			NmsReportService service = new NmsReportService(connection);
 			ArrayList<Map<String, String>> nmsPortInfo = service.getNmsPortInfo(nowLong, nowLong-interval*1000);
 			if (nmsPortInfo != null && nmsPortInfo.size() > 0) {
-				
+				logger.debug(String.format("查询数量：%s", nmsPortInfo.size()));
 				Map<String, List<Map<String, String>>> data = new HashMap<String, List<Map<String, String>>>();
 				List<Map<String, String>> results = new ArrayList<Map<String, String>>();
 				
@@ -56,13 +58,14 @@ public class NmsPortThread implements Runnable {
 					result.put("inpktsSpeed", info.get("INPKTSSPEED") == null ? "" : info.get("INPKTSSPEED"));
 					result.put("outpktsSpeed", info.get("OUTPKTSSPEED") == null ? "" : info.get("OUTPKTSSPEED"));
 					result.put("recvTime", info.get("DATA_CHECK_TIME") == null ? "" : info.get("DATA_CHECK_TIME"));
+					result.put("entranceId", info.get("ADDR") == null ? "" : info.get("ADDR"));
 					results.add(result);
 				}
 				data.put("trafficNetflowPortInfoList", results);
 				HttpClientUtil httpUtil = new HttpClientUtil();
-				JSONObject fromObject = JSONObject.fromObject(data);
-				
-				httpUtil.post(BaseAction.rb.getString("nms.port.url"), fromObject.toString());
+				String dataStr = Json.toJson(data,JsonFormat.tidy());
+				logger.debug("url:" +BaseAction.rb.getString("nms.port.url") + ",data :" + dataStr);
+				httpUtil.post(BaseAction.rb.getString("nms.port.url"), dataStr);
 				logger.info("port上报完毕");
 			} else {
 				logger.info("暂无可上报的port数据");

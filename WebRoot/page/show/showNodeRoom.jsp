@@ -149,10 +149,10 @@ body {
 		 				raphael.text(roomStartX+220,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
 		 			</c:when>
 		 			<c:when test="${session.i18n_lang == 'zh_CN'}">
-	 					raphael.text(roomStartX+120,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
+	 					raphael.text(roomStartX+220,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
 	 				</c:when>
 		 			<c:when test="${session.i18n_lang == 'en_US'}">
-	 					raphael.text(roomStartX+150,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
+	 					raphael.text(roomStartX+220,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
 	 				</c:when>
 		 		</c:choose>
 		 		//raphael.text(roomStartX+120,roomBJY+roomTitleGap,titleTtext).attr({'font-size':12,fill:"#000000"});
@@ -448,11 +448,13 @@ body {
 						 	});
 						 	
 						 	//写节点机在机柜中的序号
-						 	var nodeShowInd = 0;
+						 	var nodeShowInd = nodeIndex;
 						 	for(var i = 1;i<=nodeIndex;i++){
 						 		if(nodeIndexs[i] != null &&nodeIndexs[i] != ""){
-						 			nodeShowInd++;
+						 			//nodeShowInd++;
 						 			raphaelBox.text(nodeIndexs[i].x,nodeIndexs[i].y,nodeShowInd).attr({'font-size':12,fill:"#000000"});
+						 			nodeShowInd--;
+						 			
 						 		}
 						 	}
 						 	window.top.layer.close(loading);

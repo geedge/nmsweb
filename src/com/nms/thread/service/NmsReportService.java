@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import nis.nms.util.BaseAction;
 import nis.nms.util.ConnectionOracle;
 
 import org.apache.log4j.Logger;
@@ -17,15 +18,21 @@ public class NmsReportService {
 	}
 	
 	public ArrayList<Map<String, String>> getNmsStatusInfo(String setId) {
-		
+		Integer systemId = null;
+		try {
+			systemId = Integer.parseInt(BaseAction.rb.getString("addr.system.id"));
+		} catch (Exception e) {
+			systemId = 100017;
+		}
 		//detectioned_state=1时正常
-		String sql = "select nt.node_ip, ds.host_name, din.detectioned_state, st.system_name "
+		String sql = "select nt.node_ip, ds.host_name, din.detectioned_state, st.addr as system_name "
 				+ "from node_table nt "
 				+ "left join detection_info_new din on din.SEQ_ID=nt.seq_id "
 				+ "left join di_systeminfo ds on nt.SEQ_ID=ds.SEQ_ID " 
 				+ "left join system_table st ON nt.system_id=st.system_id "
-				+ "where nt.node_state=0 AND din.DETECTION_SET_INFO_ID=" + setId + " "
-				+ "group by nt.node_ip";
+				+ "where nt.node_state=0 AND din.DETECTION_SET_INFO_ID=" + setId 
+				+ " and st.system_id < " + systemId
+				+ " group by nt.node_ip";
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("node_ip");
 		fields.add("host_name");
@@ -77,10 +84,12 @@ public class NmsReportService {
 	
 	public ArrayList<Map<String, String>> getNmsPortInfo(Long end, Long start) {
 		//end=1539073220004l,start=1539064699984l
-		String sql = "SELECT nt.node_ip, nt.node_name, ds.ifindex, ds.IFDESCR, ds.IFSPEED, ds.IFINOCTETS, ds.IFOUTOCTETS,ds.INOCTETSSPEED,ds.INPKTSSPEED,ds.OUTOCTETSSPEED, ds.OUTPKTSSPEED, ds.DATA_CHECK_TIME  "
+		//只查询 网元类型为 特种设备：1的端口信息
+		String sql = "SELECT DISTINCT nt.node_ip, nt.node_name, ds.ifindex, ds.IFDESCR, ds.IFSPEED, ds.IFINOCTETS, ds.IFOUTOCTETS,ds.INOCTETSSPEED,ds.INPKTSSPEED,ds.OUTOCTETSSPEED, ds.OUTPKTSSPEED, ds.DATA_CHECK_TIME,st.ADDR  "
 				+ "FROM di_switchport ds "
 				+ "LEFT JOIN node_table nt ON nt.seq_id=ds.seq_id "
-				+ "WHERE nt.node_state=0 AND ds.data_check_time_digital<" + end + " AND ds.data_check_time_digital>=" + start;
+				+ " left join system_table st on st.system_id = nt.system_id "
+				+ "WHERE nt.network_element_type = 1 and nt.node_state=0 AND ds.data_check_time_digital<" + end + " AND ds.data_check_time_digital>=" + start;
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("node_ip");
 		fields.add("node_name");
@@ -94,6 +103,7 @@ public class NmsReportService {
 		fields.add("OUTOCTETSSPEED");
 		fields.add("OUTPKTSSPEED");
 		fields.add("DATA_CHECK_TIME");
+		fields.add("ADDR");
 		
 		try {
 			ArrayList<Map<String, String>> dbSelect = dao.dbSelect(sql, fields);

@@ -450,7 +450,7 @@
 		function show(){
 		    hght=0;//恢复滚动条总长，因为$(”#mypage”).scroll事件一触发，又会得到新值，不恢复的话可能会造成判断错误而再次加载……
 		    topH=0;//原因同上。
-		   var urlTmp = encodeURI("<c:url value='monitorData.do?action=queryChild'/>&pageSize="+'${pageSize }'+"&pageNo="+(++pagePoint)+"&cip="+$("#nodeIp").val()+"&ctn="+$("#checkTypeId").val()+"&stateInfo="+$("#stateInfo").val()+"&nodeGroupStr=${nodeGroupStr}&nodeIpRange=${nodeIpRange}");
+		   var urlTmp = encodeURI("<c:url value='monitorData.do?action=queryChild'/>&pageSize="+'${pageSize }'+"&pageNo="+(++pagePoint)+"&cip="+$("#nodeIp").val()+"&ctn="+$("#checkTypeId").val()+"&stateInfo="+$("#stateInfo").val()+"&nodeGroupStr=${nodeGroupStr}&nodeIpRange=${nodeIpRange}&checkType=${checkType }");
 			$.ajax({
 				url:urlTmp,
 				type : "get",

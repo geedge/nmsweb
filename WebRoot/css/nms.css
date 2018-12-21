@@ -56,6 +56,7 @@ input, select, textarea, font { font-family:"微软雅黑", Arial, "宋体";}
 	position:absolute;
 	left:131px;
 	width:8px;
+	z-index: 999;
 }
 .middle_tab1{
 	position:absolute;
@@ -296,7 +297,7 @@ a:hover {
 
 .middle_tab td{width:8px;
                height:100%;
-			   background:#202020;}
+			   background:#263238;}
 .middle_tab1 td{width:8px;
                height:100%;
 			   background:#202020;}		
@@ -489,7 +490,7 @@ a:hover {
 		 vertical-align:middle;}
 .img_middle{
 	vertical-align:middle;
-	margin: 0 0 4px 5px;
+	margin: 0 0 4px 0px;
 }
 
 .img_middle2{

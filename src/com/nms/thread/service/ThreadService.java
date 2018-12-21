@@ -297,6 +297,7 @@ public class ThreadService {
 	public List<String []> detectDatasTimeoutCheck(SetInfo setInfo,Date startTime,String errorSeqIds){
 		List<String []> alarmInfoList = new ArrayList<String[]>();
 		String sql = null;
+		Integer delay = ThreadPoolConfig.DETEC_TIMEOUT_ALARM_PERIOD_DELAY;
 		//无效状态跳过
 		if(!(StringUtils.isNotEmpty(setInfo.getCheckState()) && "1".equals(setInfo.getCheckState())))return alarmInfoList;//监测设置的状态是否有效，无效则不检查，返回空列表
 		int periodTimes = ThreadPoolConfig.DETEC_TIMEOUT_ALARM_PERIOD_TIMES;	
@@ -307,7 +308,7 @@ public class ThreadService {
 			sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
 			"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_id in (-9999,"+setInfo.getNodeIpsId()+", -9999) and nt.node_state = 0 " + systemidSql + ") nt0" +
 			" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
-			" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate  - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+5)+"/24/60 ))";
+			" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate  - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+delay)+"/24/60 ))";
 //			 sql = "select din.seq_id from detection_info_new din where " +
 //			"(din.seq_id not in(select distinct nt.seq_id from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid,'1') = '1' and nt.node_id in (0,"+setInfo.getNodeIpsId()+",0) and nt.node_state =0) or (din.seq_id in(select distinct nt.seq_id from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid,'1') = '1' and nt.node_id in (0,"+setInfo.getNodeIpsId()+",0) and nt.node_state =0) and sysdate - din.DATA_CHECK_TIME - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*Constants.DETEC_TIMEOUT_ALARM_PERIOD_TIMES+5)+"/24/60> 0 ) )"+
 //					" and din.detection_set_info_id = "+setInfo.getId();
@@ -326,7 +327,7 @@ public class ThreadService {
 				sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
 				"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_group_id in ("+ids+") and nt.node_state = 0 " + systemidSql + ") nt0" +
 				" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
-				" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+5)+"/24/60 ))";
+				" or exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"' and  din.DATA_CHECK_TIME < sysdate - "+((setInfo.getCheckGap()==null?5:setInfo.getCheckGap())*periodTimes+delay)+"/24/60 ))";
 /*				sql="select nt0.seq_id,nt0.node_ip,nt0.NODE_TYPE from " +
 						"(select distinct nt.seq_id,nt.node_ip,nt.NODE_TYPE from node_table nt left join nodegroup_table ngt on ngt.group_id = nt.node_group_id where nvl(ngt.is_valid, '1') = '1' and nt.node_group_id in (select nt.group_id from NODEGROUP_TABLE nt where nt.leaf_group = 1 start with nt.group_id in (-9999,"+setInfo.getNodeGroupsId()+", -9999) connect by prior nt.group_id = nt.parent_group_id) and nt.node_state = 0) nt0" +
 						" where (not exists (select din.seq_id from detection_info_new din where nt0.seq_id = din.seq_id and din.detection_set_info_id = '"+setInfo.getId()+"') " +
@@ -903,7 +904,7 @@ public class ThreadService {
 				diStmt.setObject(14, alarms[10]);
 				String idstr=computeId(alarms[5], alarms[1], alarms[0]);
 				Long id =Long.parseLong(idstr);
-				System.out.println("id -> " + id);
+//				System.out.println("id -> " + id);
 				diwStmt.setObject(1, id);
 				diStmt.setObject(1, id);
 				
@@ -1230,6 +1231,7 @@ public class ThreadService {
 //			publicInfo.put("notice_flag".toLowerCase(), "1");// 1已发送 0未发送
 			
 			//-- 获取ID
+			//2018年12月1日20:45:42 id 改為 主鍵自增
 			ArrayList<String> fields = new ArrayList<String>();
 			String searchIdSql = "select seq_detection_info.nextval id from dual";
 			fields.add("id");

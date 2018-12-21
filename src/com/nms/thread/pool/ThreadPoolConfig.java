@@ -13,6 +13,10 @@ public class ThreadPoolConfig {
 	public static final Integer DC_HANDSHAKE_PERIOD = StringUtils.isNotBlank(BaseAction.rb.getString("dc.handshake.period"))? Integer.parseInt(BaseAction.rb.getString("dc.handshake.period")):60*5;
 	public static final String DETEC_TIMEOUT_CHECK_MANAGER = "DETEC_TIMEOUT_CHECK_MANAGER";
 	public static final Integer DETEC_TIMEOUT_ALARM_PERIOD_TIMES =2;
+	/**
+	 * 超时告警 延迟时间，为了防止 国家中心，分中心 两个web 同时判断生成多条 记录
+	 */
+	public static final Integer DETEC_TIMEOUT_ALARM_PERIOD_DELAY =StringUtils.isNotBlank(BaseAction.rb.getString("detec.timeout.alarm.period.delay"))? Integer.parseInt(BaseAction.rb.getString("detec.timeout.alarm.period.delay")): 5;
 	public static final Integer DETEC_TIMEOUT_CHECK_PERIOD = StringUtils.isNotBlank(BaseAction.rb.getString("detec.timeout.check.period"))? Integer.parseInt(BaseAction.rb.getString("detec.timeout.check.period")): 15*60;
 	public static final Integer FLAG_DETEC_TIMEOUT = StringUtils.isNotBlank(BaseAction.rb.getString("flag_detec_timeout"))? Integer.parseInt(BaseAction.rb.getString("flag_detec_timeout")):  1;
 	
