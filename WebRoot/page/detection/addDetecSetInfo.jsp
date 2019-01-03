@@ -95,18 +95,23 @@
 			if(Number(type) > 7 && startType == 0){ // 手动启动
 				if(false ==(
 						$id("processFile","","i18n_adsi.message.processFile_n81i")
-						&& $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
+						|| $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
 					)){
+					alert("i18n_pidFile.keyword.allblank_n81i");
 					return;
 				}
 			}
 			if(Number(type) > 7 && startType == 1){ // 单次启动
 				if(false ==(
 						$id("processFile","","i18n_adsi.message.processFile_n81i")
-						&& $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
-						&& $id("processPath","","i18n_adsi.message.processPathTitle_n81i")
+						|| $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
 					)){
+					alert("i18n_pidFile.keyword.allblank_n81i");
 					return;
+				}else{
+					if(! $id("processPath","","i18n_adsi.message.processPathTitle_n81i")){
+						return;
+					}
 				}
 			}
 			if(Number(type) > 7 && startType == 2){ // 周期启动
@@ -558,7 +563,7 @@
 					</td>
 					<td class="color_3" align="left">
 						<input type="text" name="detectionSetInfo.uploadGap"
-								id="uploadGap" value="15"/>
+								id="uploadGap" value="5"/>
 						<font color="red">*间隔必须大于或等于5分钟</font>
 					</td>
 					 -->
@@ -566,14 +571,14 @@
 						i18n_adsi.text.checkOutTime_n81i
 					</td>
 					<td class="color_3" align="left">
-						<input type="text" name="detectionSetInfo.checkOutTime" id="checkOutTime" value="0"/>
+						<input type="text" name="detectionSetInfo.checkOutTime" id="checkOutTime" value="5"/>
 						<font color="red"><span class="STYLE1">*</span> </font>
 					</td>
 					<td class="color_1" align="right">
 						i18n_adsi.text.checkMaxTimes_n81i
 					</td>
 					<td class="color_3" align="left">
-						<input type="text" name="detectionSetInfo.checkMaxTimes" id="checkMaxTimes" value="3"/>
+						<input type="text" name="detectionSetInfo.checkMaxTimes" id="checkMaxTimes" value="1"/>
 						<font color="red"><span class="STYLE1">*</span> </font>		
 					</td>
 				</tr>
@@ -616,7 +621,7 @@
 					</td>
 					<td class="color_3" colspan="3" align="left">
 						<input type="text" name="detectionSetInfo.processFile" id="processFile" value=""/>
-						<font color="red">*</font>
+						<font color="red">* i18n_pidFile.keyword.allblank_n81i</font>
 						<!-- <input type="file" id="processFile" value="" name="deteProcessFile" class="filebtn1"/>						
 						<input type="hidden" id="ppPath" name="detectionSetInfo.processFile"/> -->
 					</td>
@@ -627,7 +632,7 @@
 					</td>
 					<td class="color_3" colspan="3" align="left">
 						<input type="text" name="detectionSetInfo.processSearchCode" id="processSearchCode" value=""/>
-						<font color="red">*i18n_adsi.message.processSearchCode_n81i</font>
+						<font color="red">* i18n_adsi.message.processSearchCode_n81i</font>
 					</td>
 				</tr>
 				<tr class="dsd">

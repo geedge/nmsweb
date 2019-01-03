@@ -1211,45 +1211,48 @@ public class DetectionSetAction extends BaseAction {
 		StringBuffer errBuffer = null;
 		try {
 			commonService.beginTransaction();
-			//先判断设置的节点范围是否重复
-			if (detectionSetInfo.getNodeIpsId() != null
-					&& !"".equals(detectionSetInfo.getNodeIpsId())) {//节点组和节点都不为空
-				// hqlBuffer.append("");
-				hqlBuffer = new StringBuffer();
-				hqlBuffer
-						.append("from DetectionSetInfo where nodeGroupsId = ? and nodeIpsId= ? and checkTypeInfo.id= ? ");
-				list = this.commonService.find(hqlBuffer.toString(),
-						detectionSetInfo.getNodeGroupsId(), detectionSetInfo
-								.getNodeIpsId(), detectionSetInfo.getCheckTypeInfo().getId());
-				if (list != null && list.size() > 0) {
-					if (errBuffer == null) {
-						errBuffer = new StringBuffer();
+			Long cti = detectionSetInfo.getCheckTypeInfo().getId();
+			if(cti != null && cti != 8) {//进程监测不做重复判断
+				//先判断设置的节点范围是否重复
+				if (detectionSetInfo.getNodeIpsId() != null
+						&& !"".equals(detectionSetInfo.getNodeIpsId())) {//节点组和节点都不为空
+					// hqlBuffer.append("");
+					hqlBuffer = new StringBuffer();
+					hqlBuffer
+							.append("from DetectionSetInfo where nodeGroupsId = ? and nodeIpsId= ? and checkTypeInfo.id= ? ");
+					list = this.commonService.find(hqlBuffer.toString(),
+							detectionSetInfo.getNodeGroupsId(), detectionSetInfo
+									.getNodeIpsId(), detectionSetInfo.getCheckTypeInfo().getId());
+					if (list != null && list.size() > 0) {
+						if (errBuffer == null) {
+							errBuffer = new StringBuffer();
+						}
+						errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.nodeRangRepeat2_n81i"));
 					}
-					errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.nodeRangRepeat2_n81i"));
-				}
-			} else if (detectionSetInfo.getNodeGroupsId() != null
-					&& !"".equals(detectionSetInfo.getNodeGroupsId())) {//节点组不为空，节点为空
-				hqlBuffer = new StringBuffer();
-				hqlBuffer
-						.append("from DetectionSetInfo where nodeGroupsId = ? and checkTypeInfo.id= ?  and (nodeIpsId='' or nodeIpsId is null) ");
-				list = this.commonService.find(hqlBuffer.toString(),
-						detectionSetInfo.getNodeGroupsId(), detectionSetInfo.getCheckTypeInfo().getId());
-				if (list != null && list.size() > 0) {
-					if (errBuffer == null) {
-						errBuffer = new StringBuffer();
+				} else if (detectionSetInfo.getNodeGroupsId() != null
+						&& !"".equals(detectionSetInfo.getNodeGroupsId())) {//节点组不为空，节点为空
+					hqlBuffer = new StringBuffer();
+					hqlBuffer
+							.append("from DetectionSetInfo where nodeGroupsId = ? and checkTypeInfo.id= ?  and (nodeIpsId='' or nodeIpsId is null) ");
+					list = this.commonService.find(hqlBuffer.toString(),
+							detectionSetInfo.getNodeGroupsId(), detectionSetInfo.getCheckTypeInfo().getId());
+					if (list != null && list.size() > 0) {
+						if (errBuffer == null) {
+							errBuffer = new StringBuffer();
+						}
+						errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.nodeGroupRangRepeat_n81i"));
 					}
-					errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.nodeGroupRangRepeat_n81i"));
-				}
-			}else {//节点组、节点均为空
-				hqlBuffer = new StringBuffer();
-				hqlBuffer
-						.append("from DetectionSetInfo where (nodeGroupsId ='' or nodeGroupsId is null) and checkTypeInfo.id= ?  and (nodeIpsId='' or nodeIpsId is null) ");
-				list = this.commonService.find(hqlBuffer.toString(), detectionSetInfo.getCheckTypeInfo().getId());
-				if (list != null && list.size() > 0) {
-					if (errBuffer == null) {
-						errBuffer = new StringBuffer();
+				}else {//节点组、节点均为空
+					hqlBuffer = new StringBuffer();
+					hqlBuffer
+							.append("from DetectionSetInfo where (nodeGroupsId ='' or nodeGroupsId is null) and checkTypeInfo.id= ?  and (nodeIpsId='' or nodeIpsId is null) ");
+					list = this.commonService.find(hqlBuffer.toString(), detectionSetInfo.getCheckTypeInfo().getId());
+					if (list != null && list.size() > 0) {
+						if (errBuffer == null) {
+							errBuffer = new StringBuffer();
+						}
+						errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.rangRepeat_n81i"));
 					}
-					errBuffer.append(getI18nText("i18n_DetectionSetAction.downloadExample.rangRepeat_n81i"));
 				}
 			}
 			// 判断数据是否存在
