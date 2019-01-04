@@ -67,6 +67,8 @@
 				<input type="hidden" name="stateInfo" id="stateInfo" value="${stateInfo}" />
 				<input type="hidden" name="pageNo" value="${pageNo }" />
 				<input type="hidden" name="pageSize" value="${pageSize }" />
+				<input type="hidden" name="checkType" value="${checkType }" />
+				<input type="hidden" name="netElementType" value="${netElementType }" />
 				<!-- type为空：服务器检测，type=1：网元检测  type=2:异常网元 -->
 				<input type="hidden" value="${type }" name="type" id="type" />
 				<c:forEach items="${ids}" var="ids" varStatus="vs">

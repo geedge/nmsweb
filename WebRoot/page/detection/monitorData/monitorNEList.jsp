@@ -514,8 +514,22 @@ $(function(){
 					<input type="hidden" name="stateInfo" title="i18n_mnel.message.staeInfo_n81i" value="${stateInfo}" id="stateInfo"
 							onkeyup="lianxiangStateInfokeyup();"/>
 					<%-- <div id='suggest2' class="ac_results" style="min-width: 200px; width: auto;"></div></label> --%>
+					<label class="divTopText"><font class="selectText">i18n_smiln.text.nodeGroup_n81i</font>
+					<input type="text" name="nodeGroupStr" title="i18n_smiln.message.nodeGroup_n81i"  value="${nodeGroupStr}" id="nodeGroupStr" 
+					onkeyup="lianxiangkeyup('groupName','NodegroupTable','String','nodeGroupStr','suggest1',this.value);" /></label>
+					<label class="divTopText"><font class="selectText">i18n_sitl.text.netType_n81i</font>
+						<select name="netElementType">
+							<option value="-1" <c:if test="${empty netElementType or netElementType eq -1}">selected ="selected"</c:if>>i18n_dwl.text.changeEmergentDefault_n81i</option>
+							<c:forEach items="${allnetElementType }" var="netElementTypeInfo">
+								<%-- <c:if test="${checkTypeInfo.isSnmp ne 1 or checkTypeInfo.id eq 7}"> --%>
+									<option value="${netElementTypeInfo.typeCode }" <c:if test="${netElementTypeInfo.typeCode eq netElementType}">selected ="selected"</c:if>>${netElementTypeInfo.typeValue }</option>
+								<%-- </c:if> --%>
+							</c:forEach>
+						</select>
+					</label>
 					<img src="<c:url value='/images/button_chaxun.png'/>"
 							class="img_middle2" onclick="javascript:qry();" />
+					
 				</div>
 				<div class="box_2">
 					<input type="button" class=btn3_mouseout

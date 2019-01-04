@@ -89,6 +89,7 @@ public class MonitorDataAction extends BaseAction {
 	private List<List> vnodeIpGroupList;
 	private List<List> nodeIpGroupListNew;
 	private List<CheckTypeInfo> allCheckTypeInfo;
+	private List<OptionTable> allnetElementType;//网元类型集合
 	private List<Metadata> metadataList;
 	private String metaId;
 	private String nodeIp;
@@ -149,6 +150,8 @@ public class MonitorDataAction extends BaseAction {
 	private String queryNEChild;
 	
 	private String detectionSetInfoId;
+	
+	private Integer netElementType;//网元类型
 	/**
 	 * 入口，action=(query queryNE queryAbnormalSet)几乎是统一业务逻辑，修改时同步修改
 	 */
@@ -173,9 +176,8 @@ public class MonitorDataAction extends BaseAction {
 			if (!StringUtil.isBlank(requestType) && requestType.equals("topo")) {
 				queryMonitorDataInfoNewForTopo();
 				resultpage = "queryMonitorDataInfoChild";
-			} else if(!StringUtil.isBlank(requestType) && requestType.equals("newTopo")){
-				queryMonitorDataInfoNewForTopoDetail();
-				resultpage = "queryMonitorDataInfoNewTopo";
+			} else if(!StringUtil.isBlank(requestType) && requestType.equals("newTopo")) {
+				resultpage=queryMonitorDataInfoNewForTopoChild();
 			} else {
 				this.queryServerMonitorDataInfoNew();// 服务器监测-自动加载
 				resultpage = "queryServerMonitorDataInfoChild";
@@ -197,6 +199,7 @@ public class MonitorDataAction extends BaseAction {
 			// 详情、时序图页面标识监测数据与异常设备菜单
 			type = "1";
 			queryCheckTypeInfo();
+			queryNetElementType();
 			this.queryNE();
 			resultpage = "queryNE";
 		} else if ("queryNEChild".equals(this.action)) {
@@ -1010,7 +1013,7 @@ public class MonitorDataAction extends BaseAction {
 		try {
 			String[] linStrings = lines.split(",");// 选择的端口，可能是多个
 			String temp = "";
-			/*String source = "select max(to_char(data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
+			String source = "select max(to_char(data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
 					+ " from " + checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null"
 					// +" and t.data_check_time >= trunc(sysdate-30)"
 					+ " and t.detection_info_id in "
@@ -1034,44 +1037,13 @@ public class MonitorDataAction extends BaseAction {
 				temp = temp.substring(0, temp.length() - 1);
 				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
 						+ " order by maxTime desc";
-			}*/
-			/*String source = "select max(to_char(t.data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
-					+ " from " + checkTypeInfo.getTableName() + " t,detection_info d where " + metadata.getFiledName() + " is not null"
-					// +" and t.data_check_time >= trunc(sysdate-30)"
-					+ " and t.detection_info_id =d.id "
-					+ " and d.detection_set_info_id=" + dsiId + " and d.seq_id = "
-					+ seqId;*/
-			/**
-			 * 2018年12月6日17:50:54 fang 在 astana 优化
-			 */
-			String source = "select max(to_char(t.data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
-					+ " from " + checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null "
-					// +" and t.data_check_time >= trunc(sysdate-30)"
-					+ " and t.detection_set_info_id=" + dsiId + " and t.seq_id = "
-					+ seqId;
-			if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
-				source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
-						+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
-			} else {
-				source += " and t.data_check_time >= trunc(sysdate-1) ";
 			}
-			if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
-				temp = lines.substring(0, lines.length() - 1);
-				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
-						+ " order by maxTime desc";
-			} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
-				for (int i = 0; i < linStrings.length; i++) {
-					temp += "'" + linStrings[i] + "',";
-				}
-				temp = temp.substring(0, temp.length() - 1);
-				source += " and " + sortFiledType[0] + " in (" + temp + ") group by " + sortFiledType[0]
-						+ " order by maxTime desc";
-			}
+
 			List lastList = this.commonService.executeSQL(source);
 			// ------------------以上确定最后一个数据点----------------------------
 			if (lastList != null && lastList.size() > 0) {
 				Object[] row = (Object[]) lastList.get(0);
-				/*String lastSource = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi'),"
+				String lastSource = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi'),"
 						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 						+ metadata.getFiledName() + " is not null"
 						// +" and t.data_check_time >= trunc(sysdate-30)"
@@ -1089,32 +1061,6 @@ public class MonitorDataAction extends BaseAction {
 					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by data_check_time desc) ttt ";
 				} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
 					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by data_check_time desc) ttt ";
-				}*/
-				/*String lastSource = "select to_char(t.data_check_time,'yyyy-mm-dd HH24:mi'),"
-						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t,detection_info d where "
-						+ metadata.getFiledName() + " is not null"
-						// +" and t.data_check_time >= trunc(sysdate-30)"
-						+ " and t.detection_info_id = d.id "
-						+ "and d.detection_set_info_id=" + dsiId
-						+ " and d.seq_id = " + seqId;*/
-				/**
-				 * 2018年12月6日17:52:54 fang 在 astana 优化
-				 */
-				String lastSource = "select to_char(t.data_check_time,'yyyy-mm-dd HH24:mi'),"
-						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
-						+ metadata.getFiledName() + " is not null "
-						+ "and t.detection_set_info_id=" + dsiId
-						+ " and t.seq_id = " + seqId;
-				if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
-					lastSource += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
-							+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
-				} else {
-					lastSource += " and t.data_check_time >= trunc(sysdate-1) ";
-				}
-				if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
-					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by t.data_check_time desc ";
-				} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
-					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by t.data_check_time desc ";
 				}
 				/* lastSource += " where rownum < 21"; */
 
@@ -1233,21 +1179,20 @@ public class MonitorDataAction extends BaseAction {
 						String[] cbStrings = checkLins(metadata, checkTypeInfo, sortFiledType, dsiId, seqId, linStrings[i]);
 						String source = "";
 						if (linStrings[i].equals(cbStrings[0])) {// 这是最后的那个
-							/*source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
-									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
-									+ metadata.getFiledName() + " is not null"
-									+ " and t.detection_info_id in "
-									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-									+ " and d.seq_id = " + seqId + ")";*/
-							/**
-							 * 2018年12月6日18:22:39 fang 在astana 优化
-							 */
 							source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
-									+ metadata.getFiledName() + " is not null "
-									+ " and t.detection_set_info_id=" + dsiId
-									+ " and t.seq_id = " + seqId;
-									
+									+ metadata.getFiledName() + " is not null"
+									// +
+									// " and t.data_check_time >=
+									// to_date(to_char((sysdate-4),'yyyy-mm-dd'),'yyyy-mm-dd
+									// hh24:mi')"+
+									// +" and t.data_check_time >=
+									// trunc(sysdate-30)"
+									// + " and rownum <= 20"
+									+ " and t.detection_info_id in "
+									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
+									+ " and d.seq_id = " + seqId + ")";
+
 							if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 								source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 										+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
@@ -1270,17 +1215,15 @@ public class MonitorDataAction extends BaseAction {
 //								source += " where rownum < 21 ";
 //							}
 						} else {
-							/*source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
-									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
-									+ metadata.getFiledName() + " is not null"
-									+ " and t.detection_info_id in "
-									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-									+ " and d.seq_id = " + seqId + ")";*/
 							source = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 									+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 									+ metadata.getFiledName() + " is not null"
-									+ " and t.detection_set_info_id=" + dsiId
-									+ " and t.seq_id = " + seqId;
+									// +" and t.data_check_time >=
+									// trunc(sysdate-30)"
+									+ " and t.detection_info_id in "
+									+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
+									+ " and d.seq_id = " + seqId + ")";
+
 							if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 								source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 										+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
@@ -1363,19 +1306,14 @@ public class MonitorDataAction extends BaseAction {
 							+ " is not null and seq_id=" + seqId + " and DETECTION_SET_INFO_ID= "+dsiId+" order by " + sortFiledType[0].toString();
 					dataList = this.commonService.executeSQL(getAllSort);
 					if (dataList != null && dataList.size() > 0) {
-						/*String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
+						String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
 								+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
 								+ metadata.getFiledName() + " is not null"
 								// + " and t.data_check_time >=
 								// trunc(sysdate-30)"
 								+ " and t.detection_info_id in "
 								+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-								+ " and d.seq_id = " + seqId + ")";*/
-						String source = "select * from (select to_char(data_check_time,'yyyy-mm-dd HH24:mi') checkTime,"
-								+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
-								+ metadata.getFiledName() + " is not null"
-								+ " and t.detection_set_info_id=" + dsiId
-								+ " and t.seq_id = " + seqId;
+								+ " and d.seq_id = " + seqId + ")";
 
 						if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 							source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
@@ -1650,8 +1588,21 @@ public class MonitorDataAction extends BaseAction {
 			sqlBuffer.append(" left join check_type_info cti");
 			sqlBuffer.append(" on dsi.check_type_id = cti.id");
 			// @2018-3-9 fang 修改 首先查询符合条件的id，在拼接sql，适配mysql
-			String groupIdSql = "select group_id from nodegroup_table t where 1=1 ";
-			String ids = this.commonService.getGroupIdStartWith(groupIdSql, "t.group_id = " + nodeGroupId);
+			String groupIdSql = "select node_id from node_table where node_id not in (select type_id from topo_node_info where type=2) and node_state=0 and node_group_id="+nodeGroupId;
+			StringBuffer queryIds=new StringBuffer();
+			List<Long> nodeGroupIds = this.commonService.executeSQL(groupIdSql);
+			if(!nis.nms.util.StringUtil.objectIsNUll(nodeGroupIds)){
+								for(int i=0;i<nodeGroupIds.size();i++){
+									if(i==nodeGroupIds.size()-1){
+										queryIds.append(nodeGroupIds.get(i));
+									}else{
+										queryIds.append(nodeGroupIds.get(i));
+										queryIds.append(",");
+									}
+								}
+							}else{
+								queryIds.append(-1);
+							}
 			/*
 			 * sqlBuffer.
 			 * append(" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn from  NODE_TABLE WHERE node_group_id in "
@@ -1661,8 +1612,8 @@ public class MonitorDataAction extends BaseAction {
 			 * " connect by prior t.group_id = t.parent_group_id)) nt");
 			 */
 			sqlBuffer
-					.append(" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn from  NODE_TABLE WHERE node_group_id in "
-							+ "(" + ids + ")) nt");
+					.append(" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn from  NODE_TABLE WHERE node_id in "
+							+ "(" + queryIds.toString() + ")) nt");
 			sqlBuffer.append(" on din.seq_id = nt.seq_id");
 			// ------------2013-1-23 hyx
 			// 对于无统计字段的监测类型，在监测数据列表里不显示折线图链接------------------start
@@ -1954,7 +1905,17 @@ public class MonitorDataAction extends BaseAction {
 			logger.error(e.getStackTrace());
 		}
 	}
-
+	//2019-01-04新增查询网元类型
+	private void queryNetElementType(){
+		try {
+			String hql="from OptionTable where typeIdentity='netelementtype'";
+			allnetElementType=this.commonService.find(hql);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("query NetElement Type faild"+e);
+		}
+	}
 	// 添加此方法主要考虑使用HQL查询会因为表之间的关联关系而导致一条记录多次查询，故修改为sql查询。
 	public void queryServerMonitorDataInfoNew() {
 		if (mypageNo > 0 && mypageSize > 0) {
@@ -2935,7 +2896,7 @@ public class MonitorDataAction extends BaseAction {
 						String linesLink = linkToString(linStrings, ",", "'");// lines要在checkLins方法后再做加单引号的处理，因为checkLins方法里单个处理了
 						// for (int i = 0; i < linStrings.length; i++) {
 						String source = "";
-						source = "select data_check_time_digital ," + specialColumn + " from "
+						source = "select * from ( select data_check_time_digital ," + specialColumn + " from "
 								+ checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null"
 								+ " and t.detection_set_info_id=" + dsiId + " and t.seq_id = " + seqId + " ";
 
@@ -2966,7 +2927,7 @@ public class MonitorDataAction extends BaseAction {
 						 * " order by data_check_time_digital desc) where rownum < 21 order by data_check_time_digital asc"
 						 * ;
 						 */
-						//source += " order by data_check_time_digital asc ";
+						source += " order by data_check_time_digital desc) tttt   ";
 
 						// @2018年4月10日18:45:00 fang 修改rownum 适配 mysql
 						if (Constant.IS_MYSQL) {
@@ -4371,7 +4332,7 @@ public class MonitorDataAction extends BaseAction {
 			sqlBuffer.append(" left join check_type_info cti");
 			sqlBuffer.append(" on dsi.check_type_id = cti.id");
 			sqlBuffer.append(
-					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn from  NODE_TABLE) nt");
+					" left join (select distinct node_ip,seq_id,node_system_type,node_type,node_state,system_id ,ipn,network_element_type,node_group_id from  NODE_TABLE) nt");
 			sqlBuffer.append(" on din.seq_id = nt.seq_id");
 			// ------------2013-1-23 hyx
 			// 对于无统计字段的监测类型，在监测数据列表里不显示折线图链接------------------start
@@ -4381,7 +4342,17 @@ public class MonitorDataAction extends BaseAction {
 			sqlBuffer.append(" on checkTypeCharState.ctId=cti.id ");
 			// ------------2013-1-23 hyx
 			// 对于无统计字段的监测类型，在监测数据列表里不显示折线图链接------------------end
-
+			//2019-01-04新增节点组名称查询过滤条件
+			if (nodeGroupStr != null && !"".equals(nodeGroupStr) && !"null".equals(nodeGroupStr)) {
+				// 节点组模糊名称不为空，则根据节点组名称，模糊查询所有节点组，再依次查找其下面的节点，得到节点id
+				// @2018-3-9 fang 修改 首先查询符合条件的id，在拼接sql，适配mysql
+				String groupIdSql = "select  group_id from nodegroup_table t where 1=1 ";
+				String ids = this.commonService.getGroupIdStartWith(groupIdSql,
+						"lower(group_name) like lower('%" + nodeGroupStr + "%')");
+				sqlBuffer
+						.append(" right join (select  distinct ngt.group_id from nodegroup_table ngt where ngt.group_id in ("
+								+ ids + ") ) ngt on nt.node_group_id=ngt.group_id");
+			}
 			sqlBuffer.append(
 					" where nt.node_ip is not null AND nt.node_type =1 and nt.node_state = 0 and dsi.detection_set_state ='1'  and cti.crete_state=0  and din.valid=1");// 只显示有效的数据：din.valid=1
 			if (!this.getAdminMark()) {
@@ -4396,6 +4367,10 @@ public class MonitorDataAction extends BaseAction {
 			}
 			if (checkType != null && !"".equals(checkType)&&checkType>=0) {
 				sqlBuffer.append(" and cti.id=" + checkType);
+			}
+			//2019-01-04 新增根据网元类型过滤
+			if(netElementType!=null&&netElementType!=-1){
+				sqlBuffer.append(" and nt.network_element_type="+netElementType);
 			}
 			if (StringUtils.isNotBlank(stateInfo)) {
 				sqlBuffer.append(" and din.detection_state_info like '%" + stateInfo + "%'");
@@ -5434,6 +5409,24 @@ public class MonitorDataAction extends BaseAction {
 	public void setDetectionSetInfoId(String detectionSetInfoId) {
 		this.detectionSetInfoId = detectionSetInfoId;
 	}
+
+	public Integer getNetElementType() {
+		return netElementType;
+	}
+
+	public void setNetElementType(Integer netElementType) {
+		this.netElementType = netElementType;
+	}
+
+	public List<OptionTable> getAllnetElementType() {
+		return allnetElementType;
+	}
+
+	public void setAllnetElementType(List<OptionTable> allnetElementType) {
+		this.allnetElementType = allnetElementType;
+	}
+
+	
 
 
 }

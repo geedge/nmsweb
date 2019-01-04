@@ -258,6 +258,8 @@
 				value="${police_level }" />
 			<input type="hidden" name="mypageNo" value="${mypageNo }" />
 			<input type="hidden" name="mypageSize" value="${mypageSize }" />
+			<input type="hidden" name="checkType" value="${checkType }" />
+			<input type="hidden" name="netElementType" value="${netElementType }" />
 			<div id="divTop">
 				<div class="box_1">
 					<label class="divTopText"><font class="selectText">i18n_dil.text.startTime_n81i</font>:
