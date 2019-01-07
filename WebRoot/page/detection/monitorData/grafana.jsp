@@ -66,7 +66,7 @@
 	//配置查询相关信息
 	var queryInfo = {
 			traffic : {
-				title:'traffic',
+				title:'Intercept Traffic',
 				yAxisName:'packet/s',
 				data: {
 					legend:['Raw Input'],
@@ -75,7 +75,7 @@
 				}
 			},
 			connections :{
-				title:'connections',
+				title:'Intercept Connections',
 				yAxisName:'conn/s',
 				data:{
 					legend:['Pending','Unknown','Asymmetric','Intercept','Whitelist','Not HIT'],
@@ -84,7 +84,7 @@
 				}
 			},
 			connect_client_latency : {
-				title:'connect client latency',
+				title:'Connect Client Latency',
 				data:{
 					legend:['50%','60%','90%','mean','upper'],
 					db:'proxy_stat',
@@ -92,7 +92,7 @@
 				}
 			},
 			connect_server_latency :{
-				title:'connect server latency',
+				title:'Connect Server Latency',
 				data:{
 					legend:['50%','60%','90%','99%','mean','upper'],
 					db:'proxy_stat',
@@ -190,13 +190,11 @@
 					},
 					dataType : "json",
 					success : function(data) {
-						console.log(data);
 						var results = data.results;//返回的result为json格式的数据
 						var series = [];
 						$.each(results, function(index, result) {
 							var s = result["series"];
 							var values = s ? s[0].values : [];
-							console.log(values);
 							series.push({
 								name: legengData[index],
 					            type: 'line',
@@ -206,7 +204,6 @@
 						var Chart=echarts.getInstanceByDom($part[0]);//获取echarts实例
 						Chart.showLoading({text : "loading..."}); 
 						var option = { series: series };
-						console.log(option);
 						Chart.setOption(option);
 						Chart.hideLoading();
 					}

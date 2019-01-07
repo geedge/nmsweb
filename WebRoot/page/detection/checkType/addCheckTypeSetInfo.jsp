@@ -254,7 +254,7 @@
 					</td>
 					<td class="color_3"  align="left" id="snmp">
 						<input type="radio" name="checkTypeInfo.isSnmp" id="isSnmp1" value="1"  />SNMP4J
-						<input type="radio" name="checkTypeInfo.isSnmp" id="isSnmp0" value="0"  />ObjectSNMP
+						<!-- <input type="radio" name="checkTypeInfo.isSnmp" id="isSnmp0" value="0"  />ObjectSNMP -->
 						<!-- 
 						 -->
 						<input type="radio" name="checkTypeInfo.isSnmp" id="isSnmp2" value="2" checked="checked"/>i18n_actsi.text.NO_n81i
