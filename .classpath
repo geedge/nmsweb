@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mail.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/nis.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/pinyin4j-2.5.0.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/nutz-1.r.66.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/nutz-1.r.66.jar" sourcepath="D:/jar包/nutz-1.r.66/nutz-1.r.66-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

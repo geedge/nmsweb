@@ -190,6 +190,8 @@ public class NodeManageAction extends BaseAction {
 
 			if (nodeGroupId != null) {// 指定组ID查找相应的节点
 				hql += " and groupId =" + nodeGroupId + "";
+				NodegroupTable nodegroupTable = (NodegroupTable) this.commonService.get(NodegroupTable.class, nodeGroupId);
+				this.getRequest().setAttribute("nodegroupTable", nodegroupTable);
 			}
 			hql += " order by nodeState asc,nodeCreatetime desc";
 			sqlCondition += " order by node_state asc,Node_createtime desc";
@@ -199,7 +201,7 @@ public class NodeManageAction extends BaseAction {
 
 			page = this.commonService.findByPage(hql, pageNo, pageSize);
 			nodeList = (List<NodeTable>) page.getResult();
-
+			
 			for (NodeTable node : nodeList) {
 				List syslist = this.commonService
 						.find("from SystemTable where systemId = "

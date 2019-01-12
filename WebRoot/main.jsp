@@ -477,10 +477,10 @@ html, body {
                 <li><a href="<c:url value='/login!systemSelect.do?SytemChange=yes'/>">i18n_main.text.systemSelect_n81i&nbsp;&nbsp;|</a></li>
                 <%-- <li><a href="<c:url value='/main.jsp?i18n_lang=zh_CN'/>">简体中文&nbsp;&nbsp;|</a></li> 
                 <li><a href="<c:url value='/main.jsp?i18n_lang=en_US'/>">ENGLISH&nbsp;&nbsp;|</a></li> --%>
-                <li <%=!"ALL".equals(systemname)?"style='display:none'":"" %>>
+                <%-- <li <%=!"ALL".equals(systemname)?"style='display:none'":"" %>>
                 	<!-- <a href="<c:url value="/authentication/identificat.do?action=toTargetSys"/>">To Grafana &nbsp;&nbsp;|</a> -->
                 	<a href="<c:url value='/authentication/identificat.do?action=toTargetSys'/>" id="toTarget" target='_blank'>To Grafana &nbsp;&nbsp;|<a/>
-                </li>
+                </li> --%>
                 <li>
                 	<span>
                 		<select id="languageChange">

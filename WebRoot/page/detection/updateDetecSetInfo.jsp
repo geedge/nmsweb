@@ -104,31 +104,33 @@
     		)) {
 			return;
 		}
-		if(Number(type) ==8){
+		if(Number(type)==8){
 			if(Number(type) > 7 && startType == 0){ // 手动启动
 				if(false ==(
-						$id("processFile","","i18n_udsi.message.processFile_n81i")
-						&& $id("processSearchCode","","i18n_udsi.text.processSearchCode_n81i")
+						$id("processFile","","i18n_adsi.message.processFile_n81i")
+						|| $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
 					)){
+					alert("i18n_pidFile.keyword.allblank_n81i");
 					return;
 				}
 			}
 			if(Number(type) > 7 && startType == 1){ // 单次启动
 				if(false ==(
-						$id("processFile","","i18n_udsi.message.processFile_n81i")
-						&& $id("processSearchCode","","i18n_udsi.text.processSearchCode_n81i")
-						&& $id("processPath","","i18n_udsi.message.processPath_n81i")
+						$id("processFile","","i18n_adsi.message.processFile_n81i")
+						|| $id("processSearchCode","","i18n_adsi.message.processSearchCodeTitle_n81i")
 					)){
+					alert("i18n_pidFile.keyword.allblank_n81i");
 					return;
+				}else{
+					if(! $id("processPath","","i18n_adsi.message.processPathTitle_n81i")){
+						return;
+					}
 				}
 			}
 			if(Number(type) > 7 && startType == 2){ // 周期启动
-				if(!$("#scriptFile").html()) { // 未上传脚本
-					if(false ==(
-						$id("myFile","","i18n_udsi.message.myFile_n81i")
-					)){
-						return;
-					}
+				if($("#myFile").val()==''){
+					$("#myFile").next().html("i18n_adsi.message.myFile_n81i");
+					return;
 				}
 			}
 		}
@@ -602,7 +604,7 @@
 					</td>
 					<td class="color_3" colspan="3" align="left">
 						<input type="text" name="detectionSetInfo.processFile" id="processFile" value="${detectionSetInfo.processFile}"/>			
-						<font color="red">*</font>
+						<font color="red">* i18n_pidFile.keyword.allblank_n81i</font>
 					</td>
 				</tr>
 				<tr class="csd">
@@ -611,7 +613,7 @@
 					</td>
 					<td class="color_3" colspan="3" align="left">
 						<input type="text" name="detectionSetInfo.processSearchCode" id="processSearchCode" value="${detectionSetInfo.processSearchCode}"/>
-						<font color="red">*i18n_udsi.message.processSearchCode_n81i</font>
+						<font color="red">* i18n_udsi.message.processSearchCode_n81i</font>
 					</td>
 				</tr>
 				<tr class="dsd">

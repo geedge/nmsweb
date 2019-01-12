@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>i18n_nodeInfo.message.title_n81i</title>
+		<title>${nodegroupTable.groupName }&nbsp;i18n_nodeInfo.message.title_n81i</title>
 		<link href="<c:url value='/css/nms.css'/>" rel="stylesheet"
 			type="text/css" />
 		<link href="<c:url value='/css/suggest.css'/>" rel="stylesheet"

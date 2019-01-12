@@ -127,7 +127,8 @@
 			Chart.showLoading({text : "loading..."}); 
 			var option = {
 					title: { 
-						text: title ,left:"49%"
+						text: title ,
+						left:"center"
 					},
 					tooltip: { 
 						trigger: 'axis',
@@ -182,8 +183,10 @@
 				var legengData = data.legend;
 				$.ajax({//ajax请求获取数据
 					type : "POST",
-					url : influxdb.url,
-					crossDomain:true,//请求偏向外域
+					url : "<c:url value='/proxy.do'/>",
+					headers:{
+						realurl:influxdb.url
+					},
 					data:{ 
 						db:data.db,//查询的数据库名
 						q:data.q //查询语句
