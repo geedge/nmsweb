@@ -397,7 +397,7 @@
 										 <%=(si.getIfHighSpeed() ==null?MyNumberFormat.formatStr1(new BigDecimal(si.getIfSpeed()),0,1000):si.getIfHighSpeed()+"Mbps") %>
 									</td>
 									<td class="${color }">
-										${si.ifOperStatus}
+										${si.ifOperStatus==1?'up':'down'}
 									</td>
 									<td class="${color }">
 										<%=MyNumberFormat.formatStr1(si.getIfInOctetsSpeed()==null?null:(new BigDecimal(si.getIfInOctetsSpeed()).multiply(new BigDecimal(8))),0,1024) %>

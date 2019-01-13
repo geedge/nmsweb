@@ -860,10 +860,9 @@ public class SwitchDetectionAction extends BaseAction {
 				si.setIfAdminStatus(objs[6] == null ? null : ((BigDecimal) objs[6]).intValue());
 				si.setIfOperStatus(objs[7] == null ? null : ((BigDecimal) objs[7]).intValue());
 				// si.setIfLastChange(objs[8]==null?null:Long.parseLong((String)objs[8]));
-
-				si.setIfInOctets(objs[9] == null ? null : ((BigDecimal) objs[9]).doubleValue());
-				si.setIfInUcastPkts(objs[10] == null ? null : ((BigDecimal) objs[10]).doubleValue());
-				si.setIfInNUcastPkts(objs[11] == null ? null : ((BigDecimal) objs[11]).doubleValue());
+				si.setIfInOctets(objs[9] == null ? 0.00d : ((BigDecimal) objs[9]).doubleValue());
+				si.setIfInUcastPkts(objs[10] == null ? 0.00d : ((BigDecimal) objs[10]).doubleValue());
+				si.setIfInNUcastPkts(objs[11] == null ? 0.00d : ((BigDecimal) objs[11]).doubleValue());
 				// logger.debug((objs[10]==null?null:((BigDecimal)objs[10]).doubleValue())+"
 				// vs
 				// "+(objs[11]==null?null:((BigDecimal)objs[11]).doubleValue()));
@@ -871,7 +870,7 @@ public class SwitchDetectionAction extends BaseAction {
 				si.setIfInErrors(objs[13] == null ? null : ((BigDecimal) objs[13]).doubleValue());
 				si.setIfInUnknownProtos(objs[14] == null ? null : ((BigDecimal) objs[14]).doubleValue());
 
-				si.setIfOutOctets(objs[15] == null ? null : ((BigDecimal) objs[15]).doubleValue());
+				si.setIfOutOctets(objs[15] == null ? 0.00d : ((BigDecimal) objs[15]).doubleValue());
 				si.setIfOutUcastPkts(objs[16] == null ? null : ((BigDecimal) objs[16]).doubleValue());
 				si.setIfOutNUcastPkts(objs[17] == null ? null : ((BigDecimal) objs[17]).doubleValue());
 
@@ -1050,8 +1049,7 @@ public class SwitchDetectionAction extends BaseAction {
 		portInfo.setIfInNUcastPkts(news.getIfInNUcastPkts() == null ? 0 : news.getIfInNUcastPkts().longValue());
 		portInfo.setIfInDiscards(news.getIfInDiscards() == null ? 0 : news.getIfInDiscards().longValue());
 		portInfo.setIfInErrors(news.getIfInErrors() == null ? 0 : news.getIfInErrors().longValue());
-		portInfo.setIfInUnknownProtos(
-				news.getIfInUnknownProtos() == null ? 0 : news.getIfInUnknownProtos().longValue());
+		portInfo.setIfInUnknownProtos(news.getIfInUnknownProtos() == null ? 0 : news.getIfInUnknownProtos().longValue());
 		portInfo.setIfOutOctets(news.getIfOutOctets() == null ? 0 : news.getIfOutOctets().longValue());
 		portInfo.setIfOutUcastPkts(news.getIfOutUcastPkts() == null ? 0 : news.getIfOutUcastPkts().longValue());
 		portInfo.setIfOutNUcastPkts(news.getIfOutNUcastPkts() == null ? 0 : news.getIfOutNUcastPkts().longValue());
@@ -1208,8 +1206,7 @@ public class SwitchDetectionAction extends BaseAction {
 			}
 			double dOutPks = oupks + onupks;
 
-			BigDecimal outPksSpeed = new BigDecimal(dOutPks * 1000).divide(new BigDecimal(waitTime), 2,
-					RoundingMode.HALF_UP);
+			BigDecimal outPksSpeed = new BigDecimal(dOutPks * 1000).divide(new BigDecimal(waitTime), 2,RoundingMode.HALF_UP);
 			// logger.debug("outdata:>"+"("+ifOutUcastPkts_n+"-"+ifOutUcastPkts_o+")+("+ifOutNucastPkts_n+"-"+ifOutNucastPkts_o+")="+((ifOutUcastPkts_n
 			// - ifOutUcastPkts_o)+(ifOutNucastPkts_n - ifOutNucastPkts_o))+" /
 			// timss"+waitTime+" values "+ (new
@@ -1227,7 +1224,7 @@ public class SwitchDetectionAction extends BaseAction {
 				logger.debug("端口数据计算抛弃数据：输入包速度与输入字节速度计算式：（" + inPksSpeed_a + " * " + minPacketSize + " > "
 						+ ifinoctetsspeed_a + ")");
 				logger.debug("端口数据计算抛弃数据-------");
-				inPksSpeed_a = null;
+				inPksSpeed_a = 0.0;
 			}
 
 			Double outPksSpeed_a = outPksSpeed.doubleValue(); // --单位pps
@@ -1237,7 +1234,7 @@ public class SwitchDetectionAction extends BaseAction {
 				logger.debug("端口数据计算抛弃数据：输出包速度与输入字节速度计算式：（" + outPksSpeed_a + " * " + minPacketSize + " > "
 						+ ifoutoctetsspeed_a + ")");
 				logger.debug("端口数据计算抛弃数据-------");
-				outPksSpeed_a = null;
+				outPksSpeed_a = 0.0;
 			}
 
 			double maxSpeed = (portInfo.getIfHighSpeed() == null || portInfo.getIfHighSpeed().longValue() == 0)
@@ -1251,7 +1248,7 @@ public class SwitchDetectionAction extends BaseAction {
 				logger.debug("端口数据计算抛弃数据：时间：（" + news.getLastLongTime() + "-" + old.getLastLongTime() + ")");
 				logger.debug("端口数据计算抛弃数据：输入字节速度和带宽：（" + ifinoctetsspeed_a + " vs " + maxSpeed + ")");
 				logger.debug("端口数据计算抛弃数据-------");
-				portInfo.setIfInOctetsSpeed(null);
+				portInfo.setIfInOctetsSpeed(0.0);
 			}
 			// System.out.println(" date "+portInfo.getIfDescr()+"
 			// "+portInfo.getIfInOctetsSpeed() +" "+ifinoctetsspeed_a);
@@ -1264,7 +1261,7 @@ public class SwitchDetectionAction extends BaseAction {
 				logger.debug("端口数据计算抛弃数据：时间：（" + news.getLastLongTime() + "-" + old.getLastLongTime() + ")");
 				logger.debug("端口数据计算抛弃数据：输出字节速度和带宽：（" + ifoutoctetsspeed_a + " vs " + maxSpeed + ")");
 				logger.debug("端口数据计算抛弃数据-------");
-				portInfo.setIfOutOctetsSpeed(null);
+				portInfo.setIfOutOctetsSpeed(0.0);
 			}
 			portInfo.setInpktsspeed(inPksSpeed_a);
 			portInfo.setOutpktsspeed(outPksSpeed_a);

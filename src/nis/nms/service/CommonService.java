@@ -8,12 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +33,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Expression;
+import org.hibernate.transform.Transformers;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.util.Assert;
 
@@ -202,6 +199,29 @@ public class CommonService<T> extends HibernateGeneralDaoImpl<T>{
 		Page page = new Page(startIndex, totalCount, pageSize, list);
 		return page;
 	}
+	
+	public Page findByPageForSqlMap(String sql, int pageNo, int pageSize, Object... values) throws Exception {
+		Assert.hasText(sql);
+		Assert.isTrue(pageNo >= 1, "pageNo should start from 1");
+		// Count查询
+		if (values != null && values.length == 0) {
+			values = null;
+		}
+		List countlist = null;
+		long totalCount = 0;
+			String countQueryString = " select count(*) as totalCount from ( " + sql + " ) trySearch ";
+			totalCount = (Long)createSQLQuery(countQueryString, values)
+								.addScalar("totalCount", Hibernate.LONG)
+									.uniqueResult();
+		if (totalCount < 1) return new Page();
+		// 实际查询返回分页对象
+		int startIndex = Page.getStartOfPage(pageNo, pageSize);
+		Query query = createSQLQuery(sql, values);
+		List list = query.setFirstResult(startIndex).setMaxResults(pageSize).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+		Page page = new Page(startIndex, totalCount, pageSize, list);
+		return page;
+	}
+	
 	
 	public List executeSQL(String sql,Class entity) throws Exception {
 		Assert.hasText(sql);
