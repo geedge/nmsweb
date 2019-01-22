@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.config.Result;
@@ -37,6 +39,7 @@ import nis.nms.domains.OptionTable;
 import nis.nms.domains.VDetectionInfoNew;
 import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
+import nis.nms.util.Common;
 import nis.nms.util.Constant;
 import nis.nms.util.DateUtil;
 import nis.nms.util.ExportUtils;
@@ -1013,18 +1016,25 @@ public class MonitorDataAction extends BaseAction {
 		try {
 			String[] linStrings = lines.split(",");// 选择的端口，可能是多个
 			String temp = "";
-			String source = "select max(to_char(data_check_time,'yyyy-mm-dd HH24:mi')) maxTime," + sortFiledType[0]
-					+ " from " + checkTypeInfo.getTableName() + " t where " + metadata.getFiledName() + " is not null"
+			String source = "select to_char(din.data_check_time,'yyyy-mm-dd HH24:mi') maxTime," + sortFiledType[0]
+					+ " from " + checkTypeInfo.getTableName() + " t "
+					+ " left join detection_info_new din on t.DETECTION_INFO_ID = din.DETECTION_INFO_ID "
+					+ "where " + metadata.getFiledName() + " is not null"
 					// +" and t.data_check_time >= trunc(sysdate-30)"
-					+ " and t.detection_info_id in "
+					/*+ " and t.detection_info_id in "
 					+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId + " and d.seq_id = "
-					+ seqId + ")";
-
+					+ seqId + ")";*/
+					+ " and  din.seq_id =" + seqId
+					+ " and  din.detection_set_info_id=" +dsiId ;
 			if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
 				source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 						+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
 			} else {
-				source += " and t.data_check_time >= trunc(sysdate-1) ";
+				if(Constant.IS_MYSQL) {
+					source += " and t.data_check_time >=  '" + Common.getDateStr(new Date(), "yyyy-MM-dd 00:00:00") +"' " ;
+				}else {
+					source += " and t.data_check_time >= trunc(sysdate-1) ";
+				}
 			}
 			if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
 				temp = lines.substring(0, lines.length() - 1);
@@ -1043,25 +1053,32 @@ public class MonitorDataAction extends BaseAction {
 			// ------------------以上确定最后一个数据点----------------------------
 			if (lastList != null && lastList.size() > 0) {
 				Object[] row = (Object[]) lastList.get(0);
-				String lastSource = "select * from ( select to_char(data_check_time,'yyyy-mm-dd HH24:mi'),"
-						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t where "
+				String lastSource = "select * from ( select to_char(t.data_check_time,'yyyy-mm-dd HH24:mi') data_check_time ,"
+						+ metadata.getFiledName() + " from " + checkTypeInfo.getTableName() + " t "
+						+ " where "
 						+ metadata.getFiledName() + " is not null"
 						// +" and t.data_check_time >= trunc(sysdate-30)"
-						+ " and t.detection_info_id in "
+						/*+ " and t.detection_info_id in "
 						+ "(select d.id from detection_info d  where d.detection_set_info_id=" + dsiId
-						+ " and d.seq_id = " + seqId + ")";
-
+						+ " and d.seq_id = " + seqId + ")";*/
+						+ " and  t.seq_id =" + seqId
+						+ " and  t.detection_set_info_id=" +dsiId ;
 				if (null != startTime && !startTime.equals("") && null != endTime && !endTime.equals("")) {
-					lastSource += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
-							+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
+					lastSource += " and to_char(t.data_check_time,'yyyy-mm-dd')>= '" + startTime
+							+ "' and to_char(t.data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
 				} else {
-					lastSource += " and t.data_check_time >= trunc(sysdate-1) ";
+					if(Constant.IS_MYSQL) {
+						lastSource += " and t.data_check_time >=  '" + Common.getDateStr(new Date(), "yyyy-MM-dd 00:00:00") +"' " ;
+					}else {
+						lastSource += " and t.data_check_time >= trunc(sysdate-1) ";
+					}
 				}
 				if (sortFiledType[1].toString().equals("NUMBER") || sortFiledType[1].toString().equals("Number")) {
-					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by data_check_time desc) ttt ";
+					lastSource += " and " + sortFiledType[0] + " = " + row[1] + " order by din.data_check_time desc ) ttt ";
 				} else if (sortFiledType[1].toString().indexOf("VARCHAR2") != -1) {
-					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by data_check_time desc) ttt ";
+					lastSource += " and " + sortFiledType[0] + " = '" + row[1] + "' order by din.data_check_time desc) ttt ";
 				}
+				lastSource += " order by data_check_time desc ";
 				/* lastSource += " where rownum < 21"; */
 
 				// @2018年4月10日18:45:00 fang 修改rownum 适配 mysql
@@ -2904,7 +2921,11 @@ public class MonitorDataAction extends BaseAction {
 							source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 									+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
 						} else {
-							source += " and t.data_check_time >= trunc(sysdate-1) ";
+							if(Constant.IS_MYSQL) {
+								source += " and t.data_check_time >=  '" + Common.getDateStr(new Date(), "yyyy-MM-dd 00:00:00") +"' " ;
+							}else {
+								source += " and t.data_check_time >= trunc(sysdate-1) ";
+							}
 						}
 						if (sortFiledType[1].toString().equals("NUMBER")
 								|| sortFiledType[1].toString().equals("Number")) {
@@ -2930,11 +2951,12 @@ public class MonitorDataAction extends BaseAction {
 						source += " order by data_check_time_digital desc) tttt   ";
 
 						// @2018年4月10日18:45:00 fang 修改rownum 适配 mysql
-						if (Constant.IS_MYSQL) {
+						/*if (Constant.IS_MYSQL) {
 							source = source + " order by data_check_time_digital asc limit 20";
 						} else {
 							source += " where rownum < 21 order by data_check_time_digital asc";// 查询最近时间的21条数据
-						}
+						}*/
+						source += " order by data_check_time_digital asc";
 						System.out.println("------NoFirstInSource--------sql:" + source);
 						List lineSourceList = this.commonService.executeSQL(source);
 
@@ -3012,7 +3034,11 @@ public class MonitorDataAction extends BaseAction {
 								source += " and to_char(data_check_time,'yyyy-mm-dd')>= '" + startTime
 										+ "' and to_char(data_check_time,'yyyy-mm-dd')<='" + endTime + "'";
 							} else {
-								source += " and t.data_check_time >= trunc(sysdate-1) ";// 默认查询一天的数据
+								if(Constant.IS_MYSQL) {
+									source += " and t.data_check_time >=  '" + Common.getDateStr(new Date(), "yyyy-MM-dd 00:00:00") +"' " ;
+								}else {
+									source += " and t.data_check_time >= trunc(sysdate-1) ";
+								}
 							}
 							if (sortFiledType[1].toString().equals("NUMBER")
 									|| sortFiledType[1].toString().equals("Number")) {
@@ -3032,11 +3058,12 @@ public class MonitorDataAction extends BaseAction {
 							 * ;//查询最近时间的21条数据
 							 */
 							// @2018年4月10日18:45:00 fang 修改rownum 适配 mysql
-							if (Constant.IS_MYSQL) {
+							/*if (Constant.IS_MYSQL) {
 								source = source + " order by data_check_time_digital asc limit 20";
 							} else {
 								source += " where rownum < 21 order by data_check_time_digital asc";// 查询最近时间的21条数据
-							}
+							}*/
+							source = source + " order by data_check_time_digital asc";
 							System.out.println("------source--------sql:" + source);
 							List lineSourceList = this.commonService.executeSQL(source);
 
@@ -3097,7 +3124,9 @@ public class MonitorDataAction extends BaseAction {
 
 			String jsonStr = JSONArray.fromObject(returnList).toString();
 			System.out.println(jsonStr);
-			this.getResponse().setCharacterEncoding("utf-8");
+			HttpServletResponse response = this.getResponse();
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
 			PrintWriter printWriter = this.getResponse().getWriter();
 			printWriter.write(jsonStr);
 			printWriter.close();

@@ -424,13 +424,15 @@ html, body {
 .nav a span{
 	margin-left: 40px;
 }
-
+#leftNodes {
+	width:250px;
+}
 .middle_tab{
-	left: 210px;
+	left: 250px;
 }
 
 .middle_right{
-	left : 215px;
+	left : 255px;
 }
 
 
@@ -564,7 +566,7 @@ html, body {
 			<table>
 				<tr valign="buttom" id="titles">
 						<td width="100%" height="18" background="<c:url value='/images/main_58.png'/>">
-							<div align="center" style="width: 210px;background-color: #a81e32">
+							<div align="center" style="width: 250px;background-color: #a81e32">
 								<span id="show" class="STYLE1" 
 									style="color: rgb(242, 229, 229);cursor:pointer; font-weight: bold;width: 100%">▽i18n_main.text.show1_n81i▽</span>
 							</div>

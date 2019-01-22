@@ -32,6 +32,23 @@
 			document.form3.submit();		
 		}
 	 	
+	 	
+		//绘制折线图
+		 function drawPic(deviceId,seqId,title){
+			var url = "/nmsweb/detection/inlineDevice.do?action=drawPic&checkTypeId=10&dsiId=9&sqId="+seqId +"&deviceId=" + deviceId;
+			 //iframe窗
+			 top.layer.open({
+				type: 2,
+				title: title,
+				shadeClose: false,
+				shade: 0.6 ,
+				maxmin: true, //开启最大化最小化按钮
+				area: ['1200px', '750px'],
+				content: url
+			 });	
+		}
+	 	
+	 	
 		jQuery(function(){
 			$("#info").floatHeaderDiv();
 		})
@@ -65,30 +82,39 @@
 			<div class="box_2"><jsp:include page="/include/include.jsp" /></div>
 			<table border="0" cellpadding="0" cellspacing="0" class="table">
 				<tr>
-					<td width="5%" class="color_top">
+					<td width="2%" class="color_top">
 						IP
 					</td>
-					<td width="5%" class="color_top">
+					<td width="2%" class="color_top">
+						Device ID
+					</td>
+					<td width="2%" class="color_top">
+						Link ID
+					</td>
+					<td width="3%" class="color_top">
 						i18n_deviceType_n81i
 					</td>
-					<td width="5%" class="color_top">
+					<td width="2%" class="color_top">
 						i18n_addr_n81i
 					</td>
 					<td width="5%" class="color_top">
 						i18n_isp_n81i
 					</td>
-					<td width="5%" class="color_top">
+					<td width="2%" class="color_top">
 						pass status
 					</td>
 
-					<td width="10%" class="color_top"><!-- 输入速度 mbps -->
+					<td width="5%" class="color_top"><!-- 输入速度 mbps -->
 						i18n_sdigp.text.inoctetsspeed_n81i
 					</td> 
-					<td width="10%" class="color_top"><!-- 输入包速率 pps -->
+					<td width="5%" class="color_top"><!-- 输入包速率 pps -->
 						i18n_sdigp.text.inpktsspeed_n81i
 					</td> 
-					<td width="10%" class="color_8">
+					<td width="5%" class="color_8">
 						<!-- 更新时间 -->i18n_dclwl.text.dataCheckTime_n81i
+					</td>
+					<td width="15%" class="color_8">
+						ODF
 					</td>
 				</tr>
 				<c:choose>
@@ -105,6 +131,12 @@
 									${item['ip_addr']}
 								</td>
 								<td class="${color }">
+									${item['device_id']}
+								</td>
+								<td class="${color }">
+									${item['link_id']}
+								</td>
+								<td class="${color }">
 									${item['device_type']}
 								</td>
 								<td class="${color }">
@@ -118,12 +150,18 @@
 								</td>
 								<td class="${color }">
 									${item['INOCTETSSPEED']}
+									<a href="javascript:drawPic(${item['id'] },${item['seq_id'] },'${item['ip_addr']}-${item['isp_key_name']}')">
+										<img src="${pageContext.request.contextPath }/images/action.png" border=0 height="15" width="15" alt="" title="i18n_miln.message.drawPic_n81i" />
+									</a>
 								</td>
 								<td class="${color }">
 									${item['INPKTSSPEED']}
 								</td>
 								<td class="${color }">
 									${item['DATA_CHECK_TIME']}
+								</td>
+								<td class="${color }">
+									${item['ODF']}
 								</td>
 							<tr>
 						</c:forEach>
@@ -142,6 +180,9 @@
 			</c:if>
 		</form>
 		</div>
+		
+		<div id="chartDiv"></div>
+		
 	</body>
 </html>
 

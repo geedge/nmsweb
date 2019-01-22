@@ -13,13 +13,17 @@ import org.hibernate.SQLQuery;
 
 import com.nis.util.StringUtil;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+import nis.nms.domains.CheckTypeInfo;
+import nis.nms.domains.Metadata;
 import nis.nms.service.CommonService;
 import nis.nms.util.BaseAction;
 import nis.nms.util.Constant;
 import nis.nms.util.Page;
 
 @Results({ 
-	@Result(name = "inlineInfoList", value = "/page/detection/monitorData/inlineInfoList.jsp")
+	@Result(name = "inlineInfoList", value = "/page/detection/monitorData/inlineInfoList.jsp"),
+	@Result(name = "inlineSwitchportMonitorInfo", value = "/page/detection/monitorData/inlineSwitchportMonitorInfo.jsp")
 })
 @SuppressWarnings("all")
 public class InlineDeviceAction extends BaseAction{
@@ -34,6 +38,12 @@ public class InlineDeviceAction extends BaseAction{
 	private String nodeIp;//查询条件：节点ip
 	private String addrCode; //查询条件：地域编码
 	private String ispKeyCode;//查询条件：运营商唯一标识
+	private String sqId;
+	private String ctId;
+	private String detectionSetInfoId;
+	private List metadataList;
+	private List dataList;
+	private String dsiId;
 	
 	@Override
 	public String executeAction() throws Exception {
@@ -41,6 +51,8 @@ public class InlineDeviceAction extends BaseAction{
 		//查询运营商等信息
 		if("query".equalsIgnoreCase(this.action)) {
 			result =  inlineInfoList();
+		}else if("drawPic".equalsIgnoreCase(this.action)) {
+			result = ajaxDrawDateSource();
 		}
 		return result;
 	}
@@ -180,6 +192,57 @@ public class InlineDeviceAction extends BaseAction{
 		this.getRequest().setAttribute("page", devicePage);
 		return "inlineInfoList";
 	}
+	
+	
+	public String ajaxDrawDateSource() {
+		String resu = "";
+		try {
+			
+			String deviceId = this.getRequest().getParameter("deviceId");//sys_device_info表的id deviceId
+			dsiId = this.getRequest().getParameter("dsiId");
+			sqId = this.getRequest().getParameter("sqId");
+			ctId = this.getRequest().getParameter("checkTypeId");
+			detectionSetInfoId=this.getRequest().getParameter("detectionSetInfoId");
+			CheckTypeInfo checkTypeInfo = (CheckTypeInfo) this.commonService.get(CheckTypeInfo.class,Long.parseLong(ctId));
+
+			String tString = "select * from metadata where table_name = "
+					+ "(select table_name from check_type_info where id="
+					+ "(select check_type_id from detection_set_info where id=" + dsiId + ")) "
+					+ " and chart_state = '0'";
+
+			metadataList = this.commonService.executeSQL(tString, Metadata.class);
+			
+			String sql =  "SELECT " +
+					"	sdi.*,nt.*  " +
+					" FROM " +
+					"	sys_device_info sdi " +
+					"	LEFT JOIN ( SELECT node_ip, seq_id FROM node_table GROUP BY node_ip ) nt ON nt.node_ip = sdi.ip_addr " +
+					"where sdi.status != 0 and sdi.id = ?";
+			List<Map<String,Object>> list = commonService.executeSQLMap(sql, deviceId);
+			if(list != null && list.size()>0) {
+				Map<String, Object> deviceMap = list.get(0);
+				String portName = deviceMap.get("port_name")+"";
+				if(!StringUtil.isBlank(portName)) {
+					String[] split = portName.split(",");
+					dataList = Arrays.asList(split);
+				}
+			}
+			// 针对多项监测都使用分类标识，所以取消判断是否为snmp监控
+			// 得到分类标识字段
+			return "inlineSwitchportMonitorInfo";
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getStackTrace());
+			outHtmlString(
+					"<script type=\"text/javascript\">alert('i18n_MonitorDataAction.emportCurrentXlsAbnormalSet.faild_n81i');this.location='detectionSet.do?action=query&pageNo="
+							+ pageNo + "&pageSize=" + pageSize + "'</script>");
+		}
+		return resu;
+
+	}
+	
+
+	
 
 	public CommonService getCommonService() {
 		return commonService;
@@ -243,6 +306,62 @@ public class InlineDeviceAction extends BaseAction{
 
 	public void setIspKeyCode(String ispKeyCode) {
 		this.ispKeyCode = ispKeyCode;
+	}
+
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+
+	public String getSqId() {
+		return sqId;
+	}
+
+	public void setSqId(String sqId) {
+		this.sqId = sqId;
+	}
+
+	public String getCtId() {
+		return ctId;
+	}
+
+	public void setCtId(String ctId) {
+		this.ctId = ctId;
+	}
+
+	public String getDetectionSetInfoId() {
+		return detectionSetInfoId;
+	}
+
+	public void setDetectionSetInfoId(String detectionSetInfoId) {
+		this.detectionSetInfoId = detectionSetInfoId;
+	}
+
+	public List getMetadataList() {
+		return metadataList;
+	}
+
+	public void setMetadataList(List metadataList) {
+		this.metadataList = metadataList;
+	}
+
+	public List getDataList() {
+		return dataList;
+	}
+
+	public void setDataList(List dataList) {
+		this.dataList = dataList;
+	}
+
+	public String getDsiId() {
+		return dsiId;
+	}
+
+	public void setDsiId(String dsiId) {
+		this.dsiId = dsiId;
 	}
 
 	

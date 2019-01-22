@@ -29,6 +29,7 @@
 		<script type="text/javascript" src="<c:url value='/js/WebCalendar.js' />"></script>
 		<script>
 		var oldDrawDiv = "1";
+		Highcharts.setOptions({global: {useUTC: false}});
 		$(function() {
 			$( "#tabs" ).tabs();
 			$( "#tabs" ).removeClass("ui-widget");//删除ui样式(此样式会使折线图下方navigator失灵)

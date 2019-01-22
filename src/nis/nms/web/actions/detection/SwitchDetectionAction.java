@@ -167,6 +167,7 @@ public class SwitchDetectionAction extends BaseAction {
 			if (!com.nis.util.StringUtil.isBlank(requestType) && requestType.equals("topo")) {
 				resultpage = totalSwitchInfoStatisticsForTopo();
 			} else {
+				this.networElementType = "1";
 				resultpage = totalSwitchInfoStatistics();
 			}
 

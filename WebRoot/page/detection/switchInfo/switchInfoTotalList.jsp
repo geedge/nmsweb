@@ -400,7 +400,7 @@
 								onkeyup="lianxiangkeyup('nodeIp','NodeTable','String','nodeIp','suggest1',this.value);"
 								name="nodeIp" title="i18n_sitl.message.nodeIp_n81i" value="${nodeIp}" size="20" />
 						<div id='suggest1' class="ac_results"></div></label>
-						<label class="divTopText"><font class="selectText">i18n_sitl.text.networElementType_n81i</font>
+						<%-- <label class="divTopText"><font class="selectText">i18n_sitl.text.networElementType_n81i</font>
 						<select name="networElementType"  id="networElementType" style="width:140px;" >
 							<option value="">i18n_sitl.message.selectDefault_n81i</option>
 							<c:forEach items="${optionList}"  var="optionTable" >
@@ -408,7 +408,7 @@
 									${optionTable.typeValue}
 								</option>
 							</c:forEach>
-						</select>	</label>			
+						</select>	</label>	 --%>		
 						<img src="<c:url value='/images/button_chaxun.png'/>"
 							class="img_middle2" onclick="javascript:qry();" />
 					</div>

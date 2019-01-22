@@ -58,10 +58,10 @@
 				addr:"Astana",
 				url:'http://10.0.5.19:8086/query'
 			},
-			/* "100001":{
+			"100001":{
 				addr:"Almaty",
-				url:'http://10.0.5.19:8086/query'
-			} */
+				url:'http://10.0.5.15:8086/query'
+			}
 	};
 	//配置查询相关信息
 	var queryInfo = {

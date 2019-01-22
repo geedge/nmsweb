@@ -235,10 +235,10 @@ public class PoliceSetAction extends BaseAction {
 					+ dataPoliceRelation.getMetadata().getId();
 			List list = this.commonService.executeSQL(sql);
 			int num = Integer.parseInt(list.get(0).toString());
-			if (num > 0) {
+			/*if (num > 0) {
 				this.outHtmlString("<script>alert('i18n_PoliceSetAction.queryPoliceSetInfo.recordExists_n81i');this.location='policeSet.do?action=query&pIden="+pIden+"&ctn="+ctn+"&ip="+ip+"&pageNo="+pageNo+"&pageSize="+pageSize+"&setId="+setId+"'</script>");
 				return;
-			}
+			}*/
 
 			Metadata metadata = (Metadata) this.commonService.get(
 					Metadata.class, dataPoliceRelation.getMetadata().getId());
@@ -286,10 +286,10 @@ public class PoliceSetAction extends BaseAction {
 							"from DataPoliceRelation where detectionSetInfo.id=? and metadata.id=? and id<>?",
 							Long.valueOf(detectionSetInfoId), dataPoliceRelation.getMetadata().getId(), dataPoliceRelation
 									.getId());
-			if (list != null && list.size() > 0) {
+			/*if (list != null && list.size() > 0) {
 				this.outHtmlString("<script>alert('i18n_PoliceSetAction.queryPoliceSetInfo.recordExists_n81i');this.location='policeSet.do?action=openUpdate&ids="+policeRelationId+"&detectionSetInfoId="+detectionSetInfoId+"'</script>");
 				return;
-			}
+			}*/
 			DataPoliceRelation dpRelation = (DataPoliceRelation) this.commonService
 					.get(DataPoliceRelation.class, dataPoliceRelation.getId());
 			DetectionSetInfo ds = null;

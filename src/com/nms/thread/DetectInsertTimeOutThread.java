@@ -6,7 +6,7 @@ import com.nms.thread.common.ThreadPoolCommon;
 import com.nms.thread.socket.SSLClient;
 
 public class DetectInsertTimeOutThread implements Runnable{
-	private static final Logger logger = Logger.getLogger(DetectDatasTimeoutAlarmThread.class);
+	private static final Logger logger = Logger.getLogger(DetectInsertTimeOutThread.class);
 	private String ip;
 	private int port;
 	private long timeout;
