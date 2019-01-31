@@ -499,7 +499,7 @@ public class DetectionWarningAction extends BaseAction {
 				+ "       diw.PERFORMACE_DATA      performacedate,\n" + "       nt.ipn                   ipn\n"
 				+ "  from (select seq_id, detection_set_info_id, max(data_check_time) dct\n"
 				+ "          from detection_info_warning\n" + "         where valid = 1\n"
-				+ "           and data_check_time >= (sysdate - 2/24)\n"
+				+ (dct == null || "".equals(dct)? "           and data_check_time >= (sysdate - 2/24)\n":"           and data_check_time >= to_date('" + dct + "','yyyy-mm-dd')\n")
 				+ "         group by seq_id, detection_set_info_id) dnew\n" + "  left join detection_info_warning diw\n"
 				+ "    on dnew.seq_id = diw.seq_id\n"
 				+ "   and dnew.detection_set_info_id = diw.detection_set_info_id\n"
