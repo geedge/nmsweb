@@ -86,6 +86,7 @@ public class NmsReportService {
 		//end=1539073220004l,start=1539064699984l
 		//只查询 网元类型为 特种设备：1的端口信息
 		String sql = "SELECT DISTINCT nt.node_ip, nt.node_name, ds.ifindex, ds.IFDESCR, ds.IFSPEED, ds.IFINOCTETS, ds.IFOUTOCTETS,ds.INOCTETSSPEED,ds.INPKTSSPEED,ds.OUTOCTETSSPEED, ds.OUTPKTSSPEED, ds.DATA_CHECK_TIME,st.ADDR  "
+				+ " ds.IFADMINSTATUS ,nt.seq_id"
 				+ "FROM di_switchport ds "
 				+ "LEFT JOIN node_table nt ON nt.seq_id=ds.seq_id "
 				+ " left join system_table st on st.system_id = nt.system_id "
@@ -104,6 +105,8 @@ public class NmsReportService {
 		fields.add("OUTPKTSSPEED");
 		fields.add("DATA_CHECK_TIME");
 		fields.add("ADDR");
+		fields.add("IFADMINSTATUS");
+		fields.add("seq_id");
 		
 		try {
 			ArrayList<Map<String, String>> dbSelect = dao.dbSelect(sql, fields);
@@ -113,4 +116,30 @@ public class NmsReportService {
 			return null;
 		}
 	}
+
+	
+	/**
+	 * 获取 端口状态配置信息
+	 * @return
+	 */
+	public ArrayList<Map<String, String>> getPortStatusInfo() {
+		//end=1539073220004l,start=1539064699984l
+		//只查询 网元类型为 特种设备：1的端口信息
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select t.seqid, t.name_flag,(case when port_set_state is null then 1   else port_set_state end) state from node_figure_info t ");
+		sql.append(" where ");
+		sql.append(" t.name_flag is not null  and t.is_leaf = 1   ");
+		ArrayList<String> fields = new ArrayList<String>();
+		fields.add("seqid");
+		fields.add("name_flag");
+		fields.add("state");
+		try {
+			ArrayList<Map<String, String>> dbSelect = dao.dbSelect(sql.toString(), fields);
+			return dbSelect;
+		} catch (Exception e) {
+			logger.error(e);
+			return null;
+		}
+	}
+	
 }
