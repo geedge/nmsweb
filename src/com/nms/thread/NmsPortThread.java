@@ -42,7 +42,7 @@ public class NmsPortThread implements Runnable {
 				ArrayList<Map<String,String>> portStatusInfo = service.getPortStatusInfo();//串联设备端口配置状态
 				Map<String,String> portStatusInfoMap = new HashMap<String,String>();
 				for(Map<String,String> map : portStatusInfo){
-					portStatusInfoMap.put(map.get("seqid")+map.get("name_flag"), map.get("port_set_state"));
+					portStatusInfoMap.put(map.get("seqid")+map.get("name_flag"), map.get("state"));
 				}
 				logger.debug(String.format("查询数量：%s", nmsPortInfo.size()));
 				Map<String, List<Map<String, String>>> data = new HashMap<String, List<Map<String, String>>>();
@@ -71,9 +71,9 @@ public class NmsPortThread implements Runnable {
 					String setStatus = portStatusInfoMap.get(seqId + portName);//配置状态
 					if(setStatus != null && !setStatus.equals(adminStatus)){
 						Map<String,String> sw = new HashMap<String,String>();
-						sw.put("area", info.get("ADDR"));
+						sw.put("area",info.get("ADDR") );
 						sw.put("port", portName);
-						sw.put("status", adminStatus);
+						sw.put("status", "1".equals(adminStatus)?"UP":"DOWN");
 						sw.put("commitTime", info.get("DATA_CHECK_TIME"));
 						portStatusWarn.add(sw);
 					}

@@ -86,8 +86,8 @@ public class NmsReportService {
 		//end=1539073220004l,start=1539064699984l
 		//只查询 网元类型为 特种设备：1的端口信息
 		String sql = "SELECT DISTINCT nt.node_ip, nt.node_name, ds.ifindex, ds.IFDESCR, ds.IFSPEED, ds.IFINOCTETS, ds.IFOUTOCTETS,ds.INOCTETSSPEED,ds.INPKTSSPEED,ds.OUTOCTETSSPEED, ds.OUTPKTSSPEED, ds.DATA_CHECK_TIME,st.ADDR  "
-				+ " ds.IFADMINSTATUS ,nt.seq_id"
-				+ "FROM di_switchport ds "
+				+ " ,ds.IFADMINSTATUS ,nt.seq_id"
+				+ " FROM di_switchport ds "
 				+ "LEFT JOIN node_table nt ON nt.seq_id=ds.seq_id "
 				+ " left join system_table st on st.system_id = nt.system_id "
 				+ "WHERE nt.network_element_type = 1 and nt.node_state=0 AND ds.data_check_time_digital<" + end + " AND ds.data_check_time_digital>=" + start;
