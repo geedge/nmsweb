@@ -143,7 +143,7 @@
 		var policeValue;
 		var xtilte="";
 		var ytitle="";
-	
+		var metaName="";
 		function getPicScorce(metaid,drwTo){
 		    var lns = "";
 		    $(".checks:checked").each(function() {
@@ -177,6 +177,7 @@
 						xtitle = datas[0].xtitle;
 						ytitle = datas[0].ytitle;
 						policeValue = datas[0].policeVal;
+						metaName = datas[0].metaName;
 						var lines = datas[1].lines;
 						seriesOptions = [];
 						if(lines[0].data==null || lines[0].data.length==0){// 针对丢包数，仅显示一条折线
@@ -248,8 +249,8 @@
 							//startOfWeek: 50,
 							labels : {
 								rotation : 20,
-								y : 20,
-								x : 20
+								y : 30,
+								x : 30
 							},
 							dateTimeLabelFormats: {
 				                second: '%Y-%m-%d %H:%M:%S',
@@ -266,7 +267,35 @@
 								text : ytitle
 							},
 							minorTickInterval: 'auto',
-							min:0,
+							labels: {
+							    formatter:function(){
+								 if(metaName.endWith("speed")){
+									 if(0<this.value&&this.value<1024*1024){
+								    	 var num=this.value/1024;
+								    	 return num.toFixed(2)+"KB/s";
+								     }else if(1024*1024<this.value&&this.value<1024*1024*1024){
+								    	 var num=this.value/1024/1024;
+								    	 return num.toFixed(2) +"MB/s";
+								     }else{
+								    	 var num=this.value/1024/1024/1024;
+								    	 return num.toFixed(2)+"GB/s";
+								     }
+								 }else{
+									 if(0<this.value&&this.value<1024*1024){
+								    	 var num=this.value/1024;
+								    	 return num.toFixed(2)+"KB";
+								     }else if(1024*1024<this.value&&this.value<1024*1024*1024){
+								    	 var num=this.value/1024/1024;
+								    	 return num.toFixed(2) +"MB";
+								     }else{
+								    	 var num=this.value/1024/1024/1024;
+								    	 return num.toFixed(2)+"GB";
+								     } 
+								 }
+							    	
+							     
+							    }
+							  }, 
 							plotLines: [{
 				                value: policeValue,
 				                width: 2,
@@ -384,7 +413,15 @@
 					});
 					
 				}
-			
+		String.prototype.endWith=function(str){
+			if(str==null||str==""||this.length==0||str.length>this.length)
+			  return false;
+			if(this.substring(this.length-str.length)==str)
+			  return true;
+			else
+			  return false;
+			return true;
+			}
 		</script>
 
 	</head>
