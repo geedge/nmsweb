@@ -68,11 +68,12 @@ public class NmsPortThread implements Runnable {
 					String seqId = info.get("seq_id");
 					String portName = info.get("IFDESCR");
 					String adminStatus = info.get("IFADMINSTATUS");
+					String ip = info.get("node_ip");
 					String setStatus = portStatusInfoMap.get(seqId + portName);//配置状态
 					if(setStatus != null && !setStatus.equals(adminStatus)){
 						Map<String,String> sw = new HashMap<String,String>();
 						sw.put("area",info.get("ADDR") );
-						sw.put("port", portName);
+						sw.put("port", ip+"_"+portName);
 						sw.put("status", "1".equals(adminStatus)?"UP":"DOWN");
 						sw.put("commitTime", info.get("DATA_CHECK_TIME"));
 						portStatusWarn.add(sw);
