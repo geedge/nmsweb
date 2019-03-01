@@ -67,7 +67,7 @@ public class NmsPortThread implements Runnable {
 					//整理端口状态告警推送
 					String seqId = info.get("seq_id");
 					String portName = info.get("IFDESCR");
-					String adminStatus = info.get("IFADMINSTATUS");
+					String adminStatus = info.get("IFOPERSTATUS");
 					String ip = info.get("node_ip");
 					String setStatus = portStatusInfoMap.get(seqId + portName);//配置状态
 					if(setStatus != null && !setStatus.equals(adminStatus)){
