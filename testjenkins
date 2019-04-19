@@ -1,0 +1,1 @@
+/usr/bin/git fetch --tags --progress https://git.mesalab.cn/nezha/nz-web +refs/heads/*:refs/remotes/origin/*
