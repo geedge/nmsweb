@@ -352,6 +352,11 @@
 			//修改提交
 			function commitUpdate(){
 				if(checkForm()) {
+
+					var grpDesc = $("#groupDesc").val();
+					if (grpDesc && grpDesc.indexOf('"') != -1) {
+						$("#groupDesc").val(grpDesc.replace(/\"/g, "\\\""));
+					}
 					//提交表单
 					$("#nodeGroupForm select").removeAttr('disabled');
 			    	var actionurl = "<%=path%>/nodeGroupManage/nodeGroupManage!execute.do?action=updateNodeGroup";
