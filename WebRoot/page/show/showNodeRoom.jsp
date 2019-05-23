@@ -448,7 +448,7 @@ body {
 						 	});
 						 	
 						 	//写节点机在机柜中的序号
-						 	var nodeShowInd = nodeIndex;
+						 	/* var nodeShowInd = nodeIndex;
 						 	for(var i = 1;i<=nodeIndex;i++){
 						 		if(nodeIndexs[i] != null &&nodeIndexs[i] != ""){
 						 			//nodeShowInd++;
@@ -456,7 +456,7 @@ body {
 						 			nodeShowInd--;
 						 			
 						 		}
-						 	}
+						 	} */
 						 	window.top.layer.close(loading);
 						 	window.top.layer.open({
 						 		type: 1,
